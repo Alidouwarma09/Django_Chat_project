@@ -6,5 +6,5 @@ from Utilisateur.views import Inscription
 app_name = 'utilisateur'
 
 urlpatterns = [
-    path('', Inscription, name='Inscription'),
+    path('', Inscription.as_view(), name='Inscription'),
 ]
