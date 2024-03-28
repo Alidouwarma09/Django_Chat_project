@@ -45,7 +45,7 @@
                     <ul class="content-messages-list">
                         <li class="content-message-title"><span>Recent</span></li>
                         <li>
-                            <a href="#" data-conversation="#conversation-1">
+                            <a href="#" data-conversation="#conversation-">
                                 <img class="content-message-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
                                 <span class="content-message-info">
                                         <span class="content-message-name">User 1</span>
@@ -190,13 +190,13 @@
                     <div class="content-messages">
                         <ul class="content-messages-list">
                             <li class="content-message-title"><span>Recent</span>
-                                {% if utlisateur %}
-                                    {% for utlisateur in utlisateur %}
+                                {% if utilisateur %}
+                                    {% for utilisateur in utilisateur %}
                                     <li>
-                                        <a href="{% url 'utilisateur:detail_utilisateur' utlisateur.id %}" data-conversation="#conversation-1" data-utilisateur-id="{{ utilisateur.id }}">
+                                        <a href="#" class="lien-utilisateur" data-utilisateur-id="{{ utilisateur.id }}">
                                             <img class="content-message-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
                                             <span class="content-message-info">
-                                                <span class="content-message-name">{{ utlisateur.nom }} {{ utlisateur.prenom }}</span>
+                                                <span class="content-message-name">{{ utilisateur.nom }} {{ utilisateur.prenom }}</span>
                                                 <span class="content-message-text">Ecrire a cet utilisateur</span>
                                             </span>
                                             <span class="content-message-more">
@@ -214,5 +214,28 @@
     </div>
 </section>
 <script src="{% static 'accueil_utilisateur/js/script.js' %}" %}></script>
+<script>
+    document.querySelectorAll('.lien-utilisateur').forEach(link => {
+        link.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            const utilisateurId = this.getAttribute('data-utilisateur-id');
+
+            fetch(`/utilisateur/${utilisateurId}/details`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Utilisateur non trouvé');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Faire quelque chose avec les données de l'utilisateur, par exemple :
+                    console.log(data);
+                })
+                .catch(error => console.error('Erreur lors de la récupération des détails de l\'utilisateur', error));
+        });
+    });
+</script>
+
 </body>
 </html>
