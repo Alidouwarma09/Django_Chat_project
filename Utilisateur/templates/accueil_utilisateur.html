@@ -81,13 +81,15 @@
                 <p>Selectinner uneconversation!</p>
                 <p><a href=""><i class="bi bi-person-plus"></i></a> </p>
             </div>
+
+
             <div class="conversation" id="conversation-1">
                 <div class="conversation-top">
                     <button type="button" class="conversation-back"><i class="ri-arrow-left-line"></i></button>
                     <div class="conversation-user">
                         <img class="conversation-user-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
                         <div>
-                            <div class="conversation-user-name">User1</div>
+                            <div class="conversation-user-name">{{ utilisateur.nom }}{{ utilisateur.prenom }}</div>
                             <div class="conversation-user-status online">En ligne</div>
                         </div>
                     </div>
@@ -124,6 +126,7 @@
                                 </div>
                             </div>
                         </li>
+
 
                         <li class="conversation-item">
                             <div class="conversation-item-side">
@@ -190,7 +193,7 @@
                                 {% if utlisateur %}
                                     {% for utlisateur in utlisateur %}
                                     <li>
-                                        <a href="#" data-conversation="#conversation-1">
+                                        <a href="{% url 'utilisateur:detail_utilisateur' utlisateur.id %}" data-conversation="#conversation-1" data-utilisateur-id="{{ utilisateur.id }}">
                                             <img class="content-message-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
                                             <span class="content-message-info">
                                                 <span class="content-message-name">{{ utlisateur.nom }} {{ utlisateur.prenom }}</span>

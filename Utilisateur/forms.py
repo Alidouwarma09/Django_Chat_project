@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from Model.models import Utilisateur
+from Model.models import Utilisateur, Message
 
 
 class InscriptionForm(UserCreationForm):
@@ -52,3 +52,9 @@ class ConnexionForm(AuthenticationForm):
                 "Vous devez respecter les majuscules ou les minuscules !!",
             "inactive": "Ce compte est inactif veuillez contacter votre administrateur."
         }
+
+
+# class MessageForm(forms.ModelForm):
+#     class Meta:
+#         model = Message
+#         fields = ['contenu_messages']
