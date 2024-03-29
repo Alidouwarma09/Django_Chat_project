@@ -5,12 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/tailwindcss-colors.css' %}" %}">
+    <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/tailwindcss-colors.css' %}">
     <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/style.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <title>Chat</title>
 </head>
 <body>
+{% url 'utilisateur:accueil_utilisateur' as accueil_utilisateur %}
+{% url 'utilisateur:detail_utilisateur'  as detail_utilisateur %}
 <section class="chat-section">
     <div class="chat-container">
         <aside class="chat-sidebar">
@@ -18,7 +20,7 @@
                 <i class="ri-chat-1-fill"></i>
             </a>
             <ul class="chat-sidebar-menu">
-                <li class="active"><a href="#" data-title="Chats"><i class="ri-chat-3-line"></i></a></li>
+                <li class="active"><a href="{% url 'utilisateur:accueil_utilisateur' %}" data-title="Chats" data-conversation="#Chats"><i class="ri-chat-3-line"></i></a></li>
                 <li><a href="#" data-title="Contacts" data-conversation="#contact"><i class="ri-contacts-line"></i></a></li>
                 <li><a href="#" data-title="Documents"><i class="ri-folder-line"></i></a></li>
                 <li><a href="#" data-title="Settings"><i class="ri-settings-line"></i></a></li>
@@ -34,62 +36,39 @@
             </ul>
         </aside>
 
-        <div class="contenu 1 chat-content">
-            <div class="content-sidebar">
-                <div class="content-sidebar-title">Conversation</div>
-                <form action="" class="content-sidebar-form">
-                    <input type="search" class="content-sidebar-input" placeholder="Search...">
-                    <button type="submit" class="content-sidebar-submit"><i class="ri-search-line"></i></button>
-                </form>
-                <div class="content-messages">
-                    <ul class="content-messages-list">
-                        <li class="content-message-title"><span>Recent</span></li>
-                        <li>
-                            <a href="#" data-conversation="#conversation-">
-                                <img class="content-message-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
-                                <span class="content-message-info">
-                                        <span class="content-message-name">User 1</span>
-                                        <span class="content-message-text">Salut wally comment tu va...</span>
-                                    </span>
-                                <span class="content-message-more">
-                                        <span class="content-message-unread">5</span>
-                                        <span class="content-message-time">12:30</span>
-                                    </span>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="content-messages-list">
-                        <li class="content-message-title"><span>Ancien</span></li>
-                        <li>
-                            <a href="#">
-                                <img class="content-message-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
-                                <span class="content-message-info">
-                                        <span class="content-message-name">User 2</span>
-                                        <span class="content-message-text">Salut wally comment tu va...</span>
-                                    </span>
-                                <span class="content-message-more">
-                                        <span class="content-message-unread">3</span>
-                                        <span class="content-message-time">12:30</span>
-                                    </span>
-                            </a>
-                        </li>
-                    </ul>
+        <div class=" chat-content">
+            <div class="conversation {% if request.path == accueil_utilisateur %}active{% else %} {% endif %}"  id="Chats">
+                <div class="conversation-main">
+                    <div class="content-messages">
+                        <ul class="content-messages-list">
+                            <li class="content-message-title"><span>Conversation</span>
+                                {% if utilisateurs %}
+                                    {% for utilisateur in utilisateurs %}
+                                        <li>
+                                            <a href="{% url 'utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur.id %}" class="lien-utilisateur" data-conversation="#conversation-1">
+                                                <img class="content-message-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
+                                                <span class="content-message-info">
+                                                <span class="content-message-name">{{ utilisateur.nom }} {{ utilisateur.prenom }}</span>
+                                                <span class="content-message-text">Ecrire a cet utilisateur</span>
+                                            </span>
+                                                <span class="content-message-more">
+                                                <span class="content-message-unread"><i class="bi bi-chat"></i></span>
+                                            </span>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div class="conversation conversation-default active">
-                <i class="ri-chat-3-line"></i>
-                <p>Selectinner uneconversation!</p>
-                <p><a href=""><i class="bi bi-person-plus"></i></a> </p>
-            </div>
-
-
-            <div class="conversation" id="conversation-1">
+            <div class="conversation {% if request.path == detail_utilisateur %}active{% else %} {% endif %}" id="conversation-1" >
                 <div class="conversation-top">
                     <button type="button" class="conversation-back"><i class="ri-arrow-left-line"></i></button>
                     <div class="conversation-user">
                         <img class="conversation-user-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
                         <div>
-                            <div class="conversation-user-name">{{ utilisateur.nom }}{{ utilisateur.prenom }}</div>
+                            <div class="conversation-user-name">{{ utilisateur_detail.nom }}{{ utilisateur_detail.prenom }}</div>
                             <div class="conversation-user-status online">En ligne</div>
                         </div>
                     </div>
@@ -185,15 +164,15 @@
                     <button type="button" class="conversation-form-button conversation-form-submit"><i class="ri-send-plane-2-line"></i></button>
                 </div>
             </div>
-            <div class="conversation" id="contact">
+            <div class="conversation "  id="contact">
                 <div class="conversation-main">
                     <div class="content-messages">
                         <ul class="content-messages-list">
                             <li class="content-message-title"><span>Recent</span>
-                                {% if utilisateur %}
-                                    {% for utilisateur in utilisateur %}
+                                {% if utilisateurs %}
+                                    {% for utilisateur in utilisateurs %}
                                     <li>
-                                        <a href="#" class="lien-utilisateur" data-utilisateur-id="{{ utilisateur.id }}">
+                                        <a href="{% url 'utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur.id %}" class="lien-utilisateur">
                                             <img class="content-message-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
                                             <span class="content-message-info">
                                                 <span class="content-message-name">{{ utilisateur.nom }} {{ utilisateur.prenom }}</span>
@@ -213,29 +192,8 @@
         </div>
     </div>
 </section>
-<script src="{% static 'accueil_utilisateur/js/script.js' %}" %}></script>
 <script>
-    document.querySelectorAll('.lien-utilisateur').forEach(link => {
-        link.addEventListener('click', function(event) {
-            event.preventDefault();
 
-            const utilisateurId = this.getAttribute('data-utilisateur-id');
-
-            fetch(`/utilisateur/${utilisateurId}/details`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Utilisateur non trouvé');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Faire quelque chose avec les données de l'utilisateur, par exemple :
-                    console.log(data);
-                })
-                .catch(error => console.error('Erreur lors de la récupération des détails de l\'utilisateur', error));
-        });
-    });
 </script>
-
 </body>
 </html>
