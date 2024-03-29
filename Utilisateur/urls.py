@@ -2,7 +2,7 @@
 from django.urls import path
 
 from Utilisateur import views
-from Utilisateur.views import Inscription, Connexion_utlisateur, accueil_utilisateur, detail_utilisateur
+from Utilisateur.views import Inscription, Connexion_utlisateur, accueil_utilisateur, detail_utilisateur , afficher_messages
 
 app_name = 'Utilisateur'
 
@@ -12,4 +12,6 @@ urlpatterns = [
     path('accueil_utilisateur/', accueil_utilisateur, name='accueil_utilisateur'),
     path('detail_utilisateur/<int:utilisateur_detail_id>/', detail_utilisateur, name='detail_utilisateur'),
     path('envoyer_message/', views.envoyer_message, name='envoyer_message'),
+    path('afficher_messages/<int:utilisateur_recois_id>/', afficher_messages, name='afficher_messages'),
+
 ]
