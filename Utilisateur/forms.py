@@ -54,7 +54,7 @@ class ConnexionForm(AuthenticationForm):
         }
 
 
-# class MessageForm(forms.ModelForm):
-#     class Meta:
-#         model = Message
-#         fields = ['contenu_messages']
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['contenu_message']
