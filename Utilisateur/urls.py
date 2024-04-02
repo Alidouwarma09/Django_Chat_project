@@ -12,6 +12,6 @@ urlpatterns = [
     path('accueil_utilisateur/', accueil_utilisateur, name='accueil_utilisateur'),
     path('detail_utilisateur/<int:utilisateur_detail_id>/', detail_utilisateur, name='detail_utilisateur'),
     path('envoyer_message/', views.envoyer_message, name='envoyer_message'),
-    path('afficher_messages/<int:utilisateur_recois_id>/', afficher_messages, name='afficher_messages'),
+    path('afficher_messages/', afficher_messages, name='afficher_messages'),
 
 ]
