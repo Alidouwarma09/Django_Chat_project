@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from Model.models import Utilisateur, Message
+from Model.models import Utilisateur, Message, Video
 
 
 class InscriptionForm(UserCreationForm):
@@ -58,3 +58,9 @@ class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
         fields = ['contenu_message']
+
+
+class VideoForm(forms.ModelForm):
+    class Meta:
+        model = Video
+        fields = ['titre', 'video_file']
