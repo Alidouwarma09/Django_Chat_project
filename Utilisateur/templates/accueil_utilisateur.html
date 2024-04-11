@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/tailwindcss-colors.css' %}">
-    <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/publier_video.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -20,15 +20,30 @@
 {% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur_detail.id as detail_url %}
 <style>
     .video-container {
+        width: 100%;
+        padding-bottom: 56.25%; /* Aspect ratio 16:9 */
         position: relative;
+        margin-bottom: 20px;
+    }
+
+    .video {
+        position: absolute;
         width: 100%;
         height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .full-screen-video {
+        width: 100%;
+        height: 100vh; /* La vidéo occupe toute la hauteur de la fenêtre */
         display: flex;
         justify-content: center;
         align-items: center;
+        margin-top: 100vh;
     }
 
-    video {
+    .full-screen-video video {
         max-width: 100%;
         max-height: 100%;
     }
@@ -40,54 +55,51 @@
                 <i class="ri-chat-1-fill"></i>
             </a>
             <ul class="chat-sidebar-menu">
-                {% if request.path == Acceuil %}
-                    <li class="{% if request.path == Acceuil %}active{% else %} {% endif %}"><a href="{% url 'Utilisateur:acceuil' %}" data-conversation="#Acceuil" data-title="Acceuil"><i class="bi bi-play-btn"></i></a></li>
-                    <li>
-                        <a class="show-modal" id="gallery-link" data-conversation="#Acceuil" data-title="Acceuil">
-                            <i class="bi bi-plus-circle-fill"></i>
-                        </a>
-                        <section>
-                            <span class="overlay"></span>
-                            <div class="modal-box">
-                                <i class="fa-regular fa-circle-check"></i>
-                                <h2>Completed</h2>
-                                <div id="video-form-container">
-                                    <form id="video-form" enctype="multipart/form-data">
-                                        {% csrf_token %}
-                                        <input type="file" id="file-input" accept="video/*" name="video_file">
-                                        <input type="text" id="="  name="titre">
-                                        <button type="button" id="submit-btn">Publier</button>
-                                    </form>
-                                </div>
-                                <div class="buttons">
-                                    <button class="close-btn">Ok, Close</button>
-                                </div>
+                <li class="{% if request.path == Acceuil %}active{% else %} {% endif %}"><a href="{% url 'Utilisateur:acceuil' %}" data-conversation="#Acceuil" data-title="Acceuil"><i class="bi bi-play-btn"></i></a></li>
+                <li>
+                    <a class="show-modal" id="gallery-link" data-conversation="#Acceuil" data-title="Acceuil">
+                        <i class="bi bi-plus-circle-fill"></i>
+                    </a>
+                    <section>
+                        <span class="overlay"></span>
+                        <div class="modal-box">
+                            <i class="fa-regular fa-circle-check"></i>
+                            <h2>Completed</h2>
+                            <div id="video-form-container">
+                                <form id="video-form" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <input type="file" id="file-input" accept="video/*" name="video_file">
+                                    <input type="text" id="="  name="titre">
+                                    <button type="button" id="submit-btn">Publier</button>
+                                </form>
                             </div>
-                        </section>
-                    </li>
-                    <li class="chat-sidebar-profile">
-                        <button type="button" class="chat-sidebar-profile-toggle">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
-                        </button>
-                        <ul class="chat-sidebar-profile-dropdown">
-                            <li><a href="#"><i class="ri-user-line"></i> Profile</a></li>
-                            <li><a href="#"><i class="ri-logout-box-line"></i> Deconnexion</a></li>
-                        </ul>
-                    </li>
-                {% else %}
-                    <li class="{% if request.path == Acceuil %}active{% else %} {% endif %}"><a href="{% url 'Utilisateur:acceuil' %}" data-conversation="#Acceuil" data-title="Acceuil"><i class="bi bi-play-btn"></i></a></li>
-                    <li class="{% if request.path == accueil_utilisateur %}active{% else %} {% endif %}"><a href="{% url 'Utilisateur:accueil_utilisateur' %}" data-title="Chats" data-conversation="#Chats"><i class="ri-chat-3-line"></i></a></li>
-                    <li><a href="#" data-title="Contacts" data-conversation="#contact"><i class="ri-contacts-line"></i></a></li>
-                    <li class="chat-sidebar-profile">
-                        <button type="button" class="chat-sidebar-profile-toggle">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
-                        </button>
-                        <ul class="chat-sidebar-profile-dropdown">
-                            <li><a href="#"><i class="ri-user-line"></i> Profile</a></li>
-                            <li><a href="#"><i class="ri-logout-box-line"></i> Deconnexion</a></li>
-                        </ul>
-                    </li>
-                {% endif %}
+                            <div class="buttons">
+                                <button class="close-btn">Ok, Close</button>
+                            </div>
+                        </div>
+                    </section>
+                </li>
+                <li class="chat-sidebar-profile">
+                    <button type="button" class="chat-sidebar-profile-toggle">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
+                    </button>
+                    <ul class="chat-sidebar-profile-dropdown">
+                        <li><a href="#"><i class="ri-user-line"></i> Profile</a></li>
+                        <li><a href="#"><i class="ri-logout-box-line"></i> Deconnexion</a></li>
+                    </ul>
+                </li>
+                <li class="{% if request.path == Acceuil %}active{% else %} {% endif %}"><a href="{% url 'Utilisateur:acceuil' %}" data-conversation="#Acceuil" data-title="Acceuil"><i class="bi bi-play-btn"></i></a></li>
+                <li class="{% if request.path == accueil_utilisateur %}active{% else %} {% endif %}"><a href="{% url 'Utilisateur:accueil_utilisateur' %}" data-title="Chats" data-conversation="#Chats"><i class="ri-chat-3-line"></i></a></li>
+                <li><a href="#" data-title="Contacts" data-conversation="#contact"><i class="ri-contacts-line"></i></a></li>
+                <li class="chat-sidebar-profile">
+                    <button type="button" class="chat-sidebar-profile-toggle">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
+                    </button>
+                    <ul class="chat-sidebar-profile-dropdown">
+                        <li><a href="#"><i class="ri-user-line"></i> Profile</a></li>
+                        <li><a href="#"><i class="ri-logout-box-line"></i> Deconnexion</a></li>
+                    </ul>
+                </li>
             </ul>
         </aside>
         <div class=" chat-content">
@@ -95,18 +107,12 @@
                 <div class="conversation-main">
 
                     <div class="content-messages" id="section_video">
-                        {% for video in video_publier %}
-                            <ul class="content-messages-list">
-                                <div class="video-container">
-                                    <video id="video-{{ video.id }}" class="video-js" controls preload="auto" width="1000" height="" data-setup='{"playbackRates": [1, 1.5, 2] }'>
-                                        <source src="{{ video.video_file.url }}" type='video/mp4'>
-                                        <p class="vjs-no-js">
-                                            To view this video please enable JavaScript, and consider upgrading to a web browser that
-                                            <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-                                        </p>
-                                    </video>
-                                </div>
-                            </ul>
+                        {% for video_publier in video_publier %}
+                            <div class="full-screen-video">
+                                <video class="video" controls>
+                                    <source src="{{ video_publier.video_file.url }}" type="video/mp4">
+                                </video>
+                            </div>
                         {% endfor %}
                     </div>
 
@@ -116,7 +122,7 @@
                 <div class="conversation-main">
                     <div class="content-messages">
                         <ul class="content-messages-list">
-                            <li class="content-message-title"><span>Conversation</span>
+                            <li class="content-message-title"><span>Utilisateur</span>
                                 {% if utilisateurs %}
                                     {% for utilisateur in utilisateurs %}
                                         <li>
@@ -138,7 +144,7 @@
                 </div>
             </div>
             {% if utilisateur_detail %}
-                <div class="conversation {% if request.path == detail_url %}active{% else %} {% endif %}" id="conversation-1" data-utilisateur-id="{{ utilisateur_detail.id }}" >
+                <div class="conversation conversation_message {% if request.path == detail_url %}active{% else %} {% endif %}" id="conversation-1" data-utilisateur-id="{{ utilisateur_detail.id }}" >
                     <div class="conversation-top">
                         <a class="conversation-back" href="{% url 'Utilisateur:accueil_utilisateur' %}"><i class="ri-arrow-left-line"></i></a>
                         <div class="conversation-user">
@@ -155,7 +161,7 @@
                         </div>
                     </div>
                     <div class="conversation-main" id="conversation-main">
-                        <ul class="conversation-wrapper" id="conversation-item-contenu">
+                        <ul class="conversation-wrapper" id="conversation-wrappers">
                         </ul>
                     </div>
                     <form class="conversation-form" id="message-form">
@@ -227,92 +233,6 @@
     });
 </script>
 <script>
-    $(document).ready(function(){
-        var userScrolled = false;
-        $('#conversation-main').scroll(function(){
-            var scrollHeight = $('#conversation-main')[0].scrollHeight;
-            var scrollPosition = $('#conversation-main').scrollTop() + $('#conversation-main').innerHeight();
-            if (scrollPosition < scrollHeight) {
-                userScrolled = true;
-            } else {
-                userScrolled = false;
-            }
-        });
-        setInterval(function(){
-            var destinataireId = $('#conversation-1').data('utilisateur-id');
-            $.ajax({
-                type: 'GET',
-                url: "{% url 'Utilisateur:afficher_messages' %}?destinataireId=" + destinataireId,
-                success: function(response){
-                    console.log(response);
-                    $("#conversation-item-contenu").empty();
-                    for (var key in response.messages)
-                    {
-                        var message = response.messages[key];
-                        var temp = '';
-                        if (message.envoi_id === {{ request.user.id }}) {
-                            temp = "<li class='conversation-item me'>";
-                        } else {
-                            temp = "<li class='conversation-item'>";
-                        }
-                        temp += "<div class='conversation-item-side'>"+
-                            "<img class='conversation-item-image' src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60' alt=''>"+
-                            "</div>"+
-                            "<div class='conversation-item-content'>"+
-                            "<div class='conversation-item-wrapper'>"+
-                            "<div class='conversation-item-box'>"+
-                            "<div class='conversation-item-text'>"+
-                            "<p><span>"+ message.contenu_message +"</span></p>"+
-                            "<div class='conversation-item-time'>"+ moment(message.timestamp).format("HH:mm") +"</div>"+
-                            "</div>"+
-                            "</ul>"+
-                            "</div>"+
-                            "</div>"+
-                            "</div>"+
-                            "</div>"+
-                            "</li>";
-                        $("#conversation-item-contenu").append(temp);
-                    }
-                    if (!userScrolled) {
-                        var container = $('#conversation-main');
-                        container.scrollTop(container.prop("scrollHeight"));
-                    }
-                }
-            });
-        }, 500000);
-
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-        var submitBtn = document.getElementById('submit-btn');
-
-        submitBtn.addEventListener('click', function() {
-            var form = document.getElementById('video-form');
-            var formData = new FormData(form);
-
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '{% url "Utilisateur:publier_video" %}', true);
-            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        // Succès de la requête
-                        var response = JSON.parse(xhr.responseText);
-                        console.log(response);
-                        // Traitez la réponse ici, par exemple, affichez un message de succès à l'utilisateur
-                    } else {
-                        // Erreur lors de la requête
-                        console.error('Erreur lors de la requête : ' + xhr.status);
-                    }
-                }
-            };
-
-            xhr.send(formData);
-        });
-    });
-
-</script>
-<script>
     const section = document.querySelector("section"),
         overlay = document.querySelector(".overlay"),
         showBtn = document.querySelector(".show-modal"),
@@ -351,8 +271,81 @@
         });
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var videos = document.querySelectorAll('.video');
+
+        videos.forEach(function(video) {
+            video.addEventListener('mouseenter', function() {
+                this.play();
+            });
+
+            video.addEventListener('mouseleave', function() {
+                this.pause();
+            });
+        });
+    });
+
+</script>
+<script>
+    setInterval(reeceptionMesaage, 300)
+    let cunter = 0
+    function afficherMessages(data) {
+        let conversationWrappers = document.getElementById('conversation-wrappers');
+        let utilisateur_detail_id = document.querySelector('.conversation_message').dataset.utilisateurId;
+        conversationWrappers.innerHTML = '';
+        data.forEach((message) => {
+            console.log('Message recepteur ID:', message.recoi_id);
+            console.log('Utilisateur detail ID:', utilisateur_detail_id);
+
+            let chatMessageBox = document.createElement("li");
+            if (message.recoi_id != utilisateur_detail_id) {
+                chatMessageBox.classList.add("conversation-item", "me");
+            } else {
+                chatMessageBox.classList.add("conversation-item");
+            }
+            chatMessageBox.innerHTML = `
+                                <div class="conversation-item-side">
+                                    <img class="conversation-item-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
+                                </div>
+                                <div class="conversation-item-content">
+                                    <div class="conversation-item-wrapper">
+                                        <div class="conversation-item-box">
+                                            <div class="conversation-item-text">
+                                                <p>${message.contenu_message}</p>
+                                                <div class="conversation-item-time">${message.timestamp}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+        `;
+            conversationWrappers.appendChild(chatMessageBox);
+        });
+    }
+    function reeceptionMesaage() {
+        let utilisateur_detail_id = document.querySelector('.conversation_message').dataset.utilisateurId;
+        if (utilisateur_detail_id) {
+            fetch(`{% url "Utilisateur:reception_message" %}?utilisateur_detail_id=${utilisateur_detail_id}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Données reçues:', data);
+
+                    if (data.length === 0) {
+                        console.log("Aucun message reçu");
+                    } else {
+                        afficherMessages(data);
+                    }
+                    cunter = data.length;
+                })
+                .catch(error => {
+                    console.log("Erreur lors de la récupération des messages:", error);
+                });
+        }
+    }
+
+    setInterval(reeceptionMesaage, 2000);
+</script>
 <script src="https://vjs.zencdn.net/5.10.4/video.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="{% static 'accueil_utilisateur/js/moment.min.js' %}"></script>
 </body>
 </html>
