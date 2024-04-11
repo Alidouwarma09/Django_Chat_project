@@ -125,7 +125,7 @@
                             <li class="content-message-title"><span>Utilisateur</span>
                                 {% if utilisateurs %}
                                     {% for utilisateur in utilisateurs %}
-                                        <li>
+                                        <li >
                                             <a href="{% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur.id %}" class="lien-utilisateur" data-utilisateur-id="{{ utilisateur.id }}">
                                                 <img class="content-message-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
                                                 <span class="content-message-info">
@@ -218,6 +218,7 @@
                 headers: {'X-CSRFToken': csrfToken},
                 data: formData,
                 success: function(response) {
+                    $('#conversation-main').scrollTop($('#conversation-main')[0].scrollHeight);
                     $('#message-input').val('');
                 },
                 error: function(xhr, status, error) {

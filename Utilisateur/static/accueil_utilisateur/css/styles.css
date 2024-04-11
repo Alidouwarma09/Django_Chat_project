@@ -661,7 +661,7 @@ body {
     color: var(--slate-600);
 }
 .conversation-form-submit {
-    background-color: var(--emerald-500);
+    background-color: #141c1b;
     box-shadow: 0 2px 8px -2px var(--emerald-500);
     color: var(--white);
 }
