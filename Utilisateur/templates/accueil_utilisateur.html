@@ -87,6 +87,63 @@
         cursor: pointer;
         font-size: 12px;
     }
+    /* Conteneur de prévisualisation audio */
+    #audioPreviewContainer {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        background-color: #f0f0f0;
+    }
+
+    /* Boutons de contrôle */
+    #audioControls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-left: 10px;
+    }
+
+    button {
+        background-color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        color: #007bff;
+    }
+    #removeAudioButton {
+        background-color: transparent;
+        border: none;
+        color: #ff5c5c;
+        cursor: pointer;
+        margin-left: auto;
+    }
+
+    /* Barre de progression */
+    #progressBar {
+        width: 150px;
+        height: 4px;
+        background-color: #e0e0e0;
+        border-radius: 2px;
+        appearance: none;
+    }
+
+    #progressBar::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 8px;
+        height: 8px;
+        background-color: #007bff;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
 
 </style>
 <section class="chat-section">
@@ -205,10 +262,20 @@
                         <ul class="conversation-wrapper" id="conversation-wrappers">
                         </ul>
                     </div>
+                    <div id="audioPreviewContainer" style="display: none;">
+                        <audio id="audioPreview"></audio>
+                        <div id="audioControls">
+                            <button id="playButton"><i class="bi bi-play-circle-fill"></i></button>
+                            <button id="pauseButton"><i class="bi bi-stop-circle"></i></button>
+                            <input type="range" id="progressBar" min="0" max="100" value="0" step="0.1">
+                        </div>
+                        <button id="removeAudioButton"><i class="bi bi-trash"></i></button>
+                    </div>
                     <form class="conversation-form message_image" id="message-form">
                         {% csrf_token %}
                         <input type="hidden" name="utilisateur_id" value="{{ utilisateur_detail.id }}">
-                        <button type="button" class="conversation-form-button"><i class="ri-emotion-line"></i></button>
+                        <button class="recordButton" id="recordButton"><i style="font-size: 25px;" class="bi bi-mic"></i></button>
+                        <input type="file" id="audioInput" name="audio" style="display: none;">
                         <div class="conversation-form-group">
                             <textarea id="message-input" name="contenu_message" class="conversation-form-input" rows="1" placeholder="Écrivez..."></textarea>
                             <input class="image_input" id="image_input" type="file" name="images" multiple accept="image/*">
@@ -248,8 +315,54 @@
 </section>
 <div class="preview-container" id="preview-container">
 </div>
-
 <script>
+    function FileListItems(files) {
+        const dataTransfer = new DataTransfer();
+        for (let file of files) {
+            dataTransfer.items.add(file);
+        }
+        return dataTransfer.files;
+    }
+    let audioChunks = [];
+    let audioRecorder;
+    let isRecording = false;
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+            audioRecorder = new MediaRecorder(stream);
+
+            audioRecorder.ondataavailable = event => {
+                audioChunks.push(event.data);
+            };
+            audioRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                const audioFile = new File([audioBlob], 'audio.webm', { type: 'audio/webm' });
+                document.getElementById('audioInput').files = FileListItems([audioFile]);
+                const audioPreviewContainer = document.getElementById('audioPreviewContainer');
+                const audioPreview = document.getElementById('audioPreview');
+                const audioURL = URL.createObjectURL(audioBlob);
+                audioPreview.src = audioURL;
+                audioPreviewContainer.style.display = 'block';
+
+                audioChunks = [];
+            };
+        });
+    document.getElementById('recordButton').addEventListener('click', () => {
+        if (isRecording) {
+            audioRecorder.stop();
+            isRecording = false;
+            document.getElementById('recordButton').innerText = 'Commencer l\'enregistrement';
+        } else {
+            audioRecorder.start();
+            isRecording = true;
+            document.getElementById('recordButton').innerText = 'Arrêter l\'enregistrement';
+        }
+    });
+    document.getElementById('removeAudioButton').addEventListener('click', function() {
+        document.getElementById('audioInput').value = '';
+        document.getElementById('audioPreviewContainer').style.display = 'none';
+    });
+
     function addPreviewImage(imageFile) {
         const previewContainer = document.getElementById('preview-container');
         const previewItem = document.createElement('div');
@@ -273,7 +386,6 @@
             addPreviewImage(file);
         }
     });
-
     $(document).ready(function() {
         $('#message-form').on('submit', function(event) {
             event.preventDefault();
@@ -282,6 +394,8 @@
             formData.append('utilisateur_id', $('#conversation-1').data('utilisateur-id'));
             const textContent = $('#message-input').val().trim();
             const files = document.querySelector('input[name="images"]').files;
+            const audioFile = document.querySelector('input[name="audio"]').files[0];
+
             let url;
             if (textContent && files.length > 0) {
                 console.error("Les deux texte et images sont sélectionnés, veuillez n'en choisir qu'un seul.");
@@ -290,8 +404,10 @@
                 url = '{% url "Utilisateur:envoyer_message_text" %}';
             } else if (files.length > 0) {
                 url = '{% url "Utilisateur:envoyer_message_images" %}';
+            } else if (audioFile) {
+                url = '{% url "Utilisateur:envoyer_message_audio" %}';
             } else {
-                console.error("Aucune entrée valide (texte ou image) détectée.");
+                console.error("Aucune entrée valide (texte, image ou audio) détectée.");
                 return;
             }
             $.ajax({
@@ -305,6 +421,8 @@
                     $('#preview-container').empty();
                     $('#message-input').val('');
                     $('#image_input').val('');
+                    $('#audioInput').val('');
+                    $('#audioPreviewContainer').hide();
                 },
                 error: function(xhr, status, error) {
                     console.error(error);
@@ -312,7 +430,33 @@
             });
         });
     });
+    // Récupère l'élément audio
+    const audioElement = document.getElementById('audioPreview');
 
+    // Masquer les contrôles intégrés de l'élément audio
+    audioElement.controls = false;
+
+    // Récupère les boutons de contrôle personnalisés
+    const playButton = document.getElementById('playButton');
+    const pauseButton = document.getElementById('pauseButton');
+    const progressBar = document.getElementById('progressBar');
+
+    // Ajouter des écouteurs d'événements aux boutons de contrôle
+    playButton.addEventListener('click', () => {
+        audioElement.play();
+    });
+
+    pauseButton.addEventListener('click', () => {
+        audioElement.pause();
+    });
+    audioElement.addEventListener('timeupdate', () => {
+        const progressValue = (audioElement.currentTime / audioElement.duration) * 100;
+        progressBar.value = progressValue;
+    });
+    progressBar.addEventListener('input', () => {
+        const newTime = (progressBar.value / 100) * audioElement.duration;
+        audioElement.currentTime = newTime;
+    });
 
 </script>
 
