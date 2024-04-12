@@ -316,21 +316,12 @@
 <div class="preview-container" id="preview-container">
 </div>
 <script>
-    function FileListItems(files) {
-        const dataTransfer = new DataTransfer();
-        for (let file of files) {
-            dataTransfer.items.add(file);
-        }
-        return dataTransfer.files;
-    }
     let audioChunks = [];
     let audioRecorder;
     let isRecording = false;
-
     navigator.mediaDevices.getUserMedia({ audio: true })
         .then(stream => {
             audioRecorder = new MediaRecorder(stream);
-
             audioRecorder.ondataavailable = event => {
                 audioChunks.push(event.data);
             };
@@ -437,90 +428,61 @@
         const newTime = (progressBar.value / 100) * audioElement.duration;
         audioElement.currentTime = newTime;
     });
-</script>
-<script>
-    // Fonction pour convertir un tableau de fichiers en FileList
+
+
     function FileListItems(files) {
         const dataTransfer = new DataTransfer();
         files.forEach(file => dataTransfer.items.add(file));
         return dataTransfer.files;
     }
-
-    // Fonction pour mettre à jour le champ input avec les fichiers affichés dans la preview-container
     function updateFileInput() {
         const previewContainer = document.getElementById('preview-container');
         const imageInput = document.getElementById('image_input');
         const files = [];
-
-        // Parcourez les éléments de prévisualisation
         previewContainer.querySelectorAll('.preview-item').forEach(previewItem => {
-            const img = previewItem.querySelector('img');
+            const img = previewItem.querySelector('image_preview');
             if (img && img.dataset.file) {
-                // Créez un fichier à partir de l'URL de l'image et l'ajoutez à la liste des fichiers
                 const file = new File([img.dataset.file], img.alt, { type: 'image/*' });
                 files.push(file);
             }
         });
-
-        // Mettez à jour le champ input avec la liste de fichiers
         imageInput.files = FileListItems(files);
     }
-
-    // Fonction pour ajouter une image à la preview-container
     function addPreviewImage(imageFile) {
         const previewContainer = document.getElementById('preview-container');
         const previewItem = document.createElement('div');
         previewItem.classList.add('preview-item');
-
-        // Créez un élément img
         const imgElement = document.createElement('img');
+        imgElement.classList.add('image_preview');
         imgElement.src = URL.createObjectURL(imageFile);
         imgElement.classList.add('preview-image');
-        imgElement.dataset.file = imageFile; // Stocke le fichier dans les données de l'élément img
+        imgElement.dataset.file = imageFile;
         imgElement.alt = imageFile.name;
-
-        // Créez le bouton de suppression
         const removeBtn = document.createElement('button');
         removeBtn.classList.add('remove-btn');
-        removeBtn.innerHTML = '<i class="bi bi-archive-fill"></i>'; // Icône d'archive
-
-        // Ajoutez un gestionnaire d'événements pour supprimer l'image et mettre à jour le champ input
+        removeBtn.innerHTML = '<i class="bi bi-archive-fill"></i>';
         removeBtn.addEventListener('click', function() {
             previewItem.remove();
-            updateFileInput(); // Mettez à jour le champ input
+            updateFileInput();
         });
-
-        // Assemblez les éléments
         previewItem.appendChild(imgElement);
         previewItem.appendChild(removeBtn);
         previewContainer.appendChild(previewItem);
-
-        // Mettez à jour le champ input
         updateFileInput();
     }
-
-    // Ajoutez un écouteur d'événements pour le changement de l'entrée d'image
     document.querySelector('input[name="images"]').addEventListener('change', function(event) {
         const files = event.target.files;
         for (const file of files) {
             addPreviewImage(file);
         }
     });
-
-    // Gestion de la soumission du formulaire
     $(document).ready(function() {
         $('#message-form').on('submit', function(event) {
             event.preventDefault();
             const formData = new FormData(this);
-
-            // Ajoutez les fichiers de la preview-container au formulaire
             const imageInput = document.getElementById('image_input');
             const files = imageInput.files;
             files.forEach(file => formData.append('images', file));
-
-            // Votre logique pour envoyer le formulaire (URL, AJAX, etc.)
-
-            // Réinitialisez le formulaire et videz la preview-container
             $('#preview-container').empty();
             $('#message-input').val('');
             $('#image_input').val('');
@@ -590,7 +552,6 @@
 </script>
 <script>
     setInterval(reeceptionMesaage, 500)
-    let cunter = 0
     let displayedMessageIds = new Set();
 
     function afficherMessages(data) {
@@ -607,10 +568,9 @@
             } else {
                 chatMessageBox.classList.add("conversation-item");
             }
-
             let contenuHTML = '';
             if (message.images) {
-                contenuHTML += `<p class="message-image"><img class="message-image_afficher img-fluid" src="${message.images}" alt="Image"></p>`;
+                contenuHTML += `<p class="message-image"><img class="img-fluid message-image_afficher" src="${message.images}" alt="Image"></p>`;
             } else if (message.audio) {
                 contenuHTML += `
         <div class="message-audio">
@@ -646,9 +606,7 @@
     }
 
 
-
     let lastMessageId = null;
-
     function reeceptionMesaage() {
         let utilisateur_detail_id = document.querySelector('.conversation_message').dataset.utilisateurId;
         if (utilisateur_detail_id) {
