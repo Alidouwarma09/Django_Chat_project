@@ -47,6 +47,47 @@
         max-width: 100%;
         max-height: 100%;
     }
+    /* Style de la section de prévisualisation */
+    .preview-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        min-height: 500px;
+        overflow-y: auto;
+
+    }
+    .preview-container .preview-item {
+        position: relative;
+    }
+
+    .preview-container img.preview-image {
+        min-width: 550px;
+        max-width: 550px;
+        height: auto;
+        object-fit: cover;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+    .preview-container .remove-btn {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        background: red;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
 </style>
 <section class="chat-section">
     <div class="chat-container">
@@ -164,13 +205,14 @@
                         <ul class="conversation-wrapper" id="conversation-wrappers">
                         </ul>
                     </div>
-                    <form class="conversation-form" id="message-form">
+                    <form class="conversation-form message_image" id="message-form">
                         {% csrf_token %}
                         <input type="hidden" name="utilisateur_id" value="{{ utilisateur_detail.id }}">
                         <button type="button" class="conversation-form-button"><i class="ri-emotion-line"></i></button>
                         <div class="conversation-form-group">
-                            <textarea id="message-input" name="contenu_message" class="conversation-form-input" rows="1" placeholder="Ecrivez..."></textarea>
-                            <button type="button" class="conversation-form-record"><i class="ri-mic-line"></i></button>
+                            <textarea id="message-input" name="contenu_message" class="conversation-form-input" rows="1" placeholder="Écrivez..."></textarea>
+                            <input class="image_input" id="image_input" type="file" name="images" multiple accept="image/*">
+                            <button type="button" class="conversation-form-record"><i style="font-size: 25px;" class="bi bi-image"></i></button>
                         </div>
                         <button type="submit" class="conversation-form-button conversation-form-submit"><i class="ri-send-plane-2-line"></i></button>
                     </form>
@@ -204,22 +246,65 @@
         </div>
     </div>
 </section>
+<div class="preview-container" id="preview-container">
+</div>
+
 <script>
+    function addPreviewImage(imageFile) {
+        const previewContainer = document.getElementById('preview-container');
+        const previewItem = document.createElement('div');
+        previewItem.classList.add('preview-item');
+        const imgElement = document.createElement('img');
+        imgElement.src = URL.createObjectURL(imageFile);
+        imgElement.classList.add('preview-image');
+        const removeBtn = document.createElement('button');
+        removeBtn.classList.add('remove-btn');
+        removeBtn.innerText = 'X';
+        removeBtn.addEventListener('click', function() {
+            previewItem.remove();
+        });
+        previewItem.appendChild(imgElement);
+        previewItem.appendChild(removeBtn);
+        previewContainer.appendChild(previewItem);
+    }
+    document.querySelector('input[name="images"]').addEventListener('change', function(event) {
+        const files = event.target.files;
+        for (const file of files) {
+            addPreviewImage(file);
+        }
+    });
+
     $(document).ready(function() {
         $('#message-form').on('submit', function(event) {
             event.preventDefault();
-            var destinataireId = $('#conversation-1').data('utilisateur-id');
-            var formData = $(this).serialize();
-            var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
-            formData += '&utilisateur_id=' + destinataireId;
+
+            var formData = new FormData(this);
+            formData.append('utilisateur_id', $('#conversation-1').data('utilisateur-id'));
+            const textContent = $('#message-input').val().trim();
+            const files = document.querySelector('input[name="images"]').files;
+            let url;
+            if (textContent && files.length > 0) {
+                console.error("Les deux texte et images sont sélectionnés, veuillez n'en choisir qu'un seul.");
+                return;
+            } else if (textContent) {
+                url = '{% url "Utilisateur:envoyer_message_text" %}';
+            } else if (files.length > 0) {
+                url = '{% url "Utilisateur:envoyer_message_images" %}';
+            } else {
+                console.error("Aucune entrée valide (texte ou image) détectée.");
+                return;
+            }
             $.ajax({
                 type: 'POST',
-                url: '{% url 'Utilisateur:envoyer_message' %}',
-                headers: {'X-CSRFToken': csrfToken},
+                url: url,
                 data: formData,
+                contentType: false,
+                processData: false,
                 success: function(response) {
                     $('#conversation-main').scrollTop($('#conversation-main')[0].scrollHeight);
+                    $('#preview-container').empty();
                     $('#message-input').val('');
+                    $('#image_input').val('');
                 },
                 error: function(xhr, status, error) {
                     console.error(error);
@@ -227,7 +312,10 @@
             });
         });
     });
+
+
 </script>
+
 <script>
     $(window).on('load', function() {
         $('#conversation-main').scrollTop($('#conversation-main')[0].scrollHeight);
@@ -289,7 +377,7 @@
 
 </script>
 <script>
-    setInterval(reeceptionMesaage, 300)
+    setInterval(reeceptionMesaage, 30000)
     let cunter = 0
     function afficherMessages(data) {
         let conversationWrappers = document.getElementById('conversation-wrappers');
@@ -313,7 +401,9 @@
                                     <div class="conversation-item-wrapper">
                                         <div class="conversation-item-box">
                                             <div class="conversation-item-text">
+                                                <p class="img-fluid"><img src="${message.images}"></p>
                                                 <p>${message.contenu_message}</p>
+                                                <p></p>
                                                 <div class="conversation-item-time">${message.timestamp}</div>
                                             </div>
                                         </div>
@@ -343,8 +433,7 @@
                 });
         }
     }
-
-    setInterval(reeceptionMesaage, 2000);
+    setInterval(reeceptionMesaage, 200000);
 </script>
 <script src="https://vjs.zencdn.net/5.10.4/video.js"></script>
 <script src="{% static 'accueil_utilisateur/js/moment.min.js' %}"></script>

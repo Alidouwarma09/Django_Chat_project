@@ -60,6 +60,12 @@ class MessageForm(forms.ModelForm):
         fields = ['contenu_message']
 
 
+class MessageimagesForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['images']
+
+
 class VideoForm(forms.ModelForm):
     class Meta:
         model = Video
