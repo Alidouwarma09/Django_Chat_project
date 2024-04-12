@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'inscription_connexion/style.css' %}"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,600,0,0" />
+    <title>Inscription</title>
+</head>
+<body>
+    <div class="login-card-container">
+        <div class="login-card">
+            <div class="login-card-logo">
+                <img src="{% static 'inscription_connexion/logo_connexion_utilisateur.png' %}" alt="logo" >
+            </div>
+            <div class="login-card-header">
+                <h1>Inscription</h1>
+                <div>Saisissez des informations correcte</div>
+            </div>
+            <form method="post" class="login-card-form" action="{% url 'Utilisateur:Inscription' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+                <div class="form-item">
+                    <span class="form-item-icon material-symbols-rounded">mail</span>
+                    <input type="text" placeholder="Nom" id="emailForm"
+                    autofocus required name="nom">
+                </div>
+                <div class="form-item">
+                    <span class="form-item-icon material-symbols-rounded">lock</span>
+                    <input type="text" placeholder="Prénom" id="passwordForm"
+                     required name="prenom">
+                </div>
+                <div class="form-item">
+                    <span class="form-item-icon material-symbols-rounded">lock</span>
+                    <input type="text" placeholder="Telephone" id="passwordForm" required name="username">
+                </div>
+                <div class="form-item">
+                    <span class="form-item-icon material-symbols-rounded">lock</span>
+                    <input type="password" placeholder="Mot de passe" id="passwordForm" required name="password1">
+                </div>
+                <div class="form-item">
+                    <span class="form-item-icon material-symbols-rounded">lock</span>
+                    <input type="password" placeholder="Confirmé" id="passwordForm" required name="password2">
+                </div>
+                <div class="form-item">
+                    <span class="form-item-icon material-symbols-rounded">lock</span>
+                    <input type="file" placeholder="Confirmé" id="passwordForm" required name="image">
+                </div>
+                <div class="form-item-other">
+                    <a href="#">J'ai oublié mon mot de passe!</a>
+                </div>
+                <button type="submit">S'inscrire</button>
+            </form>
+            <div class="login-card-footer">
+                J'ai deja un compte <a href="{% url 'Utilisateur:Connexion_utlisateur' %}">Se connecter ?</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
