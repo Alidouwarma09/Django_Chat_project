@@ -142,6 +142,7 @@
 
 .message-image_afficher{
     max-width: 400px;
+    min-width: 300px;
     height: auto;
 }
 </style>
@@ -345,54 +346,39 @@
 
                 audioChunks = [];
             };
+        })
+        .catch(error => {
+            console.error("Erreur lors de l'accès au microphone : ", error);
         });
+
     const recordButton = document.getElementById('recordButton');
     recordButton.addEventListener('click', () => {
         if (isRecording) {
-            audioRecorder.stop();
-            isRecording = false;
-            recordButton.innerHTML = '<i style="font-size: 25px;" class="bi bi-mic"></i>';
+            if (audioRecorder) {
+                audioRecorder.stop();
+                isRecording = false;
+                recordButton.innerHTML = '<i style="font-size: 25px;" class="bi bi-mic"></i>';
+            } else {
+                console.error("audioRecorder n'est pas défini");
+            }
         } else {
-            audioRecorder.start();
-            isRecording = true;
-            recordButton.innerHTML = '<i style="font-size: 25px;" class="bi bi-stop"></i>';
-        }
-    });
-
-
-    function addPreviewImage(imageFile) {
-        const previewContainer = document.getElementById('preview-container');
-        const previewItem = document.createElement('div');
-        previewItem.classList.add('preview-item');
-        const imgElement = document.createElement('img');
-        imgElement.src = URL.createObjectURL(imageFile);
-        imgElement.classList.add('preview-image');
-        const removeBtn = document.createElement('button');
-        removeBtn.classList.add('remove-btn');
-        removeBtn.innerText = 'X';
-        removeBtn.addEventListener('click', function() {
-            previewItem.remove();
-        });
-        previewItem.appendChild(imgElement);
-        previewItem.appendChild(removeBtn);
-        previewContainer.appendChild(previewItem);
-    }
-    document.querySelector('input[name="images"]').addEventListener('change', function(event) {
-        const files = event.target.files;
-        for (const file of files) {
-            addPreviewImage(file);
+            if (audioRecorder) {
+                audioRecorder.start();
+                isRecording = true;
+                recordButton.innerHTML = '<i style="font-size: 25px;" class="bi bi-stop"></i>';
+            } else {
+                console.error("audioRecorder n'est pas défini");
+            }
         }
     });
     $(document).ready(function() {
         $('#message-form').on('submit', function(event) {
             event.preventDefault();
-
             var formData = new FormData(this);
             formData.append('utilisateur_id', $('#conversation-1').data('utilisateur-id'));
             const textContent = $('#message-input').val().trim();
             const files = document.querySelector('input[name="images"]').files;
             const audioFile = document.querySelector('input[name="audio"]').files[0];
-
             let url;
             if (textContent && files.length > 0) {
                 console.error("Les deux texte et images sont sélectionnés, veuillez n'en choisir qu'un seul.");
@@ -427,27 +413,19 @@
             });
         });
     });
-    // Récupère l'élément audio
     const audioElement = document.getElementById('audioPreview');
-
-    // Masquer les contrôles intégrés de l'élément audio
     audioElement.controls = false;
-
-    // Récupère les boutons de contrôle personnalisés
     const playButton = document.getElementById('playButton');
     const pauseButton = document.getElementById('pauseButton');
     const progressBar = document.getElementById('progressBar');
     const removeAudioButton = document.getElementById('removeAudioButton');
-
-    // Ajouter des écouteurs d'événements aux boutons de contrôle
     removeAudioButton.addEventListener('click', () => {
         audioPreviewContainer.style.display = 'none';
+        document.getElementById('audioInput').value = '';
     });
     playButton.addEventListener('click', () => {
         audioElement.play();
     });
-
-
     pauseButton.addEventListener('click', () => {
         audioElement.pause();
     });
@@ -459,9 +437,97 @@
         const newTime = (progressBar.value / 100) * audioElement.duration;
         audioElement.currentTime = newTime;
     });
+</script>
+<script>
+    // Fonction pour convertir un tableau de fichiers en FileList
+    function FileListItems(files) {
+        const dataTransfer = new DataTransfer();
+        files.forEach(file => dataTransfer.items.add(file));
+        return dataTransfer.files;
+    }
+
+    // Fonction pour mettre à jour le champ input avec les fichiers affichés dans la preview-container
+    function updateFileInput() {
+        const previewContainer = document.getElementById('preview-container');
+        const imageInput = document.getElementById('image_input');
+        const files = [];
+
+        // Parcourez les éléments de prévisualisation
+        previewContainer.querySelectorAll('.preview-item').forEach(previewItem => {
+            const img = previewItem.querySelector('img');
+            if (img && img.dataset.file) {
+                // Créez un fichier à partir de l'URL de l'image et l'ajoutez à la liste des fichiers
+                const file = new File([img.dataset.file], img.alt, { type: 'image/*' });
+                files.push(file);
+            }
+        });
+
+        // Mettez à jour le champ input avec la liste de fichiers
+        imageInput.files = FileListItems(files);
+    }
+
+    // Fonction pour ajouter une image à la preview-container
+    function addPreviewImage(imageFile) {
+        const previewContainer = document.getElementById('preview-container');
+        const previewItem = document.createElement('div');
+        previewItem.classList.add('preview-item');
+
+        // Créez un élément img
+        const imgElement = document.createElement('img');
+        imgElement.src = URL.createObjectURL(imageFile);
+        imgElement.classList.add('preview-image');
+        imgElement.dataset.file = imageFile; // Stocke le fichier dans les données de l'élément img
+        imgElement.alt = imageFile.name;
+
+        // Créez le bouton de suppression
+        const removeBtn = document.createElement('button');
+        removeBtn.classList.add('remove-btn');
+        removeBtn.innerHTML = '<i class="bi bi-archive-fill"></i>'; // Icône d'archive
+
+        // Ajoutez un gestionnaire d'événements pour supprimer l'image et mettre à jour le champ input
+        removeBtn.addEventListener('click', function() {
+            previewItem.remove();
+            updateFileInput(); // Mettez à jour le champ input
+        });
+
+        // Assemblez les éléments
+        previewItem.appendChild(imgElement);
+        previewItem.appendChild(removeBtn);
+        previewContainer.appendChild(previewItem);
+
+        // Mettez à jour le champ input
+        updateFileInput();
+    }
+
+    // Ajoutez un écouteur d'événements pour le changement de l'entrée d'image
+    document.querySelector('input[name="images"]').addEventListener('change', function(event) {
+        const files = event.target.files;
+        for (const file of files) {
+            addPreviewImage(file);
+        }
+    });
+
+    // Gestion de la soumission du formulaire
+    $(document).ready(function() {
+        $('#message-form').on('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            // Ajoutez les fichiers de la preview-container au formulaire
+            const imageInput = document.getElementById('image_input');
+            const files = imageInput.files;
+            files.forEach(file => formData.append('images', file));
+
+            // Votre logique pour envoyer le formulaire (URL, AJAX, etc.)
+
+            // Réinitialisez le formulaire et videz la preview-container
+            $('#preview-container').empty();
+            $('#message-input').val('');
+            $('#image_input').val('');
+        });
+    });
 
 </script>
-
 <script>
     $(window).on('load', function() {
         $('#conversation-main').scrollTop($('#conversation-main')[0].scrollHeight);
@@ -544,7 +610,7 @@
 
             let contenuHTML = '';
             if (message.images) {
-                contenuHTML += `<p class="message-image"><img class="img-fluid" src="${message.images}" alt="Image"></p>`;
+                contenuHTML += `<p class="message-image"><img class="message-image_afficher img-fluid" src="${message.images}" alt="Image"></p>`;
             } else if (message.audio) {
                 contenuHTML += `
         <div class="message-audio">
@@ -606,8 +672,6 @@
                 });
         }
     }
-
-
     setInterval(reeceptionMesaage, 300);
 </script>
 <script src="https://vjs.zencdn.net/5.10.4/video.js"></script>
