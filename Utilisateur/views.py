@@ -125,8 +125,8 @@ def publier_photo(request):
     if request.method == 'POST':
         form = PhotoForm(request.POST, request.FILES)
         if form.is_valid():
-            video = form.save()
-            return JsonResponse({'success': True, 'message': 'La vidéo a été publiée avec succès.'})
+            photo = form.save()
+            return JsonResponse({'success': True, 'message': 'L\'image a été publiée avec succès.'})
         else:
             errors = form.errors.as_json()
             return JsonResponse({'success': False, 'errors': errors}, status=400)

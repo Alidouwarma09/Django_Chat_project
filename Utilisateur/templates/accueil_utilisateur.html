@@ -224,10 +224,80 @@
         margin-bottom: 10px; /* Ajoute de l'espace entre la vidéo et les éléments suivants */
         display: none;
     }
-#VideoPreview{
-    position: relative;
-}
+    #photo-icon {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        transition: opacity 0.3s ease;
+    }
 
+    #photo-icon:hover {
+        opacity: 0.7;
+    }
+
+    /* Formulaire de publication */
+    #publish-form {
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 450px;
+        margin: 20px auto;
+        height: 100vh;
+        position: absolute;
+    }
+
+    #publish-form label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
+    #publish-form input[type="text"],
+    #publish-form input[type="file"] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    #publish-form button {
+        width: 100%;
+        padding: 10px;
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #publish-form button:hover {
+        background-color: #218838;
+    }
+    #image-editor {
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+        width: 100%;
+        height: 300px;
+    }
+
+    #image-editor img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .content-messages {
+        margin: 20px auto;
+        width: 60%;
+    }
 </style>
 <section class="chat-section">
     <div class="chat-container">
@@ -266,18 +336,27 @@
             </ul>
         </aside>
         <div class=" chat-content">
-            <div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}"  id="Acceuil">
+            <div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}" id="Acceuil">
                 <div class="conversation-main">
-                    <div class="content-messages" id="section_video">
-                        {% for video_publier in video_publier %}
-                            <div class="full-screen-video">
-                                <video class="video" controls>
-                                    <source src="{{ video_publier.video_file.url }}" type="video/mp4">
-                                </video>
-                            </div>
-                        {% endfor %}
-                    </div>
+                    <i id="photo-icon" class="bi bi-patch-plus"></i>
 
+                    <form id="publish-form" style="display: none;">
+                        <label for="titre_photo">Titre de l'image:</label>
+                        <input type="text" id="titre_photo" name="titre_photo" required>
+
+                        <label for="photo_file">Sélectionner une image:</label>
+                        <input hidden="hidden" type="file" id="photo_file" name="photo_file" accept="image/*" required>
+
+                        <div id="image-editor">
+                            <img id="image-to-edit" alt="Prévisualisation">
+                        </div>
+
+                        <button type="submit">Publier</button>
+                    </form>
+
+                    <div class="content-messages" id="section_video">
+                        <!-- Placez ici votre contenu de messages -->
+                    </div>
                 </div>
             </div>
             <div class="conversation {% if request.path == accueil_utilisateur %}active{% else %} {% endif %}"  id="Chats">
@@ -580,86 +659,126 @@
 
 </script>
 <script>
-    setInterval(reeceptionMesaage, 5000000000)
-    let displayedMessageIds = new Set();
+    // Sélectionner les éléments HTML
+    var photoIcon = document.getElementById('photo-icon');
+    var publishForm = document.getElementById('publish-form');
+    var imageElement = document.getElementById('image-to-edit');
+    var cropper = null;
 
-    function afficherMessages(data) {
-        let utilisateur_detail_id = document.querySelector('.conversation_message').dataset.utilisateurId;
-        let conversationWrappers = document.getElementById('conversation-wrappers');
+    photoIcon.addEventListener('click', function() {
+        publishForm.style.display = 'block';
+    });
 
-        data.forEach((message) => {
-            if (displayedMessageIds.has(message.id)) {
-                return;
-            }
-            let chatMessageBox = document.createElement("li");
-            if (message.recoi_id != utilisateur_detail_id) {
-                chatMessageBox.classList.add("conversation-item", "me");
-            } else {
-                chatMessageBox.classList.add("conversation-item");
-            }
-            let contenuHTML = '';
-            if (message.images) {
-                contenuHTML += `<p class="message-image"><img class="img-fluid message-image_afficher" src="${message.images}" alt="Image"></p>`;
-            } else if (message.audio) {
-                contenuHTML += `
-        <div class="message-audio">
-            <audio controls>
-                <source src="${message.audio}" type="audio/webm">
-            </audio>
-        </div>
-    `;
-            } else if (message.contenu_message) {
-                contenuHTML += `<p class="message-text">${message.contenu_message}</p>`;
+    document.querySelector('#photo_file').addEventListener('change', function(event) {
+        var reader = new FileReader();
+        reader.onload = function() {
+            imageElement.src = reader.result;
+
+            // Détruire l'instance de cropper si elle existe déjà
+            if (cropper) {
+                cropper.destroy();
             }
 
-            chatMessageBox.innerHTML = `
-    <div class="conversation-item-side">
-        <img class="conversation-item-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
-    </div>
-    <div class="conversation-item-content">
-        <div class="conversation-item-wrapper">
-            <div class="conversation-item-box">
-                <div class="conversation-item-text">
-                    ${contenuHTML}
-                    <div class="conversation-item-time">${message.timestamp}</div>
-                </div>
-            </div>
-        </div>
-    </div>
-`;
+            // Initialiser Cropper.js sur l'image
+            cropper = new Cropper(imageElement, {
+                aspectRatio: NaN, // Permet un recadrage libre
+                viewMode: 2, // Mode d'affichage souhaité
+                movable: true, // Permet de déplacer l'image
+                zoomable: true, // Permet de zoomer sur l'image
+                rotatable: true, // Permet de faire pivoter l'image
+                scalable: true, // Permet d'agrandir ou de réduire l'image
+                ready: function() {
+                }
+            });
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    });
 
-            conversationWrappers.appendChild(chatMessageBox);
-
-            displayedMessageIds.add(message.id);
+    // Ajouter des contrôles pour les fonctionnalités d'édition d'image
+    function addImageEditingControls() {
+        // Exemples de contrôles pour la rotation, le zoom, et d'autres modifications
+        var rotateLeftButton = document.createElement('button');
+        rotateLeftButton.innerText = 'Pivoter à gauche';
+        rotateLeftButton.addEventListener('click', function() {
+            cropper.rotate(-45);
         });
+
+        var rotateRightButton = document.createElement('button');
+        rotateRightButton.innerText = 'Pivoter à droite';
+        rotateRightButton.addEventListener('click', function() {
+            cropper.rotate(45);
+        });
+
+        var zoomInButton = document.createElement('button');
+        zoomInButton.innerText = 'Zoom avant';
+        zoomInButton.addEventListener('click', function() {
+            cropper.zoom(0.1);
+        });
+
+        var zoomOutButton = document.createElement('button');
+        zoomOutButton.innerText = 'Zoom arrière';
+        zoomOutButton.addEventListener('click', function() {
+            cropper.zoom(-0.1);
+        });
+
+        // Ajouter les boutons au DOM
+        publishForm.appendChild(rotateLeftButton);
+        publishForm.appendChild(rotateRightButton);
+        publishForm.appendChild(zoomInButton);
+        publishForm.appendChild(zoomOutButton);
     }
 
+    // Appeler la fonction pour ajouter les contrôles après avoir initialisé Cropper.js
+    function onCropperReady() {
+        addImageEditingControls();
+    }
 
-    let lastMessageId = null;
-    function reeceptionMesaage() {
-        let utilisateur_detail_id = document.querySelector('.conversation_message').dataset.utilisateurId;
-        if (utilisateur_detail_id) {
-            let url = `{% url "Utilisateur:reception_message" %}?utilisateur_detail_id=${utilisateur_detail_id}`;
-            if (lastMessageId) {
-                url += `&since_id=${lastMessageId}`;
-            }
+    // Soumettre l'image modifiée
+    publishForm.addEventListener('submit', function(event) {
+        event.preventDefault();
 
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Données reçues:', data);
-                    if (data.length > 0) {
-                        afficherMessages(data);
-                        lastMessageId = data[data.length - 1].id;
-                        console.log('Nouveau lastMessageId:', lastMessageId);
+        if (cropper) {
+            // Obtenir le canevas rogné de Cropper.js et le convertir en blob
+            cropper.getCroppedCanvas().toBlob(function(blob) {
+                var formData = new FormData();
+                formData.append('photo_file', blob, 'image.jpg'); // Ajouter l'image rognée
+                formData.append('titre_photo', document.querySelector('#titre_photo').value); // Ajouter le titre
+
+                fetch("{% url 'Utilisateur:publier_photo' %}", {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
                     }
                 })
-                .catch(error => {
-                    console.log("Erreur lors de la récupération des messages:", error);
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Image publiée avec succès.');
+                            publishForm.style.display = 'none';
+                        } else {
+                            alert('Erreur lors de la publication de l\'image : ' + data.errors);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de la requête AJAX :', error);
+                        alert('Une erreur s\'est produite lors de la soumission du formulaire.');
+                    });
+            });
+        } else {
+            alert('Veuillez sélectionner une image.');
         }
-    }
-    setInterval(reeceptionMesaage, 3000000000);
+    });
+
+</script>
+<script>
+    var photoIcon = document.getElementById('photo-icon');
+    var photoInput = document.getElementById('photo_file');
+    var publishForm = document.getElementById('publish-form');
+    photoIcon.addEventListener('click', function() {
+        photoInput.click();
+        publishForm.style.display = 'block';
+    });
 </script>
 <script src="https://vjs.zencdn.net/5.10.4/video.js"></script>
 <script src="{% static 'accueil_utilisateur/js/moment.min.js' %}"></script>
