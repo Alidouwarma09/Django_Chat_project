@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://vjs.zencdn.net/5.10.4/video-js.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <title>Chat</title>
 </head>
@@ -145,6 +147,87 @@
     min-width: 300px;
     height: auto;
 }
+    #recordingDuration {
+        font-size: 16px; /* Taille de police */
+        color: #653737; /* Couleur du texte */
+        text-align: center; /* Centrage du texte */
+        margin-bottom: 10px; /* Marge inférieure */
+    }
+    /* Styles pour la section de publication de vidéos */
+    #video-upload-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        width: 100%; /* Utilise 100% de la largeur disponible */
+    }
+
+    /* Styles pour le bouton de téléchargement */
+    #upload-button {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px;
+        font-size: 1.5rem;
+        cursor: pointer;
+        margin-bottom: 10px;
+        transition: background-color 0.3s;
+    }
+
+    #upload-button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Styles pour les boutons d'envoi et d'annulation */
+    #form-controls {
+        display: flex;
+        justify-content: space-between; /* Place les boutons de manière égale */
+        width: 100%; /* Prend toute la largeur disponible */
+        margin-bottom: 10px; /* Ajoute de l'espace en bas */
+    }
+
+    #cancel-button, #send-button {
+        background-color: #f44336; /* Rouge pour le bouton annuler */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    #send-button {
+        width: 100px;
+        background-color: #28a745; /* Vert pour le bouton envoyer */
+    }
+
+    #cancel-button:hover {
+        background-color: #d32f2f;
+        width: 100px;
+    }
+
+    #send-button:hover {
+        background-color: #218838;
+    }
+
+    /* Styles pour la prévisualisation de la vidéo */
+    #video-preview {
+        width: 100%; /* Utilise 100% de la largeur disponible */
+        height: auto; /* Maintient l'aspect ratio de la vidéo */
+        max-height: 600px; /* Limite la hauteur à 600px (ajustez selon vos besoins) */
+        border: 2px solid #ccc; /* Bordure grise autour de la vidéo */
+        border-radius: 10px; /* Arrondit les coins */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ajoute une ombre portée */
+        margin-bottom: 10px; /* Ajoute de l'espace entre la vidéo et les éléments suivants */
+        display: none;
+    }
+#VideoPreview{
+    position: relative;
+}
+
 </style>
 <section class="chat-section">
     <div class="chat-container">
@@ -158,24 +241,6 @@
                     <a class="show-modal" id="gallery-link" data-conversation="#Acceuil" data-title="Acceuil">
                         <i class="bi bi-plus-circle-fill"></i>
                     </a>
-                    <section>
-                        <span class="overlay"></span>
-                        <div class="modal-box">
-                            <i class="fa-regular fa-circle-check"></i>
-                            <h2>Completed</h2>
-                            <div id="video-form-container">
-                                <form id="video-form" enctype="multipart/form-data">
-                                    {% csrf_token %}
-                                    <input type="file" id="file-input" accept="video/*" name="video_file">
-                                    <input type="text" id="="  name="titre">
-                                    <button type="button" id="submit-btn">Publier</button>
-                                </form>
-                            </div>
-                            <div class="buttons">
-                                <button class="close-btn">Ok, Close</button>
-                            </div>
-                        </div>
-                    </section>
                 </li>
                 <li class="chat-sidebar-profile">
                     <button type="button" class="chat-sidebar-profile-toggle">
@@ -203,7 +268,6 @@
         <div class=" chat-content">
             <div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}"  id="Acceuil">
                 <div class="conversation-main">
-
                     <div class="content-messages" id="section_video">
                         {% for video_publier in video_publier %}
                             <div class="full-screen-video">
@@ -270,11 +334,15 @@
                             <input type="range" id="progressBar" min="0" max="100" value="0" step="0.1">
                         </div>
                         <button id="removeAudioButton"><i class="bi bi-trash"></i></button>
+
                     </div>
                     <form class="conversation-form message_image" id="message-form">
                         {% csrf_token %}
                         <input type="hidden" name="utilisateur_id" value="{{ utilisateur_detail.id }}">
-                        <button class="recordButton" id="recordButton"><i style="font-size: 25px;" class="bi bi-mic"></i></button>
+                        <button class="recordButton" id="recordButton"><i style="font-size: 25px;" class="bi bi-mic"></i>
+
+                        </button>
+                        <div id="recordingDuration">00:00</div>
                         <input type="file" id="audioInput" name="audio" style="display: none;">
                         <div class="conversation-form-group">
                             <textarea id="message-input" name="contenu_message" class="conversation-form-input" rows="1" placeholder="Écrivez..."></textarea>
@@ -282,6 +350,8 @@
                             <button type="button" class="conversation-form-record"><i style="font-size: 25px;" class="bi bi-image"></i></button>
                         </div>
                         <button type="submit" class="conversation-form-button conversation-form-submit"><i class="ri-send-plane-2-line"></i></button>
+                        <audio id="submitSound" src="{% static 'SonEnvoi/envoiSon.mp3' %}"></audio>
+
                     </form>
                 </div>
             {% endif %}
@@ -319,6 +389,10 @@
     let audioChunks = [];
     let audioRecorder;
     let isRecording = false;
+    let intervalId;
+    let startTime;
+
+
     navigator.mediaDevices.getUserMedia({ audio: true })
         .then(stream => {
             audioRecorder = new MediaRecorder(stream);
@@ -345,28 +419,42 @@
     const recordButton = document.getElementById('recordButton');
     recordButton.addEventListener('click', () => {
         if (isRecording) {
-            if (audioRecorder) {
-                audioRecorder.stop();
-                isRecording = false;
-                recordButton.innerHTML = '<i style="font-size: 25px;" class="bi bi-mic"></i>';
-            } else {
-                console.error("audioRecorder n'est pas défini");
-            }
+            audioRecorder.stop();
+            document.getElementById('recordingDuration').innerText = '';
+            stopRecordingDuration();
+
+            isRecording = false;
+            recordButton.innerHTML = '<i style="font-size: 25px;" class="bi bi-mic"></i>';
         } else {
-            if (audioRecorder) {
-                audioRecorder.start();
-                isRecording = true;
-                recordButton.innerHTML = '<i style="font-size: 25px;" class="bi bi-stop"></i>';
-            } else {
-                console.error("audioRecorder n'est pas défini");
-            }
+            audioRecorder.start();
+            startRecordingDuration();
+            isRecording = true;
+            recordButton.innerHTML = '<i style="font-size: 25px;" class="bi bi-stop"></i>';
+
         }
     });
+
+
+    function startRecordingDuration() {
+        startTime = Date.now();
+        intervalId = setInterval(() => {
+            const currentTime = Date.now();
+            const elapsedTime = Math.floor((currentTime - startTime) / 1000);
+            const minutes = Math.floor(elapsedTime / 60);
+            const seconds = elapsedTime % 60;
+            const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('recordingDuration').innerText = formattedTime;
+        }, 1000);
+    }
+    function stopRecordingDuration() {
+        clearInterval(intervalId);
+    }
+
     $(document).ready(function() {
         $('#message-form').on('submit', function(event) {
             event.preventDefault();
-            var formData = new FormData(this);
-            formData.append('utilisateur_id', $('#conversation-1').data('utilisateur-id'));
+            const formData = new FormData(this);
+
             const textContent = $('#message-input').val().trim();
             const files = document.querySelector('input[name="images"]').files;
             const audioFile = document.querySelector('input[name="audio"]').files[0];
@@ -384,6 +472,7 @@
                 console.error("Aucune entrée valide (texte, image ou audio) détectée.");
                 return;
             }
+
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -391,6 +480,8 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
+                    const audioElement = document.getElementById('submitSound');
+                    audioElement.play();
                     $('#conversation-main').scrollTop($('#conversation-main')[0].scrollHeight);
                     $('#preview-container').empty();
                     $('#message-input').val('');
@@ -404,32 +495,38 @@
             });
         });
     });
+
+    // Gestion de la prévisualisation audio
     const audioElement = document.getElementById('audioPreview');
     audioElement.controls = false;
+
     const playButton = document.getElementById('playButton');
     const pauseButton = document.getElementById('pauseButton');
     const progressBar = document.getElementById('progressBar');
     const removeAudioButton = document.getElementById('removeAudioButton');
+
     removeAudioButton.addEventListener('click', () => {
         audioPreviewContainer.style.display = 'none';
         document.getElementById('audioInput').value = '';
     });
+
     playButton.addEventListener('click', () => {
         audioElement.play();
     });
+
     pauseButton.addEventListener('click', () => {
         audioElement.pause();
     });
+
     audioElement.addEventListener('timeupdate', () => {
         const progressValue = (audioElement.currentTime / audioElement.duration) * 100;
         progressBar.value = progressValue;
     });
+
     progressBar.addEventListener('input', () => {
         const newTime = (progressBar.value / 100) * audioElement.duration;
         audioElement.currentTime = newTime;
     });
-
-
     function FileListItems(files) {
         const dataTransfer = new DataTransfer();
         files.forEach(file => dataTransfer.items.add(file));
@@ -440,24 +537,25 @@
         const imageInput = document.getElementById('image_input');
         const files = [];
         previewContainer.querySelectorAll('.preview-item').forEach(previewItem => {
-            const img = previewItem.querySelector('image_preview');
+            const img = previewItem.querySelector('.preview-image');
             if (img && img.dataset.file) {
                 const file = new File([img.dataset.file], img.alt, { type: 'image/*' });
                 files.push(file);
             }
         });
-        imageInput.files = FileListItems(files);
     }
+
     function addPreviewImage(imageFile) {
         const previewContainer = document.getElementById('preview-container');
         const previewItem = document.createElement('div');
         previewItem.classList.add('preview-item');
+
         const imgElement = document.createElement('img');
-        imgElement.classList.add('image_preview');
         imgElement.src = URL.createObjectURL(imageFile);
         imgElement.classList.add('preview-image');
         imgElement.dataset.file = imageFile;
         imgElement.alt = imageFile.name;
+
         const removeBtn = document.createElement('button');
         removeBtn.classList.add('remove-btn');
         removeBtn.innerHTML = '<i class="bi bi-archive-fill"></i>';
@@ -465,93 +563,24 @@
             previewItem.remove();
             updateFileInput();
         });
+
         previewItem.appendChild(imgElement);
         previewItem.appendChild(removeBtn);
         previewContainer.appendChild(previewItem);
+
         updateFileInput();
     }
+
     document.querySelector('input[name="images"]').addEventListener('change', function(event) {
         const files = event.target.files;
         for (const file of files) {
             addPreviewImage(file);
         }
     });
-    $(document).ready(function() {
-        $('#message-form').on('submit', function(event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-            const imageInput = document.getElementById('image_input');
-            const files = imageInput.files;
-            files.forEach(file => formData.append('images', file));
-            $('#preview-container').empty();
-            $('#message-input').val('');
-            $('#image_input').val('');
-        });
-    });
 
 </script>
 <script>
-    $(window).on('load', function() {
-        $('#conversation-main').scrollTop($('#conversation-main')[0].scrollHeight);
-    });
-</script>
-<script>
-    const section = document.querySelector("section"),
-        overlay = document.querySelector(".overlay"),
-        showBtn = document.querySelector(".show-modal"),
-        closeBtn = document.querySelector(".close-btn");
-
-    showBtn.addEventListener("click", () => section.classList.add("active"));
-
-    overlay.addEventListener("click", () =>
-        section.classList.remove("active")
-    );
-
-    closeBtn.addEventListener("click", () =>
-        section.classList.remove("active")
-    );
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var videos = document.querySelectorAll('video');
-
-        videos.forEach(function(video) {
-            video.addEventListener('playing', function() {
-                var videoContainer = this.closest('.video-container');
-                if (videoContainer) {
-                    var rect = videoContainer.getBoundingClientRect();
-                    var isInViewport = (
-                        rect.top >= 0 &&
-                        rect.left >= 0 &&
-                        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-                    );
-                    if (!isInViewport) {
-                        this.pause();
-                    }
-                }
-            });
-        });
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var videos = document.querySelectorAll('.video');
-
-        videos.forEach(function(video) {
-            video.addEventListener('mouseenter', function() {
-                this.play();
-            });
-
-            video.addEventListener('mouseleave', function() {
-                this.pause();
-            });
-        });
-    });
-
-</script>
-<script>
-    setInterval(reeceptionMesaage, 500)
+    setInterval(reeceptionMesaage, 5000000000)
     let displayedMessageIds = new Set();
 
     function afficherMessages(data) {
@@ -630,7 +659,7 @@
                 });
         }
     }
-    setInterval(reeceptionMesaage, 300);
+    setInterval(reeceptionMesaage, 3000000000);
 </script>
 <script src="https://vjs.zencdn.net/5.10.4/video.js"></script>
 <script src="{% static 'accueil_utilisateur/js/moment.min.js' %}"></script>

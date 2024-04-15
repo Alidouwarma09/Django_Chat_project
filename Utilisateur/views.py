@@ -10,9 +10,9 @@ from django.urls import reverse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from Model.models import Utilisateur, Message, Video
-from Utilisateur.forms import InscriptionForm, ConnexionForm, MessageForm, VideoForm, MessageimagesForm, \
-    MessageAudioForm
+from Model.models import Utilisateur, Message, VideoPhoto
+from Utilisateur.forms import InscriptionForm, ConnexionForm, MessageForm, MessageimagesForm, \
+    MessageAudioForm, PhotoForm
 
 
 # Create your views here
@@ -42,7 +42,7 @@ class Connexion_utlisateur(LoginView):
 
 
 def acceuil(request):
-    video_publier = Video.objects.all()
+    video_publier = VideoPhoto.objects.all()
     return render(request, 'accueil_utilisateur.html', {'video_publier': video_publier})
 
 
@@ -115,14 +115,15 @@ def envoyer_message_audio(request):
             return JsonResponse({'status': 'success',
                                  'timestamp': nouveau_message.timestamp.strftime("%Y-%m-%d %H:%M:%S")})
         else:
+            print('5f')
             return JsonResponse({'status': 'error', 'errors': form.errors})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 
 @csrf_exempt
-def publier_video(request):
+def publier_photo(request):
     if request.method == 'POST':
-        form = VideoForm(request.POST, request.FILES)
+        form = PhotoForm(request.POST, request.FILES)
         if form.is_valid():
             video = form.save()
             return JsonResponse({'success': True, 'message': 'La vidéo a été publiée avec succès.'})

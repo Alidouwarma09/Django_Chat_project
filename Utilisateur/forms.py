@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from Model.models import Utilisateur, Message, Video
+from Model.models import Utilisateur, Message, VideoPhoto
 
 
 class InscriptionForm(UserCreationForm):
@@ -72,7 +72,7 @@ class MessageAudioForm(forms.ModelForm):
         fields = ['audio']
 
 
-class VideoForm(forms.ModelForm):
+class PhotoForm(forms.ModelForm):
     class Meta:
-        model = Video
-        fields = ['titre', 'video_file']
+        model = VideoPhoto
+        fields = ['titre_photo', 'photo_file']

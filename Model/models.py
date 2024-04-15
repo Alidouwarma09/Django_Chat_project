@@ -42,7 +42,7 @@ class Utilisateur(AbstractBaseUser):
                                    message="Le numéro de téléphone doit contenir uniquement des chiffres.")]
     )
     email = models.EmailField(
-        unique=True,  # Assurez-vous que chaque e-mail est unique
+        unique=True,
         max_length=255,
         blank=True,
         null=True
@@ -71,7 +71,11 @@ class Message(models.Model):
     images = models.FileField(upload_to='messages/images/', blank=True, null=True)
 
 
-class Video(models.Model):
-    titre = models.CharField(max_length=100)
+class VideoPhoto(models.Model):
+    titre_photo = models.CharField(max_length=100)
     video_file = models.FileField(upload_to='videos/')
+    photo_file = models.FileField(upload_to='photo/')
     date_publication = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.titre_photo

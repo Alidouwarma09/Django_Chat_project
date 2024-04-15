@@ -2,7 +2,7 @@
 from django.urls import path
 
 from Utilisateur import views
-from Utilisateur.views import Inscription, Connexion_utlisateur, accueil_utilisateur, detail_utilisateur, publier_video, acceuil, reception_message, envoyer_message_images, envoyer_message_text, envoyer_message_audio
+from Utilisateur.views import Inscription, Connexion_utlisateur, accueil_utilisateur, detail_utilisateur, publier_photo, acceuil, reception_message, envoyer_message_images, envoyer_message_text, envoyer_message_audio
 
 app_name = 'Utilisateur'
 
@@ -14,7 +14,7 @@ urlpatterns = [
     path('envoyer_message_images/', envoyer_message_images, name='envoyer_message_images'),
     path('envoyer_message_text/', envoyer_message_text, name='envoyer_message_text'),
     path('envoyer_message_audio/', envoyer_message_audio, name='envoyer_message_audio'),
-    path('publier_video/', publier_video, name='publier_video'),
+    path('publier_photo/', publier_photo, name='publier_photo'),
     path('acceuil/', acceuil, name='acceuil'),
     path('reception_message/', reception_message, name='reception_message')
 
