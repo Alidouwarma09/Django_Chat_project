@@ -1,8 +1,10 @@
 import uuid
+from datetime import timezone
 
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils.timesince import timesince
 
 
 # Create your models here.
@@ -76,6 +78,28 @@ class VideoPhoto(models.Model):
     video_file = models.FileField(upload_to='videos/')
     photo_file = models.FileField(upload_to='photo/')
     date_publication = models.DateTimeField(auto_now_add=True)
+    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, related_name='auteur')
+
+    def date_pub(self):
+        if self.date_publication:
+            date_pub = timesince(self.date_publication)
+            return f"{date_pub}"
+
+    def count_likes(self):
+        return Like.objects.filter(publication=self).count()
 
     def __str__(self):
         return self.titre_photo
+
+
+class Like(models.Model):
+    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
+    publication = models.ForeignKey(VideoPhoto, on_delete=models.CASCADE)
+    date_like = models.DateTimeField(auto_now_add=True)
+
+
+class Comment(models.Model):
+    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
+    publication = models.ForeignKey(VideoPhoto, on_delete=models.CASCADE)
+    texte = models.TextField()
+    date_comment = models.DateTimeField(auto_now_add=True)

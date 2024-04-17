@@ -299,6 +299,180 @@
         margin: 20px auto;
         width: 60%;
     }
+    .publication-container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    .publication {
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    }
+
+    .publication-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .user-profile {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-name {
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .publication-time {
+        margin: 0;
+        font-size: 0.9rem;
+        color: gray;
+    }
+
+    /* Contenu de la publication */
+    .publication-content {
+        margin-bottom: 10px;
+    }
+
+    .publication-image {
+        width: 100%;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    /* Boutons d'actions de la publication */
+    .publication-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .action-button {
+        border: none;
+        background-color: #f0f2f5;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.5rem;
+    }
+
+    .action-button:hover {
+        background-color: #e9ebee;
+    }
+
+    /* Section des commentaires */
+    .comments-section {
+        display: none;
+        border-top: 1px solid #ccc;
+        padding-top: 10px;
+    }
+
+    .comment {
+        margin-bottom: 10px;
+    }
+
+    .commentaire-form {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .commentaire-input {
+        flex: 1;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px;
+        margin-right: 10px;
+    }
+
+    .commentaire-form button {
+        border: none;
+        background-color: #007bff;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .liked {
+        color: red;
+    }
+    .action-button.liked i {
+        color: #ff4d4d;
+    }
+    .likes-count {
+        font-size: 1rem;
+        color: #888;
+        margin-left: 5px;
+    }
+    .likes-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .likes-container button,
+    .likes-container span {
+        margin-right: 5px;
+    }
+    .comment {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .comment-user {
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .comment-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .comment-actions button {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007BFF;
+        color: #fff;
+        cursor: pointer;
+    }
+    .comment-actions button:hover {
+        background-color: #0056b3;
+    }
+    .comment-content p {
+        margin: 0;
+        line-height: 1.5;
+    }
+    .comment-replies {
+        margin-left: 20px;
+        border-left: 2px solid #ccc;
+        padding-left: 10px;
+    }
+
 </style>
 <section class="chat-section">
     <div class="chat-container">
@@ -340,7 +514,6 @@
             <div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}" id="Acceuil">
                 <div class="conversation-main">
                     <i id="photo-icon" class="bi bi-patch-plus"></i>
-
                     <form id="publish-form" style="display: none;">
                         <label for="titre_photo">Titre de l'image:</label>
                         <input type="text" id="titre_photo" name="titre_photo" required>
@@ -354,11 +527,55 @@
 
                         <button type="submit">Publier</button>
                     </form>
+                    {% if photo_publier %}
+                        {% for photo in photo_publier %}
+                            <div class="publication-container">
+                                <div class="publication">
+                                    <div class="publication-header">
+                                        <img src="{{ photo.utilisateur.image.url }}" alt="Profil de l'utilisateur" class="user-profile">
+                                        <div class="user-info">
+                                            <p class="user-name">{{ photo.utilisateur.nom }} {{ photo.utilisateur.prenom }}</p>
+                                            <p class="publication-time">Il y a {{ photo.date_pub }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="publication-content">
+                                        <p>{{ photo.titre_photo }}</p>
+                                        <img src="{{ photo.photo_file.url }}" alt="Image de la publication" class="publication-image">
+                                    </div>
+                                    <div class="row publication-actions">
+                                        <div class="col-4 likes-container">
+                                            <button class="action-button" id="like-button" data-publication-id="{{ photo.id }}">
+                                                <i class="bi bi-heart-fill"></i>
+                                            </button><span class="likes-count">
+                                                    {% for key, value in publication_likes.items %}
+                                                        {% if key == photo.id %}
+                                                            {{ value }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </span> likes
+                                        </div>
+                                        <div class="col-4">
+                                            <button class="action-button" id="comment-button" data-publicationafficher-id="{{ photo.id }}" data-publicationafficher2-id="{{ photo.id }}"><i class="bi bi-chat"></i></button>
+                                        </div>
+                                        <div class="col-4">
+                                            <button class="action-button" id="share-button"><i class="bi bi-share"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="comments-section" id="comments-section-{{ photo.id }}">
+                                        <div class="comments-container" id="comments-container-{{ photo.id }}">
+                                            <!-- Les commentaires seront ajoutés ici -->
+                                        </div>
+                                        <form class="commentaire-form" id="commentaire-form-{{ photo.id }}">
+                                            {% csrf_token %}
+                                            <input type="text" class="commentaire-input" id="commentaire-input-{{ photo.id }}" placeholder="Écrivez un commentaire...">
+                                            <button type="submit" data-publications-id="{{ photo.id }}">▶️</button>
+                                        </form>
+                                    </div>
 
-                    <div class="content-messages" id="section_video">
-                        <!-- Placez ici votre contenu de messages -->
-
-                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
             <div class="conversation {% if request.path == accueil_utilisateur %}active{% else %} {% endif %}"  id="Chats">
@@ -466,6 +683,94 @@
 </section>
 <div class="preview-container" id="preview-container">
 </div>
+<script>
+    setInterval(reeceptionMesaage, 50000000)
+    let cunter = 0
+    let displayedMessageIds = new Set();
+
+    function afficherMessages(data) {
+        let utilisateur_detail_id = document.querySelector('.conversation_message').dataset.utilisateurId;
+        let conversationWrappers = document.getElementById('conversation-wrappers');
+
+        data.forEach((message) => {
+            if (displayedMessageIds.has(message.id)) {
+                return;
+            }
+            let chatMessageBox = document.createElement("li");
+            if (message.recoi_id != utilisateur_detail_id) {
+                chatMessageBox.classList.add("conversation-item", "me");
+            } else {
+                chatMessageBox.classList.add("conversation-item");
+            }
+
+            let contenuHTML = '';
+            if (message.images) {
+                contenuHTML += `<p class="message-image"><img class="message-image_afficher img-fluid" src="${message.images}" alt="Image"></p>`;
+            } else if (message.audio) {
+                contenuHTML += `
+        <div class="message-audio">
+            <audio controls>
+                <source src="${message.audio}" type="audio/webm">
+            </audio>
+        </div>
+    `;
+            } else if (message.contenu_message) {
+                contenuHTML += `<p class="message-text">${message.contenu_message}</p>`;
+            }
+
+            chatMessageBox.innerHTML = `
+    <div class="conversation-item-side">
+        <img class="conversation-item-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
+    </div>
+    <div class="conversation-item-content">
+        <div class="conversation-item-wrapper">
+            <div class="conversation-item-box">
+                <div class="conversation-item-text">
+                    ${contenuHTML}
+                    <div class="conversation-item-time">${message.timestamp}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+`;
+
+            conversationWrappers.appendChild(chatMessageBox);
+
+            displayedMessageIds.add(message.id);
+        });
+    }
+
+
+
+    let lastMessageId = null;
+
+    function reeceptionMesaage() {
+        let utilisateur_detail_id = document.querySelector('.conversation_message').dataset.utilisateurId;
+        if (utilisateur_detail_id) {
+            let url = `{% url "Utilisateur:reception_message" %}?utilisateur_detail_id=${utilisateur_detail_id}`;
+            if (lastMessageId) {
+                url += `&since_id=${lastMessageId}`;
+            }
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Données reçues:', data);
+                    if (data.length > 0) {
+                        afficherMessages(data);
+                        lastMessageId = data[data.length - 1].id;
+                        console.log('Nouveau lastMessageId:', lastMessageId);
+                    }
+                })
+                .catch(error => {
+                    console.log("Erreur lors de la récupération des messages:", error);
+                });
+        }
+    }
+    setInterval(reeceptionMesaage, 30000000);
+</script>
+
+{#Envoi message#}
 <script>
     let audioChunks = [];
     let audioRecorder;
@@ -660,6 +965,7 @@
     });
 
 </script>
+{#Publication#}
 <script>
     // Sélectionner les éléments HTML
     var photoIcon = document.getElementById('photo-icon');
@@ -740,11 +1046,10 @@
         event.preventDefault();
 
         if (cropper) {
-            // Obtenir le canevas rogné de Cropper.js et le convertir en blob
             cropper.getCroppedCanvas().toBlob(function(blob) {
                 var formData = new FormData();
-                formData.append('photo_file', blob, 'image.jpg'); // Ajouter l'image rognée
-                formData.append('titre_photo', document.querySelector('#titre_photo').value); // Ajouter le titre
+                formData.append('photo_file', blob, 'image.jpg');
+                formData.append('titre_photo', document.querySelector('#titre_photo').value);
 
                 fetch("{% url 'Utilisateur:publier_photo' %}", {
                     method: 'POST',
@@ -756,15 +1061,14 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            alert('Image publiée avec succès.');
                             publishForm.style.display = 'none';
                         } else {
-                            alert('Erreur lors de la publication de l\'image : ' + data.errors);
+                            console.log('Erreur lors de la publication de l\'image : ' + data.errors);
                         }
                     })
                     .catch(error => {
                         console.error('Erreur lors de la requête AJAX :', error);
-                        alert('Une erreur s\'est produite lors de la soumission du formulaire.');
+                        console.log('Une erreur s\'est produite lors de la soumission du formulaire.');
                     });
             });
         } else {
@@ -781,6 +1085,99 @@
         photoInput.click();
         publishForm.style.display = 'block';
     });
+</script>
+{#Liker & commenter &afficher_commentaire#}
+<script>
+    document.querySelectorAll('#like-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const publicationId = this.getAttribute('data-publication-id');
+
+            fetch("{% url 'Utilisateur:liker_publication' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({ publication_id: publicationId }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const likesCountElement = this.closest('.publication').querySelector('.likes-count');
+
+                    if (data.liked) {
+                        this.classList.add('liked');
+                        likesCountElement.textContent = parseInt(likesCountElement.textContent) + 1;
+                    } else {
+                        this.classList.remove('liked');
+                        likesCountElement.textContent = parseInt(likesCountElement.textContent) - 1;
+                    }
+                });
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Boucler sur chaque publication
+        document.querySelectorAll('.publication').forEach(publication => {
+            // Définir publicationId avant de l'utiliser
+            const commentButton = publication.querySelector(`[id^="comment-button"]`);
+            const publicationId = commentButton.getAttribute('data-publicationafficher-id');
+
+            const commentsSection = publication.querySelector(`#comments-section-${publicationId}`);
+            const commentForm = publication.querySelector(`#commentaire-form-${publicationId}`);
+
+            commentsSection.setAttribute('data-visible', 'false');
+
+            commentButton.addEventListener('click', function() {
+                const isVisible = commentsSection.getAttribute('data-visible') === 'true';
+
+                if (isVisible) {
+                    commentsSection.style.display = 'none';
+                    commentsSection.setAttribute('data-visible', 'false');
+                } else {
+                    commentsSection.style.display = 'block';
+                    commentsSection.setAttribute('data-visible', 'true');
+                }
+            });
+
+            commentForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const texte = commentForm.querySelector(`#commentaire-input-${publicationId}`).value;
+
+                if (texte.trim() === '') {
+                    console.log('Le commentaire ne peut pas être vide');
+                    return;
+                }
+                fetch("{% url 'Utilisateur:commenter_publication' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: JSON.stringify({
+                        publication_id: publicationId,
+                        texte: texte
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.utilisateur_nom && data.utilisateur_prenom && data.texte) {
+                            commentForm.querySelector(`#commentaire-input-${publicationId}`).value = '';
+                        } else {
+                            console.error('Erreur lors de l\'ajout du commentaire :', data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur :', error);
+                    });
+            });
+        });
+    });
+
+
+    function getCookie(name) {
+        const cookieValue = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        return cookieValue ? decodeURIComponent(cookieValue[2]) : null;
+    }
+
 </script>
 <script src="https://vjs.zencdn.net/5.10.4/video.js"></script>
 <script src="{% static 'accueil_utilisateur/js/moment.min.js' %}"></script>

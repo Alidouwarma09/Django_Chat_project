@@ -1,16 +1,17 @@
+import json
 import time
 
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse, StreamingHttpResponse
 from django.urls import reverse
-from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from Model.models import Utilisateur, Message, VideoPhoto
+from Model.models import Utilisateur, Message, VideoPhoto, Like, Comment
 from Utilisateur.forms import InscriptionForm, ConnexionForm, MessageForm, MessageimagesForm, \
     MessageAudioForm, PhotoForm
 
@@ -42,8 +43,20 @@ class Connexion_utlisateur(LoginView):
 
 
 def acceuil(request):
-    video_publier = VideoPhoto.objects.all()
-    return render(request, 'accueil_utilisateur.html', {'video_publier': video_publier})
+
+    photo_publier = VideoPhoto.objects.all()
+    liked_photos = [like.publication_id for like in Like.objects.filter(utilisateur=request.user)]
+    publication_likes = {}
+    for photo in photo_publier:
+        publication_likes[photo.id] = photo.count_likes()
+    context = {
+        'photo_publier': photo_publier,
+        'user': request.user,
+        'liked_photos': liked_photos,
+        'publication_likes': publication_likes,
+    }
+
+    return render(request, 'accueil_utilisateur.html', context)
 
 
 def accueil_utilisateur(request):
@@ -125,6 +138,8 @@ def publier_photo(request):
     if request.method == 'POST':
         form = PhotoForm(request.POST, request.FILES)
         if form.is_valid():
+            photo = form.save(commit=False)
+            photo.utilisateur = request.user
             photo = form.save()
             return JsonResponse({'success': True, 'message': 'L\'image a été publiée avec succès.'})
         else:
@@ -154,3 +169,80 @@ def reception_message(request):
         }
         arr.append(message_dict)
     return JsonResponse(arr, safe=False)
+
+
+def liker_publication(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        publication_id = data.get('publication_id')
+        try:
+            publication = VideoPhoto.objects.get(id=publication_id)
+            utilisateur = request.user
+            like, created = Like.objects.get_or_create(utilisateur=utilisateur, publication=publication)
+
+            if not created:
+                like.delete()
+                liked = False
+            else:
+                liked = True
+            return JsonResponse({'liked': liked})
+
+        except VideoPhoto.DoesNotExist:
+            return JsonResponse({'error': 'Publication non trouvée'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        # Si la méthode n'est pas POST, renvoyer une erreur
+        return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+
+
+def commenter_publication(request):
+    if request.method == 'POST':
+        print('Données POST reçues:', request.POST)
+        data = json.loads(request.body)
+        publication_id = data.get('publication_id')
+        texte = data.get('texte')
+        print('Publication ID:', publication_id)
+        print('Texte:', texte)
+        if publication_id is None or texte is None:
+            return JsonResponse({'error': 'Données POST manquantes'}, status=400)
+        try:
+            publication_id = int(publication_id)
+        except ValueError:
+            return JsonResponse({'error': 'Format de données invalide'}, status=400)
+        utilisateur = request.user
+        print(utilisateur)
+
+        try:
+            publication = VideoPhoto.objects.get(id=publication_id)
+        except VideoPhoto.DoesNotExist:
+            return JsonResponse({'error': 'Publication introuvable'}, status=404)
+        commentaire = Comment(utilisateur=utilisateur, publication=publication, texte=texte)
+        commentaire.save()
+        return JsonResponse({
+            'texte': texte,
+            'publication_id': publication_id,
+            'utilisateur_nom': utilisateur.nom,
+            'utilisateur_prenom': utilisateur.prenom,
+        })
+    else:
+        # Méthode non autorisée
+        return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+
+
+def afficher_commentaire(request):
+    publication_id = request.GET.get('publication_id')
+    commentaire = Comment.objects.filter(publication_id=publication_id).order_by('-date_comment')
+    comments_data = []
+    for comment in commentaire:
+        comments_data.append({
+            'utilisateur': f'{comment.utilisateur.nom} {comment.utilisateur.prenom}',
+            'texte': comment.texte,
+            'date_comment': comment.date_comment.strftime('%Y-%m-%d %H:%M:%S'),
+        })
+    return JsonResponse(comments_data, safe=False)
+
+
+
+
+
