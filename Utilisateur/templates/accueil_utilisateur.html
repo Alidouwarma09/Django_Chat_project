@@ -379,6 +379,7 @@
         display: none;
         border-top: 1px solid #ccc;
         padding-top: 10px;
+        position: relative;
     }
 
     .comment {
@@ -388,6 +389,14 @@
     .commentaire-form {
         display: flex;
         justify-content: space-between;
+        position: sticky;
+        bottom: 0; /* Positionne le formulaire au bas */
+        width: 100%; /* Occupe toute la largeur de la section */
+        padding: 10px; /* Espacement interne */
+        background-color: #f9f9f9; /* Fond clair */
+        border-top: 1px solid #cccccc;
+        z-index: 1;
+
     }
 
     .commentaire-input {
@@ -565,7 +574,7 @@
                                             <button class="action-button" id="share-button"><i class="bi bi-share"></i></button>
                                         </div>
                                     </div>
-                                    <div class="comments-section" id="comments-section-{{ photo.id }}">
+                                    <div class="comments-section" id="comments-section-{{ photo.id }}" style="overflow-y: auto;  max-height: 300px">
                                         <div class="comments-container" id="comments-container-{{ photo.id }}">
                                             <!-- Les commentaires seront ajoutés ici -->
                                         </div>
@@ -1119,7 +1128,6 @@
         });
     });
     document.addEventListener('DOMContentLoaded', function() {
-        // Boucler sur chaque publication
         document.querySelectorAll('.publication').forEach(publication => {
             // Définir publicationId avant de l'utiliser
             const commentButton = publication.querySelector(`[id^="comment-button"]`);
@@ -1179,8 +1187,6 @@
         let intervalId;
         function afficherCommentaires(publicationId) {
             const commentsContainer = document.querySelector(`#comments-container-${publicationId}`);
-
-            // Actualiser les commentaires
             function actualiserCommentaires() {
                 fetch("{% url 'Utilisateur:afficher_commentaire' %}?publication_id=" + publicationId)
                     .then(response => response.json())
@@ -1189,9 +1195,7 @@
                         data.forEach(commentaire => {
                             const commentaireElement = document.createElement('div');
                             commentaireElement.classList.add('comment');
-
                             var utilisateurConnecteId = {{ utilisateur_connecte.id|default:"null" }};
-
                             let nomUtilisateur = commentaire.utilisateur_id;
                             if (commentaire.utilisateur_id === utilisateurConnecteId) {
                                 nomUtilisateur = 'vous';
@@ -1199,14 +1203,12 @@
                                 nomUtilisateur = commentaire.utilisateur;
                                 console.log(commentaire.utilisateur)
                             }
-
                             commentaireElement.innerHTML = `
                     <p class="comment-user">${nomUtilisateur}</p>
                     <p class="comment-text">${commentaire.texte}</p>
                     <p class="comment-time">${commentaire.date_comment}</p>
                     <i class="bi bi-heart-fill"></i>
                 `;
-
                             commentsContainer.appendChild(commentaireElement);
                         });
                     })
@@ -1214,13 +1216,11 @@
                         console.error('Erreur lors de la récupération des commentaires :', error);
                     });
             }
-
             intervalId = setInterval(actualiserCommentaires, 1000);
 
             actualiserCommentaires();
         }
     });
-
     function getCookie(name) {
         const cookieValue = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
         return cookieValue ? decodeURIComponent(cookieValue[2]) : null;
@@ -1232,16 +1232,11 @@
             console.log('Publication element:', this);
             var actionsSection = $(this).find('.publication-actions');
             console.log('Actions section:', actionsSection);
-
             var commentButton = actionsSection.find('.action-button#comment-button');
-            // Assurez-vous que le bouton de commentaire a été trouvé
             if (commentButton.length > 0) {
                 var publicationId = commentButton.data('publicationafficher-id');
-
                 console.log('Publication ID:', publicationId);
-
                 var commentCountSpan = actionsSection.find('#comment-count-' + publicationId);
-
                 if (commentCountSpan.length > 0) {
                     $.ajax({
                         url: "{% url 'Utilisateur:get_comment_count' %}",
@@ -1264,9 +1259,7 @@
             }
         });
     }
-
     setInterval(nombreCommentaire, 100000000);
-
 </script>
 <script src="https://vjs.zencdn.net/5.10.4/video.js"></script>
 <script src="{% static 'accueil_utilisateur/js/moment.min.js' %}"></script>
