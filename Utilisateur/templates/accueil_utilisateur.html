@@ -457,22 +457,20 @@
         border-radius: 5px; /* Coins arrondis */
     }
 
-    /* Style d'un commentaire individuel */
     .comment {
         padding: 10px; /* Espacement interne pour chaque commentaire */
         border-bottom: 1px solid #e0e0e0; /* Bordure inférieure pour séparer les commentaires */
         margin-bottom: 10px; /* Marge en dessous de chaque commentaire */
     }
 
-    /* Style du nom de l'utilisateur dans le commentaire */
     .comment-user {
-        font-weight: bold; /* Texte en gras pour le nom de l'utilisateur */
-        color: #333333; /* Couleur sombre pour le nom de l'utilisateur */
+        font-weight: bold;
+        color: #333333;
     }
 
     .comment-text {
-        margin: 5px 0; /* Marge autour du texte du commentaire */
-        color: #666666; /* Couleur grise pour le texte du commentaire */
+        margin: 5px 0;
+        color: #666666;
     }
 
     /* Style de l'heure du commentaire */
@@ -1216,7 +1214,7 @@
                         console.error('Erreur lors de la récupération des commentaires :', error);
                     });
             }
-            intervalId = setInterval(actualiserCommentaires, 1000);
+            intervalId = setInterval(actualiserCommentaires, 500);
 
             actualiserCommentaires();
         }
@@ -1259,7 +1257,7 @@
             }
         });
     }
-    setInterval(nombreCommentaire, 100000000);
+    setInterval(nombreCommentaire, 300);
 </script>
 <script src="https://vjs.zencdn.net/5.10.4/video.js"></script>
 <script src="{% static 'accueil_utilisateur/js/moment.min.js' %}"></script>
