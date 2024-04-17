@@ -2,7 +2,7 @@
 from django.urls import path
 
 from Utilisateur import views
-from Utilisateur.views import Inscription, Connexion_utlisateur, accueil_utilisateur, detail_utilisateur, publier_photo, acceuil, reception_message, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, commenter_publication, afficher_commentaire
+from Utilisateur.views import Inscription, Connexion_utlisateur, accueil_utilisateur, detail_utilisateur, publier_photo, acceuil, reception_message, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, commenter_publication, afficher_commentaire, get_comment_count
 
 app_name = 'Utilisateur'
 
@@ -20,5 +20,6 @@ urlpatterns = [
     path('liker_publication/', liker_publication, name='liker_publication'),
     path('commenter_publication/', commenter_publication, name='commenter_publication'),
     path('afficher_commentaire/', afficher_commentaire, name='afficher_commentaire'),
+    path('get_comment_count/', get_comment_count, name='get_comment_count'),
 
 ]

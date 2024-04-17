@@ -46,10 +46,12 @@ def acceuil(request):
 
     photo_publier = VideoPhoto.objects.all()
     liked_photos = [like.publication_id for like in Like.objects.filter(utilisateur=request.user)]
+    utilisateur_connecte = request.user if request.user.is_authenticated else None
     publication_likes = {}
     for photo in photo_publier:
         publication_likes[photo.id] = photo.count_likes()
     context = {
+        'utilisateur_connecte': utilisateur_connecte,
         'photo_publier': photo_publier,
         'user': request.user,
         'liked_photos': liked_photos,
@@ -236,11 +238,19 @@ def afficher_commentaire(request):
     comments_data = []
     for comment in commentaire:
         comments_data.append({
+            'utilisateur_id': comment.utilisateur.id,
             'utilisateur': f'{comment.utilisateur.nom} {comment.utilisateur.prenom}',
             'texte': comment.texte,
             'date_comment': comment.date_comment.strftime('%Y-%m-%d %H:%M:%S'),
         })
     return JsonResponse(comments_data, safe=False)
+
+
+def get_comment_count(request):
+    publication_id = request.GET.get('publication_id')
+    comment_count = Comment.objects.filter(publication_id=publication_id).count()
+    print(comment_count)
+    return JsonResponse({'comment_count': comment_count})
 
 
 

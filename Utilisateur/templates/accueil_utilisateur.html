@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
+
     <title>Chat</title>
 </head>
 <body>
@@ -411,7 +412,7 @@
     .action-button.liked i {
         color: #ff4d4d;
     }
-    .likes-count {
+    .comment-count {
         font-size: 1rem;
         color: #888;
         margin-left: 5px;
@@ -420,57 +421,55 @@
         display: flex;
         align-items: center;
     }
+    .comment-count-container {
+        display: flex;
+        align-items: center; /* Centrer verticalement les éléments */
+        justify-content: space-between; /
+    }
 
     .likes-container button,
     .likes-container span {
         margin-right: 5px;
     }
-    .comment {
-        border: 1px solid #ccc;
-        padding: 10px;
-        margin: 10px 0;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+    .comment-count-container button,
+    .comment-count-container span {
+        margin-right: 5px;
     }
-
-    .comment-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .comment-user {
-        font-weight: bold;
-        font-size: 1.1rem;
-    }
-
     .comment-actions {
         display: flex;
         gap: 10px;
     }
+    /* Style de la zone de commentaires */
+    .comments-container {
+        border: 1px solid #cccccc; /* Bordure légère autour de la zone de commentaires */
+        padding: 10px; /* Espacement interne */
+        margin-top: 10px; /* Marge au-dessus de la zone de commentaires */
+        background-color: #f9f9f9; /* Fond clair pour la zone de commentaires */
+        border-radius: 5px; /* Coins arrondis */
+    }
 
-    .comment-actions button {
-        padding: 5px 10px;
-        border: none;
-        border-radius: 5px;
-        background-color: #007BFF;
-        color: #fff;
-        cursor: pointer;
+    /* Style d'un commentaire individuel */
+    .comment {
+        padding: 10px; /* Espacement interne pour chaque commentaire */
+        border-bottom: 1px solid #e0e0e0; /* Bordure inférieure pour séparer les commentaires */
+        margin-bottom: 10px; /* Marge en dessous de chaque commentaire */
     }
-    .comment-actions button:hover {
-        background-color: #0056b3;
+
+    /* Style du nom de l'utilisateur dans le commentaire */
+    .comment-user {
+        font-weight: bold; /* Texte en gras pour le nom de l'utilisateur */
+        color: #333333; /* Couleur sombre pour le nom de l'utilisateur */
     }
-    .comment-content p {
-        margin: 0;
-        line-height: 1.5;
+
+    .comment-text {
+        margin: 5px 0; /* Marge autour du texte du commentaire */
+        color: #666666; /* Couleur grise pour le texte du commentaire */
     }
-    .comment-replies {
-        margin-left: 20px;
-        border-left: 2px solid #ccc;
-        padding-left: 10px;
+
+    /* Style de l'heure du commentaire */
+    .comment-time {
+        font-size: 12px; /* Petite taille de police pour l'heure du commentaire */
+        color: #999999; /* Couleur claire pour l'heure du commentaire */
     }
 
 </style>
@@ -482,6 +481,7 @@
             </a>
             <ul class="chat-sidebar-menu">
                 <li class="{% if request.path == Acceuil %}active{% else %} {% endif %}"><a href="{% url 'Utilisateur:acceuil' %}" data-conversation="#Acceuil" data-title="Acceuil"><i class="bi bi-play-btn"></i></a></li>
+
                 <li>
                     <a class="show-modal" id="gallery-link" data-conversation="#Acceuil" data-title="Acceuil">
                         <i class="bi bi-plus-circle-fill"></i>
@@ -546,7 +546,8 @@
                                         <div class="col-4 likes-container">
                                             <button class="action-button" id="like-button" data-publication-id="{{ photo.id }}">
                                                 <i class="bi bi-heart-fill"></i>
-                                            </button><span class="likes-count">
+                                            </button>
+                                            <span class="likes-count">
                                                     {% for key, value in publication_likes.items %}
                                                         {% if key == photo.id %}
                                                             {{ value }}
@@ -554,8 +555,11 @@
                                                     {% endfor %}
                                                 </span> likes
                                         </div>
-                                        <div class="col-4">
-                                            <button class="action-button" id="comment-button" data-publicationafficher-id="{{ photo.id }}" data-publicationafficher2-id="{{ photo.id }}"><i class="bi bi-chat"></i></button>
+                                        <div class="col-4 comment-count-container" style="font-size: 13px">
+                                            <button class="action-button" id="comment-button" data-publicationafficher-id="{{ photo.id }}"><i class="bi bi-chat"></i></button>
+                                            <span class="comment-count" id="comment-count-{{ photo.id }}">
+
+                                            </span> commentaires            <span>{{ utilisateur_connecte.id }}</span>
                                         </div>
                                         <div class="col-4">
                                             <button class="action-button" id="share-button"><i class="bi bi-share"></i></button>
@@ -1132,9 +1136,11 @@
                 if (isVisible) {
                     commentsSection.style.display = 'none';
                     commentsSection.setAttribute('data-visible', 'false');
+                    clearInterval(intervalId);
                 } else {
                     commentsSection.style.display = 'block';
                     commentsSection.setAttribute('data-visible', 'true');
+                    afficherCommentaires(publicationId);
                 }
             });
 
@@ -1170,13 +1176,96 @@
                     });
             });
         });
-    });
+        let intervalId;
+        function afficherCommentaires(publicationId) {
+            const commentsContainer = document.querySelector(`#comments-container-${publicationId}`);
 
+            // Actualiser les commentaires
+            function actualiserCommentaires() {
+                fetch("{% url 'Utilisateur:afficher_commentaire' %}?publication_id=" + publicationId)
+                    .then(response => response.json())
+                    .then(data => {
+                        commentsContainer.innerHTML = '';
+                        data.forEach(commentaire => {
+                            const commentaireElement = document.createElement('div');
+                            commentaireElement.classList.add('comment');
+
+                            var utilisateurConnecteId = {{ utilisateur_connecte.id|default:"null" }};
+
+                            let nomUtilisateur = commentaire.utilisateur_id;
+                            if (commentaire.utilisateur_id === utilisateurConnecteId) {
+                                nomUtilisateur = 'vous';
+                            } else {
+                                nomUtilisateur = commentaire.utilisateur;
+                                console.log(commentaire.utilisateur)
+                            }
+
+                            commentaireElement.innerHTML = `
+                    <p class="comment-user">${nomUtilisateur}</p>
+                    <p class="comment-text">${commentaire.texte}</p>
+                    <p class="comment-time">${commentaire.date_comment}</p>
+                    <i class="bi bi-heart-fill"></i>
+                `;
+
+                            commentsContainer.appendChild(commentaireElement);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de la récupération des commentaires :', error);
+                    });
+            }
+
+            intervalId = setInterval(actualiserCommentaires, 1000);
+
+            actualiserCommentaires();
+        }
+    });
 
     function getCookie(name) {
         const cookieValue = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
         return cookieValue ? decodeURIComponent(cookieValue[2]) : null;
     }
+</script>
+<script>
+    function nombreCommentaire() {
+        $('.publication').each(function() {
+            console.log('Publication element:', this);
+            var actionsSection = $(this).find('.publication-actions');
+            console.log('Actions section:', actionsSection);
+
+            var commentButton = actionsSection.find('.action-button#comment-button');
+            // Assurez-vous que le bouton de commentaire a été trouvé
+            if (commentButton.length > 0) {
+                var publicationId = commentButton.data('publicationafficher-id');
+
+                console.log('Publication ID:', publicationId);
+
+                var commentCountSpan = actionsSection.find('#comment-count-' + publicationId);
+
+                if (commentCountSpan.length > 0) {
+                    $.ajax({
+                        url: "{% url 'Utilisateur:get_comment_count' %}",
+                        type: 'GET',
+                        data: {
+                            publication_id: publicationId
+                        },
+                        success: function(data) {
+                            commentCountSpan.text(data.comment_count);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Erreur lors de la récupération du nombre de commentaires : " + error);
+                        }
+                    });
+                } else {
+                    console.error('Aucun élément `comment-count-' + publicationId + '` trouvé');
+                }
+            } else {
+                console.error('Aucun bouton de commentaire trouvé');
+            }
+        });
+    }
+
+    setInterval(nombreCommentaire, 100000000);
 
 </script>
 <script src="https://vjs.zencdn.net/5.10.4/video.js"></script>
