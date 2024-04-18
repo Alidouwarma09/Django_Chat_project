@@ -29,6 +29,9 @@ SECRET_KEY = 'django-insecure-&8dj8sr)t@_!5ivh!0ko%(-22sb45gh*m(5z91^etshs-h1ba2
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1:8000',
+    'django-chat-project.onrender.com'
 ]
 
 
