@@ -299,16 +299,16 @@
     .content-messages {
         margin: 20px auto;
         width: 60%;
+        overflow-y: auto;
+        height: 100%;
+        margin-top: 16px;
     }
     .publication-container {
-        max-width: 600px;
         margin: auto;
-        padding: 20px;
     }
 
     .publication {
         background-color: #fff;
-        padding: 10px;
         border-radius: 5px;
         margin-bottom: 20px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
@@ -382,29 +382,29 @@
         position: relative;
     }
 
-    .comment {
-        margin-bottom: 10px;
-    }
-
     .commentaire-form {
         display: flex;
         justify-content: space-between;
         position: sticky;
         bottom: 0; /* Positionne le formulaire au bas */
-        width: 100%; /* Occupe toute la largeur de la section */
         padding: 10px; /* Espacement interne */
         background-color: #f9f9f9; /* Fond clair */
         border-top: 1px solid #cccccc;
         z-index: 1;
+        box-sizing: border-box;
 
+    }
+    .comment {
+        box-sizing: border-box;
+        padding: 10px; /* Espacement interne pour chaque commentaire */
+        border-bottom: 1px solid #e0e0e0; /* Bordure inférieure pour séparer les commentaires */
+        margin-bottom: 10px;
     }
 
     .commentaire-input {
-        flex: 1;
         border: 1px solid #ccc;
         border-radius: 5px;
         padding: 5px;
-        margin-right: 10px;
     }
 
     .commentaire-form button {
@@ -415,6 +415,7 @@
         border-radius: 5px;
         cursor: pointer;
     }
+
     .liked {
         color: red;
     }
@@ -432,7 +433,7 @@
     }
     .comment-count-container {
         display: flex;
-        align-items: center; /* Centrer verticalement les éléments */
+        align-items: center;
         justify-content: space-between; /
     }
 
@@ -450,18 +451,15 @@
     }
     /* Style de la zone de commentaires */
     .comments-container {
+        width: 100%;
         border: 1px solid #cccccc; /* Bordure légère autour de la zone de commentaires */
         padding: 10px; /* Espacement interne */
         margin-top: 10px; /* Marge au-dessus de la zone de commentaires */
-        background-color: #f9f9f9; /* Fond clair pour la zone de commentaires */
-        border-radius: 5px; /* Coins arrondis */
+        background-color: #721414; /* Fond clair pour la zone de commentaires */
+        border-radius: 5px;
     }
 
-    .comment {
-        padding: 10px; /* Espacement interne pour chaque commentaire */
-        border-bottom: 1px solid #e0e0e0; /* Bordure inférieure pour séparer les commentaires */
-        margin-bottom: 10px; /* Marge en dessous de chaque commentaire */
-    }
+
 
     .comment-user {
         font-weight: bold;
@@ -477,6 +475,14 @@
     .comment-time {
         font-size: 12px; /* Petite taille de police pour l'heure du commentaire */
         color: #999999; /* Couleur claire pour l'heure du commentaire */
+    }
+    @media (max-width: 480px) {
+        .commentaire-form {
+            width: 100%; /* Ajuster la largeur du formulaire sur les petits écrans */
+        }
+        .comments-container {
+            width: 100%; /* Ajuster la largeur du conteneur de commentaires */
+        }
     }
 
 </style>
@@ -572,7 +578,7 @@
                                             <button class="action-button" id="share-button"><i class="bi bi-share"></i></button>
                                         </div>
                                     </div>
-                                    <div class="comments-section" id="comments-section-{{ photo.id }}" style="overflow-y: auto;  max-height: 300px">
+                                    <div class="comments-section" id="comments-section-{{ photo.id }}" style="overflow-y: auto; overflow-x: none; max-height: 300px">
                                         <div class="comments-container" id="comments-container-{{ photo.id }}">
                                             <!-- Les commentaires seront ajoutés ici -->
                                         </div>
@@ -582,7 +588,6 @@
                                             <button type="submit" data-publications-id="{{ photo.id }}">▶️</button>
                                         </form>
                                     </div>
-
                                 </div>
                             </div>
                         {% endfor %}
@@ -598,7 +603,12 @@
                                     {% for utilisateur in utilisateurs %}
                                         <li >
                                             <a href="{% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur.id %}" class="lien-utilisateur" data-utilisateur-id="{{ utilisateur.id }}">
-                                                <img class="content-message-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
+
+                                                {% if utilisateur.image %}
+                                                    <img class="content-message-image" src="{{ utilisateur.image.url }}" alt="Image de {{ utilisateur.nom }}">
+                                                {% else %}
+                                                    <p>Aucune image disponible pour cet utilisateur.</p>
+                                                {% endif %}
                                                 <span class="content-message-info">
                                                     <span class="content-message-name">{{ utilisateur.nom }} {{ utilisateur.prenom }}</span>
                                                     <span class="content-message-text">Ecrire a cet utilisateur</span>
@@ -619,7 +629,7 @@
                     <div class="conversation-top">
                         <a class="conversation-back" href="{% url 'Utilisateur:accueil_utilisateur' %}"><i class="ri-arrow-left-line"></i></a>
                         <div class="conversation-user">
-                            <img class="conversation-user-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
+                                <img class="content-message-image" src="{{ utilisateur_detail.image.url }}" alt="Image de {{ utilisateur.nom }}">
                             <div>
                                 <div class="conversation-user-name">{{ utilisateur_detail.nom }} {{ utilisateur_detail.prenom }}</div>
                                 <div class="conversation-user-status online">En ligne</div>
@@ -664,31 +674,6 @@
                     </form>
                 </div>
             {% endif %}
-            <div class="conversation "  id="contact">
-                <div class="conversation-main">
-                    <div class="content-messages">
-                        <ul class="content-messages-list">
-                            <li class="content-message-title"><span>Recent</span>
-                                {% if utilisateurs %}
-                                    {% for utilisateur in utilisateurs %}
-                                        <li>
-                                            <a href="" class="lien-utilisateur">
-                                                <img class="content-message-image" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGVvcGxlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60" alt="">
-                                                <span class="content-message-info">
-                                                    <span class="content-message-name">{{ utilisateur.nom }} {{ utilisateur.prenom }}</span>
-                                                    <span class="content-message-text">Ecrire a cet utilisateur</span>
-                                                </span>
-                                                <span class="content-message-more">
-                                                    <span class="content-message-unread"><i class="bi bi-chat"></i></span>
-                                                </span>
-                                            </a>
-                                        </li>
-                                    {% endfor %}
-                                {% endif %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </section>
@@ -998,7 +983,6 @@
                 cropper.destroy();
             }
 
-            // Initialiser Cropper.js sur l'image
             cropper = new Cropper(imageElement, {
                 aspectRatio: NaN, // Permet un recadrage libre
                 viewMode: 2, // Mode d'affichage souhaité
@@ -1213,7 +1197,7 @@
                         console.error('Erreur lors de la récupération des commentaires :', error);
                     });
             }
-            intervalId = setInterval(actualiserCommentaires, 500);
+            intervalId = setInterval(actualiserCommentaires, 1000);
 
             actualiserCommentaires();
         }
@@ -1256,7 +1240,7 @@
             }
         });
     }
-    setInterval(nombreCommentaire, 300);
+    setInterval(nombreCommentaire, 2000);
 </script>
 <script src="https://vjs.zencdn.net/5.10.4/video.js"></script>
 <script src="{% static 'accueil_utilisateur/js/moment.min.js' %}"></script>

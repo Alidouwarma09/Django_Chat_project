@@ -35,11 +35,6 @@ body {
     background-color: var(--white);
     position: relative;
 }
-/* end: Chat */
-
-
-
-/* start: Sidebar */
 .chat-sidebar {
     width: 64px;
     background-color: var(--slate-100);
@@ -219,11 +214,6 @@ body {
 }
 .content-sidebar-submit:hover {
     color: var(--slate-600);
-}
-.content-messages {
-    overflow-y: auto;
-    height: 100%;
-    margin-top: 16px;
 }
 .content-messages-list {
     list-style-type: none;

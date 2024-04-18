@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+import dj_database_url
+from decouple import config
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,9 +29,6 @@ SECRET_KEY = 'django-insecure-&8dj8sr)t@_!5ivh!0ko%(-22sb45gh*m(5z91^etshs-h1ba2
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'literate-partially-leopard.ngrok-free.app',
-    '127.0.0.1',
-    # Ajoutez d'autres hôtes autorisés ici si nécessaire
 ]
 
 
@@ -92,21 +92,25 @@ CSRF_TRUSTED_ORIGINS = [
     'https://literate-partially-leopard.ngrok-free.app',
 ]
 
-
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'chat',
+#         'USER': 'postgres',
+#         'PASSWORD': '09102079Darius',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'chat',
-        'USER': 'postgres',
-        'PASSWORD': '09102079Darius',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.parse(config('DATABASE_URL'))
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
