@@ -24,7 +24,7 @@ def Inscription(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Inscription reussi.')
-            return redirect('conducteur:ajouter_conducteur')
+            return redirect('Utilisateur:Connexion_utlisateur')
         else:
             print(form.errors)
     else:
