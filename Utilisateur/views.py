@@ -62,7 +62,8 @@ def acceuil(request):
 
 
 def accueil_utilisateur(request):
-    utilisateurs = Utilisateur.objects.all()
+    connecte_id = request.user
+    utilisateurs = Utilisateur.objects.exclude(id=connecte_id)
     return render(request, 'accueil_utilisateur.html', {'utilisateurs': utilisateurs})
 
 
