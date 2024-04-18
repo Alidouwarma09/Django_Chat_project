@@ -3,6 +3,7 @@ import time
 
 from django.contrib import messages
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
@@ -42,8 +43,8 @@ class Connexion_utlisateur(LoginView):
             return reverse('Utilisateur:acceuil')
 
 
+@login_required(login_url='Utilisateur:Connexion_utlisateur')
 def acceuil(request):
-
     photo_publier = VideoPhoto.objects.all()
     liked_photos = [like.publication_id for like in Like.objects.filter(utilisateur=request.user)]
     utilisateur_connecte = request.user if request.user.is_authenticated else None
@@ -61,12 +62,14 @@ def acceuil(request):
     return render(request, 'accueil_utilisateur.html', context)
 
 
+@login_required(login_url='Utilisateur:Connexion_utlisateur')
 def accueil_utilisateur(request):
     connecte_id = request.user
     utilisateurs = Utilisateur.objects.exclude(id=connecte_id)
     return render(request, 'accueil_utilisateur.html', {'utilisateurs': utilisateurs})
 
 
+@login_required(login_url='Utilisateur:Connexion_utlisateur')
 def detail_utilisateur(request, utilisateur_detail_id):
     utilisateur_detail = get_object_or_404(Utilisateur, id=utilisateur_detail_id)
     return render(request, 'accueil_utilisateur.html', {'utilisateur_detail': utilisateur_detail})
@@ -152,6 +155,7 @@ def publier_photo(request):
         return JsonResponse({'success': False, 'message': 'Méthode non autorisée.'}, status=405)
 
 
+@login_required(login_url='Utilisateur:Connexion_utlisateur')
 def reception_message(request):
     utilisateur = request.user
     utilisateur_detail_id = request.GET.get('utilisateur_detail_id')
@@ -174,6 +178,7 @@ def reception_message(request):
     return JsonResponse(arr, safe=False)
 
 
+@login_required(login_url='Utilisateur:Connexion_utlisateur')
 def liker_publication(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -199,6 +204,7 @@ def liker_publication(request):
         return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
 
+@login_required(login_url='Utilisateur:Connexion_utlisateur')
 def commenter_publication(request):
     if request.method == 'POST':
         print('Données POST reçues:', request.POST)
@@ -233,6 +239,7 @@ def commenter_publication(request):
         return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
 
+@login_required(login_url='Utilisateur:Connexion_utlisateur')
 def afficher_commentaire(request):
     publication_id = request.GET.get('publication_id')
     commentaire = Comment.objects.filter(publication_id=publication_id).order_by('-date_comment')
@@ -247,13 +254,9 @@ def afficher_commentaire(request):
     return JsonResponse(comments_data, safe=False)
 
 
+@login_required(login_url='Utilisateur:Connexion_utlisateur')
 def get_comment_count(request):
     publication_id = request.GET.get('publication_id')
     comment_count = Comment.objects.filter(publication_id=publication_id).count()
     print(comment_count)
     return JsonResponse({'comment_count': comment_count})
-
-
-
-
-
