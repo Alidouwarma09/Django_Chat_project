@@ -31,7 +31,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1:8000',
-    'django-chat-project.onrender.com'
+    'django-chat-project.onrender.com',
+    '127.0.0.1',
 ]
 
 
