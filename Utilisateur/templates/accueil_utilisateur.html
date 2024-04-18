@@ -376,6 +376,7 @@
 
     /* Section des commentaires */
     .comments-section {
+        align-items: center;
         display: none;
         border-top: 1px solid #ccc;
         padding-top: 10px;
@@ -405,6 +406,7 @@
         border: 1px solid #ccc;
         border-radius: 5px;
         padding: 5px;
+        width: 100%;
     }
 
     .commentaire-form button {
@@ -455,7 +457,7 @@
         border: 1px solid #cccccc; /* Bordure légère autour de la zone de commentaires */
         padding: 10px; /* Espacement interne */
         margin-top: 10px; /* Marge au-dessus de la zone de commentaires */
-        background-color: #721414; /* Fond clair pour la zone de commentaires */
+        background-color: #dcd9d9; /* Fond clair pour la zone de commentaires */
         border-radius: 5px;
     }
 
@@ -1188,7 +1190,6 @@
                     <p class="comment-user">${nomUtilisateur}</p>
                     <p class="comment-text">${commentaire.texte}</p>
                     <p class="comment-time">${commentaire.date_comment}</p>
-                    <i class="bi bi-heart-fill"></i>
                 `;
                             commentsContainer.appendChild(commentaireElement);
                         });

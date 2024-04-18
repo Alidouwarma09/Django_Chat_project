@@ -64,7 +64,7 @@ def acceuil(request):
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 def accueil_utilisateur(request):
-    connecte_id = request.user.id  # Accéder à l'attribut `id` de l'objet `request.user`
+    connecte_id = request.user.id
     utilisateurs = Utilisateur.objects.exclude(id=connecte_id)
     context = {
         'utilisateurs': utilisateurs,
