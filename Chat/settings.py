@@ -28,13 +28,6 @@ SECRET_KEY = 'django-insecure-&8dj8sr)t@_!5ivh!0ko%(-22sb45gh*m(5z91^etshs-h1ba2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1:8000',
-    'django-chat-project.onrender.com',
-    '127.0.0.1',
-]
-
 
 # Application definition
 
@@ -44,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',  # Ajoutez cette ligne avant 'django.contrib.staticfiles'
     'django.contrib.staticfiles',
     'corsheaders',
     'Model',
@@ -54,6 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -65,6 +58,16 @@ MIDDLEWARE = [
 
 
 ]
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1:8000',
+    'django-chat-project.onrender.com',
+    '127.0.0.1',
+]
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 ROOT_URLCONF = 'Chat.urls'
 
@@ -90,16 +93,8 @@ WSGI_APPLICATION = 'Chat.wsgi.application'
 
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:8000',
-    'https://literate-partially-leopard.ngrok-free.app'
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://literate-partially-leopard.ngrok-free.app',
-]
-
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -152,12 +147,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'Model.Utilisateur'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
