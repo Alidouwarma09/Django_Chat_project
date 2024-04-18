@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',  # Ajoutez cette ligne avant 'django.contrib.staticfiles'
     'django.contrib.staticfiles',
     'corsheaders',
     'Model',
