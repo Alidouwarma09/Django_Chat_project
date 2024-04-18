@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-&8dj8sr)t@_!5ivh!0ko%(-22sb45gh*m(5z91^etshs-h1ba2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'literate-partially-leopard.ngrok-free.app',
+    '127.0.0.1',
+    # Ajoutez d'autres hôtes autorisés ici si nécessaire
+]
 
 
 # Application definition
@@ -49,9 +53,11 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'Utilisateur.middleware.MobileRestrictionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 
 ]
 
@@ -79,6 +85,11 @@ WSGI_APPLICATION = 'Chat.wsgi.application'
 
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:8000',
+    'https://literate-partially-leopard.ngrok-free.app'
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://literate-partially-leopard.ngrok-free.app',
 ]
 
 

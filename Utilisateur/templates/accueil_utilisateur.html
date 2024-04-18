@@ -1102,7 +1102,6 @@
     document.querySelectorAll('#like-button').forEach(button => {
         button.addEventListener('click', function() {
             const publicationId = this.getAttribute('data-publication-id');
-
             fetch("{% url 'Utilisateur:liker_publication' %}", {
                 method: 'POST',
                 headers: {
