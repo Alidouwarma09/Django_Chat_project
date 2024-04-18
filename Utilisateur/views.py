@@ -64,9 +64,12 @@ def acceuil(request):
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 def accueil_utilisateur(request):
-    connecte_id = request.user
+    connecte_id = request.user.id  # Accéder à l'attribut `id` de l'objet `request.user`
     utilisateurs = Utilisateur.objects.exclude(id=connecte_id)
-    return render(request, 'accueil_utilisateur.html', {'utilisateurs': utilisateurs})
+    context = {
+        'utilisateurs': utilisateurs,
+    }
+    return render(request, 'accueil_utilisateur.html', context)
 
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
