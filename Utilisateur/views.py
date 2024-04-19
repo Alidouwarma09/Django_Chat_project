@@ -38,6 +38,11 @@ class Connexion_utlisateur(LoginView):
     template_name = 'connexion_utilisateur.html'
     form_class = ConnexionForm
 
+    def form_invalid(self, form):
+        form.add_error('username', 'Nom d\'utilisateur incorrect')
+        form.add_error('password', 'Mot de passe incorrect')
+        return self.render_to_response(self.get_context_data(form=form))
+
     def get_success_url(self) -> str:
         if self.request.user.roles == 'utilisateur':
             return reverse('Utilisateur:acceuil')

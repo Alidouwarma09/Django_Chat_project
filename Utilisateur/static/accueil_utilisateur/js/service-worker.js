@@ -4,17 +4,16 @@ const CACHE_NAME = 'my-app-cache-v1';
 // Liste des ressources à mettre en cache
 const urlsToCache = [
     '/',
-    '/static/images/font_decran.png', // Ajoutez ici les URLs des autres ressources à mettre en cache
-    // Ajoutez d'autres URLs ici si nécessaire
+    '/static/chater_logo.png',
+    '/static/font_decran.png',
+
 ];
 
-// Gestionnaire d'événement d'installation du service worker
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
                 console.log('Service worker: Ouverture du cache');
-                // Ajout des ressources à mettre en cache
                 return cache.addAll(urlsToCache);
             })
             .catch((error) => {

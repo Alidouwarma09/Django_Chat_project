@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'inscription_connexion/style.css' %}"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,600,0,0" />
     <title>Inscription</title>
 </head>
@@ -14,27 +15,38 @@
     <div class="login-card-container">
         <div class="login-card">
             <div class="login-card-logo">
-                <img src="{% static 'inscription_connexion/logo_connexion_utilisateur.png' %}" alt="logo" >
+                <img src="{% static 'chater_logo.png' %}" alt="chater_logo" style="width: 150px">
             </div>
             <div class="login-card-header">
                 <h1>Inscription</h1>
-                <div>Saisissez des informations correcte</div>
+                <div>Saisissez des informations correctes</div>
             </div>
             <form method="post" class="login-card-form" action="{% url 'Utilisateur:Inscription' %}" enctype="multipart/form-data">
             {% csrf_token %}
+                <div class="d-flex align-items-start py-3 border-bottom justify-content-center">
+                    <div class="img-container d-flex flex-column align-items-center" style="text-align: center;">
+                        <img id="profileImage" src="#" class="img" alt="Profile Image" style="border-radius: 50%; width: 100px; display: none; margin: auto;">
+                        <label for="fileInput" style="cursor: pointer; margin-top: 10px;">
+                            <i class="bi bi-camera" style="font-size: 30px;"></i>
+                        </label>
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+
+
                 <div class="form-item">
-                    <span class="form-item-icon material-symbols-rounded">mail</span>
+                    <span class="form-item-icon material-symbols-rounded">person</span>
                     <input type="text" placeholder="Nom" id="emailForm"
                     autofocus required name="nom">
                 </div>
                 <div class="form-item">
-                    <span class="form-item-icon material-symbols-rounded">lock</span>
+                    <span class="form-item-icon material-symbols-rounded">person</span>
                     <input type="text" placeholder="Prénom" id="passwordForm"
                      required name="prenom">
                 </div>
                 <div class="form-item">
-                    <span class="form-item-icon material-symbols-rounded">lock</span>
-                    <input type="text" placeholder="Telephone" id="passwordForm" required name="username">
+                    <span class="form-item-icon material-symbols-rounded">phone</span>
+                    <input type="number" placeholder="Telephone" id="passwordForm" required name="username">
                 </div>
                 <div class="form-item">
                     <span class="form-item-icon material-symbols-rounded">lock</span>
@@ -44,14 +56,10 @@
                     <span class="form-item-icon material-symbols-rounded">lock</span>
                     <input type="password" placeholder="Confirmé" id="passwordForm" required name="password2">
                 </div>
-                <div class="form-item">
-                    <span class="form-item-icon material-symbols-rounded">lock</span>
-                    <input type="file" placeholder="Confirmé" id="passwordForm" required name="image">
-                </div>
                 <div class="form-item-other">
-                    <a href="#">J'ai oublié mon mot de passe!</a>
+                    <a href="#">Mot de passe oublié 😟!</a>
                 </div>
-                <button type="submit">S'inscrire</button>
+                <button id="submitButton" type="submit">S'inscrire</button>
             </form>
             <div class="login-card-footer">
                 J'ai deja un compte <a href="{% url 'Utilisateur:Connexion_utlisateur' %}">Se connecter ?</a>
@@ -59,5 +67,34 @@
         </div>
     </div>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const fileInput = document.getElementById('fileInput');
+        const profileImage = document.getElementById('profileImage');
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    profileImage.src = e.target.result;
+                    profileImage.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
 
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector('.login-card-form');
+        const submitButton = document.getElementById('submitButton');
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            submitButton.disabled = true;
+            submitButton.classList.add('loading');
+            form.submit();
+        });
+    });
+</script>
 </html>
