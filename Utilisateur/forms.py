@@ -16,6 +16,9 @@ class InscriptionForm(UserCreationForm):
             'id': "selectModel",
             'required': True,
         })
+        self.fields['image'].widget = forms.PasswordInput(attrs={
+            'required': True,
+        })
         self.fields['password1'].widget = forms.PasswordInput(attrs={
             'class': "form-control",
             'id': "password1",

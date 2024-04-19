@@ -29,6 +29,10 @@
                 <span class="form-item-icon material-symbols-rounded">lock</span>
                 <input type="password" placeholder="Enter Password" id="passwordForm" required name="password" class="{{ form.password.errors|yesno:'error,' }}">
             </div>
+            {% if form.errors %}
+                <span id="errorMessage" style="font-size: 12px; color: red">Numéro ou mot de passe incorrect !</span>
+            {% endif %}
+
             <button type="submit" id="submitButton">Se connecter</button>
         </form>
 
@@ -48,6 +52,19 @@
             form.submit();
         });
     });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Vérifiez si l'élément de message d'erreur existe
+        const errorMessage = document.getElementById('errorMessage');
+        if (errorMessage) {
+            // Masquez le message d'erreur après 2 secondes (2000 millisecondes)
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 2000);
+        }
+    });
+
 </script>
 </body>
 </html>

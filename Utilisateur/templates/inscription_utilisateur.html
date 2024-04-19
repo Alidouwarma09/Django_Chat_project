@@ -31,6 +31,7 @@
                         <input type="file" id="fileInput" accept="image/*" style="display: none;" >
                     </div>
                 </div>
+                {% if form.image.errors %}<span style="font-size: 12px">Selectionner une image</span> {% endif %}
                 <div class="form-item">
                     <span class="form-item-icon material-symbols-rounded">person</span>
                     <input type="text" placeholder="Nom" id="emailForm"
@@ -50,7 +51,7 @@
                 </div>
                 <div class="form-item">
                     <span class="form-item-icon material-symbols-rounded">lock</span>
-                    <input type="password" placeholder="Mot de passe" id="passwordForm" required name="password1" {% if form.password2.errors %}style="border: 2px solid red" {% endif %} >
+                    <input type="password" placeholder="Mot de passe" id="passwordForm" required name="password1" {% if form.password2.errors %}style="border: 2px solid red" {% endif %}  value="{{ form.password1.value }}">
                 </div>
 
                 <div class="form-item">

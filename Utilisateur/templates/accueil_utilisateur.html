@@ -233,7 +233,7 @@
         width: 40px;
         height: 40px;
         transition: opacity 0.3s ease;
-        font-size: 25px;
+        font-size: 35px;
     }
 
     #photo-icon:hover {
@@ -488,7 +488,7 @@
 
 </style>
 
-<div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}" id="Acceuil">
+<div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}" id="Acceuil" style="margin-top: 60px">
     <div class="conversation-main">
         <i id="photo-icon" class="bi bi-patch-plus"></i>
         <form id="publish-form" style="display: none;">
@@ -520,7 +520,7 @@
                             <img src="{{ photo.photo_file.url }}" alt="Image de la publication" class="publication-image">
                         </div>
                         <div class="row publication-actions">
-                            <div class="col-4 likes-container">
+                            <div class="col-4 likes-container" style="font-size: 11px; padding-left: 20px;">
                                 <button class="action-button" id="like-button" data-publication-id="{{ photo.id }}">
                                     <i class="bi bi-heart-fill"></i>
                                 </button>
@@ -532,11 +532,12 @@
                                                     {% endfor %}
                                                 </span> likes
                             </div>
-                            <div class="col-4 comment-count-container" style="font-size: 13px">
+                            <div class="col-4 comment-count-container" style="font-size: 11px; padding-right: 20px;">
                                 <button class="action-button" id="comment-button" data-publicationafficher-id="{{ photo.id }}"><i class="bi bi-chat"></i></button>
-                                <span class="comment-count" id="comment-count-{{ photo.id }}">
-
-                                            </span> commentaires
+                                <span class="comment-count" id="comment-count-{{ photo.id }}"></span> commentaires
+                            </div>
+                            <div class="col-4 comment-count-container" style="font-size: 11px; padding-right: 20px;">
+                                <span class="comment-count">15,42k</span> Vues
                             </div>
                         </div>
                         <div class="comments-section" id="comments-section-{{ photo.id }}" style="overflow-y: auto; overflow-x: none; max-height: 300px">
@@ -556,7 +557,7 @@
     </div>
 </div>
 
-<div class="conversation {% if request.path == accueil_utilisateur %}active{% else %} {% endif %}"  id="Chats">
+<div class="conversation {% if request.path == accueil_utilisateur %}active{% else %} {% endif %}"  id="Chats" style="margin-top: 60px">
     <div class="conversation-main">
         <div class="content-messages">
             <ul class="content-messages-list">
@@ -585,7 +586,7 @@
             </ul>
         </div>
     </div>
-</div>
+</div >
 
 {% if utilisateur_detail %}
     <div class="conversation conversation_message {% if request.path == detail_url %}active{% else %} {% endif %}" id="conversation-1" data-utilisateur-id="{{ utilisateur_detail.id }}" >
@@ -1160,7 +1161,7 @@
                         console.error('Erreur lors de la récupération des commentaires :', error);
                     });
             }
-            intervalId = setInterval(actualiserCommentaires, 1000);
+            intervalId = setInterval(actualiserCommentaires, 500);
 
             actualiserCommentaires();
         }
