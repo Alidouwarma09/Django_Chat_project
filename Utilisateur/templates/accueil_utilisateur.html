@@ -490,161 +490,155 @@
     }
 
 </style>
-<section class="chat-section">
-    <div class="chat-container">
-        <div class=" chat-content">
-            <div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}" id="Acceuil">
-                <div class="conversation-main">
-                    <i id="photo-icon" class="bi bi-patch-plus"></i>
-                    <form id="publish-form" style="display: none;">
-                        <label for="titre_photo">Titre de l'image:</label>
-                        <input type="text" id="titre_photo" name="titre_photo" required>
+<div class=" chat-content">
+    <div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}" id="Acceuil">
+        <div class="conversation-main">
+            <i id="photo-icon" class="bi bi-patch-plus"></i>
+            <form id="publish-form" style="display: none;">
+                <label for="titre_photo">Titre de l'image:</label>
+                <input type="text" id="titre_photo" name="titre_photo" required>
 
-                        <label for="photo_file">Sélectionner une image:</label>
-                        <input hidden="hidden" type="file" id="photo_file" name="photo_file" accept="image/*" required>
+                <label for="photo_file">Sélectionner une image:</label>
+                <input hidden="hidden" type="file" id="photo_file" name="photo_file" accept="image/*" required>
 
-                        <div id="image-editor">
-                            <img id="image-to-edit" alt="Prévisualisation">
-                        </div>
+                <div id="image-editor">
+                    <img id="image-to-edit" alt="Prévisualisation">
+                </div>
 
-                        <button type="submit">Publier</button>
-                    </form>
-                    {% if photo_publier %}
-                        {% for photo in photo_publier %}
-                            <div class="publication-container">
-                                <div class="publication">
-                                    <div class="publication-header">
-                                        <img src="{{ photo.utilisateur.image.url }}" alt="Profil de l'utilisateur" class="user-profile">
-                                        <div class="user-info">
-                                            <p class="user-name">{{ photo.utilisateur.nom }} {{ photo.utilisateur.prenom }}</p>
-                                            <p class="publication-time">Il y a {{ photo.date_pub }}</p>
-                                        </div>
-                                    </div>
-                                    <div class="publication-content">
-                                        <p>{{ photo.titre_photo }}</p>
-                                        <img src="{{ photo.photo_file.url }}" alt="Image de la publication" class="publication-image">
-                                    </div>
-                                    <div class="row publication-actions">
-                                        <div class="col-4 likes-container">
-                                            <button class="action-button" id="like-button" data-publication-id="{{ photo.id }}">
-                                                <i class="bi bi-heart-fill"></i>
-                                            </button>
-                                            <span class="likes-count">
+                <button type="submit">Publier</button>
+            </form>
+            {% if photo_publier %}
+                {% for photo in photo_publier %}
+                    <div class="publication-container">
+                        <div class="publication">
+                            <div class="publication-header">
+                                <img src="{{ photo.utilisateur.image.url }}" alt="Profil de l'utilisateur" class="user-profile">
+                                <div class="user-info">
+                                    <p class="user-name">{{ photo.utilisateur.nom }} {{ photo.utilisateur.prenom }}</p>
+                                    <p class="publication-time">Il y a {{ photo.date_pub }}</p>
+                                </div>
+                            </div>
+                            <div class="publication-content">
+                                <p>{{ photo.titre_photo }}</p>
+                                <img src="{{ photo.photo_file.url }}" alt="Image de la publication" class="publication-image">
+                            </div>
+                            <div class="row publication-actions">
+                                <div class="col-4 likes-container">
+                                    <button class="action-button" id="like-button" data-publication-id="{{ photo.id }}">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </button>
+                                    <span class="likes-count">
                                                     {% for key, value in publication_likes.items %}
                                                         {% if key == photo.id %}
                                                             {{ value }}
                                                         {% endif %}
                                                     {% endfor %}
                                                 </span> likes
-                                        </div>
-                                        <div class="col-4 comment-count-container" style="font-size: 13px">
-                                            <button class="action-button" id="comment-button" data-publicationafficher-id="{{ photo.id }}"><i class="bi bi-chat"></i></button>
-                                            <span class="comment-count" id="comment-count-{{ photo.id }}">
+                                </div>
+                                <div class="col-4 comment-count-container" style="font-size: 13px">
+                                    <button class="action-button" id="comment-button" data-publicationafficher-id="{{ photo.id }}"><i class="bi bi-chat"></i></button>
+                                    <span class="comment-count" id="comment-count-{{ photo.id }}">
 
                                             </span> commentaires
-                                        </div>
-                                    </div>
-                                    <div class="comments-section" id="comments-section-{{ photo.id }}" style="overflow-y: auto; overflow-x: none; max-height: 300px">
-                                        <div class="comments-container" id="comments-container-{{ photo.id }}">
-                                            <!-- Les commentaires seront ajoutés ici -->
-                                        </div>
-                                        <form class="commentaire-form" id="commentaire-form-{{ photo.id }}">
-                                            {% csrf_token %}
-                                            <input type="text" class="commentaire-input" id="commentaire-input-{{ photo.id }}" placeholder="Écrivez un commentaire...">
-                                            <button type="submit" data-publications-id="{{ photo.id }}">▶️</button>
-                                        </form>
-                                    </div>
                                 </div>
                             </div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-            <div class="conversation {% if request.path == accueil_utilisateur %}active{% else %} {% endif %}"  id="Chats">
-                <div class="conversation-main">
-                    <div class="content-messages">
-                        <ul class="content-messages-list">
-                            <li class="content-message-title"><span>Utilisateur</span>
-                                {% if utilisateurs %}
-                                    {% for utilisateur in utilisateurs %}
-                                        <li >
-                                            <a href="{% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur.id %}" class="lien-utilisateur" data-utilisateur-id="{{ utilisateur.id }}">
-
-                                                {% if utilisateur.image %}
-                                                    <img class="content-message-image" src="{{ utilisateur.image.url }}" alt="Image de {{ utilisateur.nom }}">
-                                                {% else %}
-                                                    <p>Aucune image disponible pour cet utilisateur.</p>
-                                                {% endif %}
-                                                <span class="content-message-info">
-                                                    <span class="content-message-name">{{ utilisateur.nom }} {{ utilisateur.prenom }}</span>
-                                                    <span class="content-message-text">Ecrire a cet utilisateur</span>
-                                                </span>
-                                                <span class="content-message-more">
-                                                    <span class="content-message-unread"><i class="bi bi-chat"></i></span>
-                                                </span>
-                                            </a>
-                                        </li>
-                                    {% endfor %}
-                                {% endif %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            {% if utilisateur_detail %}
-                <div class="conversation conversation_message {% if request.path == detail_url %}active{% else %} {% endif %}" id="conversation-1" data-utilisateur-id="{{ utilisateur_detail.id }}" >
-                    <div class="conversation-top">
-                        <a class="conversation-back" href="{% url 'Utilisateur:accueil_utilisateur' %}"><i class="ri-arrow-left-line"></i></a>
-                        <div class="conversation-user">
-                                <img class="content-message-image" src="{{ utilisateur_detail.image.url }}" alt="Image de {{ utilisateur.nom }}">
-                            <div>
-                                <div class="conversation-user-name">{{ utilisateur_detail.nom }} {{ utilisateur_detail.prenom }}</div>
-
-                                <div class="conversation-user-status"><span class="conversation-user-statu-point"></span> En ligne</div>
+                            <div class="comments-section" id="comments-section-{{ photo.id }}" style="overflow-y: auto; overflow-x: none; max-height: 300px">
+                                <div class="comments-container" id="comments-container-{{ photo.id }}">
+                                    <!-- Les commentaires seront ajoutés ici -->
+                                </div>
+                                <form class="commentaire-form" id="commentaire-form-{{ photo.id }}">
+                                    {% csrf_token %}
+                                    <input type="text" class="commentaire-input" id="commentaire-input-{{ photo.id }}" placeholder="Écrivez un commentaire...">
+                                    <button type="submit" data-publications-id="{{ photo.id }}">▶️</button>
+                                </form>
                             </div>
                         </div>
-                        <div class="conversation-buttons">
-                            <button type="button"><i class="ri-phone-fill"></i></button>
-                            <button type="button"><i class="ri-vidicon-line"></i></button>
-                            <button type="button"><i class="ri-information-line"></i></button>
-                        </div>
                     </div>
-                    <div class="conversation-main" style="background-image: url('{% static 'font_decran.png' %}')" id="conversation-main">
-                        <ul class="conversation-wrapper" id="conversation-wrappers">
-                        </ul>
-                    </div>
-                    <div id="audioPreviewContainer" style="display: none;">
-                        <audio id="audioPreview"></audio>
-                        <div id="audioControls">
-                            <button id="playButton"><i class="bi bi-play-circle-fill"></i></button>
-                            <button id="pauseButton"><i class="bi bi-stop-circle"></i></button>
-                            <input type="range" id="progressBar" min="0" max="100" value="0" step="0.1">
-                        </div>
-                        <button id="removeAudioButton"><i class="bi bi-trash"></i></button>
-
-                    </div>
-                    <form class="conversation-form message_image" id="message-form">
-                        {% csrf_token %}
-                        <input type="hidden" name="utilisateur_id" value="{{ utilisateur_detail.id }}">
-                        <button class="recordButton" id="recordButton"><i style="font-size: 25px;" class="bi bi-mic"></i>
-
-                        </button>
-                        <div id="recordingDuration">00:00</div>
-                        <input type="file" id="audioInput" name="audio" style="display: none;">
-                        <div class="conversation-form-group">
-                            <textarea id="message-input" name="contenu_message" class="conversation-form-input" rows="1" placeholder="Écrivez..."></textarea>
-                            <input class="image_input" id="image_input" type="file" name="images" multiple accept="image/*">
-                            <button type="button" class="conversation-form-record"><i style="font-size: 25px;" class="bi bi-image"></i></button>
-                        </div>
-                        <button type="submit" class="conversation-form-button conversation-form-submit"><i class="ri-send-plane-2-line"></i></button>
-                        <audio id="submitSound" src="{% static 'SonEnvoi/envoiSon.mp3' %}"></audio>
-
-                    </form>
-                </div>
+                {% endfor %}
             {% endif %}
         </div>
     </div>
-</section>
-<div class="preview-container" id="preview-container">
+    <div class="conversation {% if request.path == accueil_utilisateur %}active{% else %} {% endif %}"  id="Chats">
+        <div class="conversation-main">
+            <div class="content-messages">
+                <ul class="content-messages-list">
+                    <li class="content-message-title"><span>Utilisateur</span>
+                        {% if utilisateurs %}
+                            {% for utilisateur in utilisateurs %}
+                                <li >
+                                    <a href="{% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur.id %}" class="lien-utilisateur" data-utilisateur-id="{{ utilisateur.id }}">
+
+                                        {% if utilisateur.image %}
+                                            <img class="content-message-image" src="{{ utilisateur.image.url }}" alt="Image de {{ utilisateur.nom }}">
+                                        {% else %}
+                                            <p>Aucune image disponible pour cet utilisateur.</p>
+                                        {% endif %}
+                                        <span class="content-message-info">
+                                                    <span class="content-message-name">{{ utilisateur.nom }} {{ utilisateur.prenom }}</span>
+                                                    <span class="content-message-text">Ecrire a cet utilisateur</span>
+                                                </span>
+                                        <span class="content-message-more">
+                                                    <span class="content-message-unread"><i class="bi bi-chat"></i></span>
+                                                </span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% if utilisateur_detail %}
+        <div class="conversation conversation_message {% if request.path == detail_url %}active{% else %} {% endif %}" id="conversation-1" data-utilisateur-id="{{ utilisateur_detail.id }}" >
+            <div class="conversation-top">
+                <a class="conversation-back" href="{% url 'Utilisateur:accueil_utilisateur' %}"><i class="ri-arrow-left-line"></i></a>
+                <div class="conversation-user">
+                    <img class="content-message-image" src="{{ utilisateur_detail.image.url }}" alt="Image de {{ utilisateur.nom }}">
+                    <div>
+                        <div class="conversation-user-name">{{ utilisateur_detail.nom }} {{ utilisateur_detail.prenom }}</div>
+
+                        <div class="conversation-user-status"><span class="conversation-user-statu-point"></span> En ligne</div>
+                    </div>
+                </div>
+                <div class="conversation-buttons">
+                    <button type="button"><i class="ri-phone-fill"></i></button>
+                    <button type="button"><i class="ri-vidicon-line"></i></button>
+                    <button type="button"><i class="ri-information-line"></i></button>
+                </div>
+            </div>
+            <div class="conversation-main" style="background-image: url('{% static 'font_decran.png' %}')" id="conversation-main">
+                <ul class="conversation-wrapper" id="conversation-wrappers">
+                </ul>
+            </div>
+            <div id="audioPreviewContainer" style="display: none;">
+                <audio id="audioPreview"></audio>
+                <div id="audioControls">
+                    <button id="playButton"><i class="bi bi-play-circle-fill"></i></button>
+                    <button id="pauseButton"><i class="bi bi-stop-circle"></i></button>
+                    <input type="range" id="progressBar" min="0" max="100" value="0" step="0.1">
+                </div>
+                <button id="removeAudioButton"><i class="bi bi-trash"></i></button>
+
+            </div>
+            <form class="conversation-form message_image" id="message-form">
+                {% csrf_token %}
+                <input type="hidden" name="utilisateur_id" value="{{ utilisateur_detail.id }}">
+                <button class="recordButton" id="recordButton"><i style="font-size: 25px;" class="bi bi-mic"></i>
+
+                </button>
+                <div id="recordingDuration">00:00</div>
+                <input type="file" id="audioInput" name="audio" style="display: none;">
+                <div class="conversation-form-group">
+                    <textarea id="message-input" name="contenu_message" class="conversation-form-input" rows="1" placeholder="Écrivez..."></textarea>
+                    <input class="image_input" id="image_input" type="file" name="images" multiple accept="image/*">
+                    <button type="button" class="conversation-form-record"><i style="font-size: 25px;" class="bi bi-image"></i></button>
+                </div>
+                <button type="submit" class="conversation-form-button conversation-form-submit"><i class="ri-send-plane-2-line"></i></button>
+                <audio id="submitSound" src="{% static 'SonEnvoi/envoiSon.mp3' %}"></audio>
+
+            </form>
+        </div>
+    {% endif %}
 </div>
 <script>
     setInterval(reeceptionMesaage, 500)
@@ -895,7 +889,9 @@
     }
 
     function addPreviewImage(imageFile) {
-        const previewContainer = document.getElementById('preview-container');
+        const previewContainer = document.createElement('div');
+        previewContainer.id = 'preview-container';
+        previewContainer.classList.add('preview-container');
         const previewItem = document.createElement('div');
         previewItem.classList.add('preview-item');
 
