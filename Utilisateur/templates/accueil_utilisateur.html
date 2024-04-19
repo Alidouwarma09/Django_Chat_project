@@ -1205,6 +1205,20 @@
     }
     setInterval(nombreCommentaire, 2000);
 </script>
+<script>
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register("{% static 'accueil_utilisateur/js/service-worker.js' %}")
+                .then((registration) => {
+                    console.log('Service worker registered with scope:', registration.scope);
+                })
+                .catch((error) => {
+                    console.error('Service worker registration failed:', error);
+                });
+        });
+    }
+</script>
 <script src="https://vjs.zencdn.net/5.10.4/video.js"></script>
 </body>
 </html>
