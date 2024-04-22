@@ -50,6 +50,7 @@ class Connexion_utlisateur(LoginView):
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 def acceuil(request):
+
     photo_publier = VideoPhoto.objects.all()
     publication_text = Publication_text.objects.all()
     liked_photos = [like.publication_id for like in Like.objects.filter(utilisateur=request.user)]

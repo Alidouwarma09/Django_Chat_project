@@ -111,12 +111,12 @@ body {
     height: 100%;
     display: none;
     width: 100%;
-    max-width: 400px; /* Largeur maximale pour le conteneur */
     margin-top: 60px; /* Marge supérieure */
     border-radius: 8px; /* Bordures arrondies */
     overflow: hidden; /* Empêche le débordement */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre subtile */
     background-color: #f7f7f7; /* Couleur de fond claire */
+    min-width: 100%;
 }
 .conversation.active {
     display: flex;

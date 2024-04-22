@@ -55,7 +55,7 @@ class Utilisateur(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='ImageUser/', null=True, blank=True)
+    image = models.ImageField(upload_to='ImageUser/', blank=True, null=True)
     USERNAME_FIELD = 'username'
     objects = MyUserManager()
 
@@ -108,7 +108,13 @@ class Comment(models.Model):
 class Publication_text(models.Model):
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, related_name='auteur2')
     contenu = models.TextField()
-    couleur_fond = models.CharField( default='linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5));')
+    couleur_fond = models.CharField(default='linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5));')
+    date_publication = models.DateTimeField(auto_now_add=True)
+
+    def date_pub(self):
+        if self.date_publication:
+            date_pub = timesince(self.date_publication)
+            return f"{date_pub}"
 
     def __str__(self):
         return self.texte
