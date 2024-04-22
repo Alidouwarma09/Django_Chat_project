@@ -103,3 +103,11 @@ class Comment(models.Model):
     publication = models.ForeignKey(VideoPhoto, on_delete=models.CASCADE)
     texte = models.TextField()
     date_comment = models.DateTimeField(auto_now_add=True)
+
+
+class Publication(models.Model):
+    contenu = models.TextField()
+    couleur_fond = models.CharField(blank=True, null=True, default='linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5));')
+
+    def __str__(self):
+        return self.texte

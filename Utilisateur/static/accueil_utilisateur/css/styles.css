@@ -13,7 +13,20 @@ body {
 }
 .content-messages-list {
     list-style-type: none;
-    padding: 8px 0;
+    padding: 0;
+    margin: 0;
+}
+/* Style pour le survol */
+.content-messages-list li:hover {
+    background-color: #e9e9e9; /* Couleur de fond pour le survol */
+}
+/* Élément de la liste */
+.content-messages-list li {
+    display: flex; /* Dispose les éléments en ligne */
+    align-items: center; /* Centre verticalement les éléments */
+    padding: 10px; /* Espacement interne */
+    border-bottom: 1px solid #ddd; /* Ligne de séparation */
+    transition: background-color 0.3s; /* Transition pour le survol */
 }
 .content-messages-list > * > a {
     display: flex;
@@ -55,30 +68,31 @@ body {
     z-index: 0;
 }
 .content-message-image {
-    width: 32px;
-    height: 32px;
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
-    margin-right: 12px;
+    width: 40px; /* Largeur de l'image de profil */
+    height: 40px; /* Hauteur de l'image de profil */
+    margin-right: 10px; /* Espace entre l'image et les détails */
 }
 .content-message-info {
     display: grid;
     margin-right: 12px;
     width: 100%;
+    flex-grow: 1; /* Prend tout l'espace disponible */
 }
 .content-message-name {
-    display: block;
     font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 2px;
+    font-weight: bold; /* Texte en gras */
+    display: block; /* Rend le texte sur une ligne distincte */
+    margin-bottom: 4px; /* Espacement en dessous */
 }
 .content-message-text {
-    font-size: 13px;
-    color: var(--slate-400);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    font-size: 12px; /* Taille de la police plus petite */
+    color: #555; /* Couleur de texte plus claire */
 }
 .content-message-more {
     text-align: right;
@@ -94,10 +108,15 @@ body {
 
 
 .conversation {
-    background-color: var(--slate-100);
     height: 100%;
     display: none;
     width: 100%;
+    max-width: 400px; /* Largeur maximale pour le conteneur */
+    margin-top: 60px; /* Marge supérieure */
+    border-radius: 8px; /* Bordures arrondies */
+    overflow: hidden; /* Empêche le débordement */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+    background-color: #f7f7f7; /* Couleur de fond claire */
 }
 .conversation.active {
     display: flex;
@@ -504,4 +523,480 @@ body {
         display: none;
         padding: 16px;
     }
+}
+.video-container {
+    width: 100%;
+    padding-bottom: 56.25%; /* Aspect ratio 16:9 */
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.full-screen-video {
+    width: 100%;
+    height: 100vh; /* La vidéo occupe toute la hauteur de la fenêtre */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100vh;
+}
+
+.full-screen-video video {
+    max-width: 100%;
+    max-height: 100%;
+}
+.preview-container {
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    min-height: 200px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+.preview-container .preview-item {
+    position: relative;
+}
+.preview-container img.preview-image {
+    min-width: 550px;
+    max-width: 550px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+.preview-container .remove-btn {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+}
+#audioPreviewContainer {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+}
+#audioControls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-left: 10px;
+}
+
+button {
+    background-color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: #007bff;
+}
+#removeAudioButton {
+    background-color: transparent;
+    border: none;
+    color: #ff5c5c;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+/* Barre de progression */
+#progressBar {
+    width: 150px;
+    height: 4px;
+    background-color: #e0e0e0;
+    border-radius: 2px;
+    appearance: none;
+}
+
+#progressBar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 8px;
+    height: 8px;
+    background-color: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.message-image_afficher{
+    max-width: 400px;
+    min-width: 300px;
+    height: auto;
+}
+#recordingDuration {
+    font-size: 16px; /* Taille de police */
+    color: #653737; /* Couleur du texte */
+    text-align: center; /* Centrage du texte */
+    margin-bottom: 10px; /* Marge inférieure */
+}
+/* Styles pour la section de publication de vidéos */
+#video-upload-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    width: 100%; /* Utilise 100% de la largeur disponible */
+}
+
+/* Styles pour le bouton de téléchargement */
+#upload-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+}
+
+#upload-button:hover {
+    background-color: #0056b3;
+}
+
+/* Styles pour les boutons d'envoi et d'annulation */
+#form-controls {
+    display: flex;
+    justify-content: space-between; /* Place les boutons de manière égale */
+    width: 100%; /* Prend toute la largeur disponible */
+    margin-bottom: 10px; /* Ajoute de l'espace en bas */
+}
+
+#cancel-button, #send-button {
+    background-color: #f44336; /* Rouge pour le bouton annuler */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#send-button {
+    width: 100px;
+    background-color: #28a745; /* Vert pour le bouton envoyer */
+}
+
+#cancel-button:hover {
+    background-color: #d32f2f;
+    width: 100px;
+}
+
+#send-button:hover {
+    background-color: #218838;
+}
+
+/* Styles pour la prévisualisation de la vidéo */
+#video-preview {
+    width: 100%; /* Utilise 100% de la largeur disponible */
+    height: auto; /* Maintient l'aspect ratio de la vidéo */
+    max-height: 600px; /* Limite la hauteur à 600px (ajustez selon vos besoins) */
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    display: none;
+}
+#photo-icon {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    transition: opacity 0.3s ease;
+    font-size: 35px;
+}
+
+#photo-icon:hover {
+    opacity: 0.7;
+}
+
+/* Formulaire de publication */
+#publish-form {
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 450px;
+    margin: 20px auto;
+    height: 100vh;
+    position: absolute;
+}
+
+#publish-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+#publish-form input[type="text"],
+#publish-form input[type="file"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#publish-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#publish-form button:hover {
+    background-color: #218838;
+}
+#image-editor {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 100%;
+    height: 300px;
+}
+
+#image-editor img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.content-messages {
+    margin: 20px auto;
+    width: 100%;
+    overflow-y: auto;
+    height: 100%;
+    margin-top: 16px;
+}
+.publication-container {
+    margin: auto;
+}
+
+.publication {
+    background-color: #fff;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.publication-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.user-profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+.user-name {
+    margin: 0;
+    font-weight: bold;
+}
+
+.publication-time {
+    margin: 0;
+    font-size: 0.9rem;
+    color: gray;
+}
+
+/* Contenu de la publication */
+.publication-content {
+    margin-bottom: 10px;
+}
+
+.publication-image {
+    width: 100%;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+/* Boutons d'actions de la publication */
+.publication-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.action-button {
+    border: none;
+    background-color: #f0f2f5;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.action-button:hover {
+    background-color: #e9ebee;
+}
+
+/* Section des commentaires */
+.comments-section {
+    align-items: center;
+    display: none;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    position: relative;
+}
+
+.commentaire-form {
+    display: flex;
+    justify-content: space-between;
+    position: sticky;
+    bottom: 0; /* Positionne le formulaire au bas */
+    padding: 10px; /* Espacement interne */
+    background-color: #f9f9f9; /* Fond clair */
+    border-top: 1px solid #cccccc;
+    z-index: 1;
+    box-sizing: border-box;
+
+}
+.comment {
+    box-sizing: border-box;
+    padding: 10px; /* Espacement interne pour chaque commentaire */
+    border-bottom: 1px solid #e0e0e0; /* Bordure inférieure pour séparer les commentaires */
+    margin-bottom: 10px;
+}
+
+.commentaire-input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    width: 100%;
+}
+
+.commentaire-form button {
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.liked {
+    color: red;
+}
+.action-button.liked i {
+    color: #ff4d4d;
+}
+.comment-count {
+    font-size: 1rem;
+    color: #888;
+    margin-left: 5px;
+}
+.likes-container {
+    display: flex;
+    align-items: center;
+}
+.comment-count-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /
+}
+
+.likes-container button,
+.likes-container span {
+    margin-right: 5px;
+}
+.comment-count-container button,
+.comment-count-container span {
+    margin-right: 5px;
+}
+.comment-actions {
+    display: flex;
+    gap: 10px;
+}
+.comments-container {
+    width: 100%;
+    border: 1px solid #cccccc;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #dcd9d9;
+    border-radius: 5px;
+}
+
+
+
+.comment-user {
+    font-weight: bold;
+    color: #333333;
+}
+
+.comment-text {
+    margin: 5px 0;
+    color: #666666;
+}
+
+
+.comment-time {
+    font-size: 12px; /
+color: #999999;
+}
+@media (max-width: 480px) {
+    .commentaire-form {
+        width: 100%;
+    }
+    .comments-container {
+        width: 100%;
+    }
+}
+
+
+
+
+.content-message-unread i {
+    color: #007bff;
+    font-size: 20px;
+}
+.lien-utilisateur {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
 }

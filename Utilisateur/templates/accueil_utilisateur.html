@@ -235,21 +235,27 @@
         transition: opacity 0.3s ease;
         font-size: 35px;
     }
-
+    #publication-action-icon {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        transition: opacity 0.3s ease;
+        font-size: 40px;
+    }
     #photo-icon:hover {
         opacity: 0.7;
     }
 
-    /* Formulaire de publication */
     #publish-form {
         padding: 10px;
         background-color: #fff;
         border-radius: 5px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        width: 450px;
         margin: 20px auto;
         height: 100vh;
-        position: absolute;
     }
 
     #publish-form label {
@@ -353,7 +359,6 @@
         margin-top: 10px;
     }
 
-    /* Boutons d'actions de la publication */
     .publication-actions {
         display: flex;
         justify-content: space-between;
@@ -450,13 +455,12 @@
         display: flex;
         gap: 10px;
     }
-    /* Style de la zone de commentaires */
     .comments-container {
         width: 100%;
-        border: 1px solid #cccccc; /* Bordure légère autour de la zone de commentaires */
-        padding: 10px; /* Espacement interne */
-        margin-top: 10px; /* Marge au-dessus de la zone de commentaires */
-        background-color: #dcd9d9; /* Fond clair pour la zone de commentaires */
+        border: 1px solid #cccccc;
+        padding: 10px;
+        margin-top: 10px;
+        background-color: #dcd9d9;
         border-radius: 5px;
     }
 
@@ -472,24 +476,112 @@
         color: #666666;
     }
 
-    /* Style de l'heure du commentaire */
+
     .comment-time {
-        font-size: 12px; /* Petite taille de police pour l'heure du commentaire */
-        color: #999999; /* Couleur claire pour l'heure du commentaire */
+        font-size: 12px; /
+        color: #999999;
     }
     @media (max-width: 480px) {
         .commentaire-form {
-            width: 100%; /* Ajuster la largeur du formulaire sur les petits écrans */
+            width: 100%;
         }
         .comments-container {
-            width: 100%; /* Ajuster la largeur du conteneur de commentaires */
+            width: 100%;
         }
+    }
+
+
+
+
+    .content-message-unread i {
+        color: #007bff;
+        font-size: 20px;
+    }
+    .lien-utilisateur {
+        display: flex; /* Dispose les éléments en ligne */
+        align-items: center; /* Centre verticalement les éléments */
+        text-decoration: none; /* Supprime la décoration des liens */
+        color: #333; /* Couleur de texte */
+    }
+    #publicationSection {
+
+        background-color: #fff;
+        border: 1px solid #dddfe2;
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 16px;
+    }
+
+    #publicationForm {
+        margin-bottom: 16px;
+    }
+
+    #texteInput {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #dddfe2;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        resize: none;
+    }
+
+    #couleurFond {
+        margin-right: 8px;
+    }
+
+    #preview {
+        border-top: 1px solid #dddfe2;
+        padding-top: 16px;
+    }
+
+    #textePreview {
+        padding: 12px;
+        border: 1px solid #dddfe2;
+        border-radius: 8px;
+        margin-bottom: 12px;
+    }
+
+    #publicationButton {
+        background-color: #1877f2;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.3s ease;
+    }
+
+    #publicationButton:hover {
+        background-color: #166fe5;
     }
 
 </style>
 
 <div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}" id="Acceuil" style="margin-top: 60px">
     <div class="conversation-main">
+        <i id="publication-action-icon" class="bi bi-fonts"></i>
+        <div id="publicationSection" style="display: none;">
+            <form id="publicationForm" action="{% url 'Utilisateur:creer_publication' %}" method="post">
+                {% csrf_token %}
+                <textarea id="texteInput" name="texte" placeholder="Écrivez votre publication ici"></textarea>
+                <input type="hidden" id="couleurFondHidden" name="couleur_fond" value="">
+                <div id="backgroundOptions" style="overflow-x: auto; white-space: nowrap;">
+                    <div class="backgroundOption" data-value="linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5))" style="background-image: linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5)); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"></div>
+                    <div class="backgroundOption" data-value="linear-gradient(to bottom, rgba(128,0,128,0.5), rgba(0,0,128,0.5))" style="background-image: linear-gradient(to bottom, rgba(128,0,128,0.5), rgba(0,0,128,0.5)); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"></div>
+                    <div class="backgroundOption" data-value="linear-gradient(to bottom, rgba(0,128,0,0.5), rgba(0,0,128,0.5))" style="background-image: linear-gradient(to bottom, rgba(0,128,0,0.5), rgba(0,0,128,0.5)); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"></div>
+                    <div class="backgroundOption" data-value="linear-gradient(to bottom, rgba(255,105,180,0.5), rgba(255,165,0,0.5))" style="background-image: linear-gradient(to bottom, rgba(255,105,180,0.5), rgba(255,165,0,0.5)); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"> </div>
+                </div>
+                <h3>Aperçu</h3>
+                <div id="preview">
+                    <div id="textePreview"></div>
+                </div>
+                <button id="publicationButton" type="submit">Publier</button>
+            </form>
+
+        </div>
+
+
         <i id="photo-icon" class="bi bi-patch-plus"></i>
         <form id="publish-form" style="display: none;">
             <label for="titre_photo">Titre de l'image:</label>
@@ -536,7 +628,7 @@
                                 <button class="action-button" id="comment-button" data-publicationafficher-id="{{ photo.id }}"><i class="bi bi-chat"></i></button>
                                 <span class="comment-count" id="comment-count-{{ photo.id }}"></span> commentaires
                             </div>
-                            <div class="col-4 comment-count-container" style="font-size: 11px; padding-right: 20px;">
+                            <div class="col-4 comment-count-container" style="font-size: 10px; padding-right: 30px; margin-right: 10px;">
                                 <span class="comment-count">15,42k</span> Vues
                             </div>
                         </div>
@@ -566,19 +658,17 @@
                         {% for utilisateur in utilisateurs %}
                             <li >
                                 <a href="{% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur.id %}" class="lien-utilisateur" data-utilisateur-id="{{ utilisateur.id }}">
-
                                     {% if utilisateur.image %}
                                         <img class="content-message-image" src="{{ utilisateur.image.url }}" alt="Image de {{ utilisateur.nom }}">
                                     {% else %}
-                                        <p>Aucune image disponible pour cet utilisateur.</p>
                                     {% endif %}
                                     <span class="content-message-info">
-                                                    <span class="content-message-name">{{ utilisateur.nom }} {{ utilisateur.prenom }}</span>
-                                                    <span class="content-message-text">Ecrire a cet utilisateur</span>
-                                                </span>
+                                        <span class="content-message-name">{{ utilisateur.nom }} {{ utilisateur.prenom }}</span>
+                                        <span class="content-message-text">Ecrire a cet utilisateur</span>
+                                    </span>
                                     <span class="content-message-more">
-                                                    <span class="content-message-unread"><i class="bi bi-chat"></i></span>
-                                                </span>
+                                        <span class="content-message-unread"><i class="bi bi-chat"></i></span>
+                                    </span>
                                 </a>
                             </li>
                         {% endfor %}
@@ -1219,6 +1309,43 @@
                 });
         });
     }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const publicationActionIcon = document.getElementById('publication-action-icon');
+        const publicationSection = document.getElementById('publicationSection');
+        const backgroundOptions = document.querySelectorAll('.backgroundOption');
+        const couleurPreview = document.getElementById('couleurPreview');
+        const texteInput = document.getElementById('texteInput');
+        const textePreview = document.getElementById('textePreview');
+        const couleurFondHidden = document.getElementById('couleurFondHidden');
+
+        publicationActionIcon.addEventListener('click', () => {
+            // Inverser la visibilité de la section de publication
+            if (publicationSection.style.display === 'none') {
+                publicationSection.style.display = 'block';
+            } else {
+                publicationSection.style.display = 'none';
+            }
+        });
+
+        backgroundOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const backgroundImage = option.dataset.value;
+                document.getElementById('preview').style.backgroundImage = backgroundImage;
+                couleurFondHidden.value = backgroundImage;
+            });
+        });
+
+        texteInput.addEventListener('input', updatePreview);
+        function updatePreview() {
+            const enteredText = texteInput.value;
+            textePreview.textContent = enteredText;
+        }
+    });
+
+
+
 </script>
 <script src="https://vjs.zencdn.net/5.10.4/video.js"></script>
 </body>

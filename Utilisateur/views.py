@@ -12,7 +12,7 @@ from django.http import HttpResponse, JsonResponse, StreamingHttpResponse
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from Model.models import Utilisateur, Message, VideoPhoto, Like, Comment
+from Model.models import Utilisateur, Message, VideoPhoto, Like, Comment, Publication
 from Utilisateur.forms import InscriptionForm, ConnexionForm, MessageForm, MessageimagesForm, \
     MessageAudioForm, PhotoForm
 
@@ -268,3 +268,11 @@ def get_comment_count(request):
     comment_count = Comment.objects.filter(publication_id=publication_id).count()
     print(comment_count)
     return JsonResponse({'comment_count': comment_count})
+
+
+def creer_publication(request):
+    if request.method == 'POST':
+        texte = request.POST.get('texte')
+        couleur_fond = request.POST.get('couleur_fond')
+        publication = Publication.objects.create(contenu=texte, couleur_fond=couleur_fond)
+        return redirect('Utilisateur:acceuil')
