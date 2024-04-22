@@ -508,12 +508,14 @@
         color: #333; /* Couleur de texte */
     }
     #publicationSection {
-
+        position: fixed;
+        width: 100%;
         background-color: #fff;
         border: 1px solid #dddfe2;
         border-radius: 8px;
         padding: 16px;
         margin-top: 16px;
+        min-height: 500px;
     }
 
     #publicationForm {
@@ -540,9 +542,13 @@
 
     #textePreview {
         padding: 12px;
-        border: 1px solid #dddfe2;
         border-radius: 8px;
         margin-bottom: 12px;
+        min-height: 300px;
+        min-height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     #publicationButton {
@@ -593,10 +599,8 @@
             </form>
 
         </div>
-
-
         <form id="publish-form" style="display: none;">
-            <label for="titre_photo">Titre de l'image:</label>
+            <label for="titre">Titre de l'image:</label>
             <input type="text" id="titre_photo" name="titre" required>
 
             <label for="photo_file">Sélectionner une image:</label>
@@ -1119,7 +1123,7 @@
             cropper.getCroppedCanvas().toBlob(function(blob) {
                 var formData = new FormData();
                 formData.append('photo_file', blob, 'image.jpg');
-                formData.append('titre_photo', document.querySelector('#titre_photo').value);
+                formData.append('titre', document.querySelector('#titre_photo').value);
 
                 fetch("{% url 'Utilisateur:publier_photo' %}", {
                     method: 'POST',
