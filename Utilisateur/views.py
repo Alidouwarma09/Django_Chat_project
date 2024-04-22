@@ -12,7 +12,7 @@ from django.http import HttpResponse, JsonResponse, StreamingHttpResponse
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from Model.models import Utilisateur, Message, VideoPhoto, Like, Comment, Publication
+from Model.models import Utilisateur, Message, VideoPhoto, Like, Comment, Publication_text
 from Utilisateur.forms import InscriptionForm, ConnexionForm, MessageForm, MessageimagesForm, \
     MessageAudioForm, PhotoForm
 
@@ -51,6 +51,7 @@ class Connexion_utlisateur(LoginView):
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 def acceuil(request):
     photo_publier = VideoPhoto.objects.all()
+    publication_text = Publication_text.objects.all()
     liked_photos = [like.publication_id for like in Like.objects.filter(utilisateur=request.user)]
     utilisateur_connecte = request.user if request.user.is_authenticated else None
     publication_likes = {}
@@ -62,6 +63,7 @@ def acceuil(request):
         'user': request.user,
         'liked_photos': liked_photos,
         'publication_likes': publication_likes,
+        'publication_text': publication_text
     }
 
     return render(request, 'accueil_utilisateur.html', context)
@@ -272,7 +274,8 @@ def get_comment_count(request):
 
 def creer_publication(request):
     if request.method == 'POST':
+        utilisateur_id = request.user.id
         texte = request.POST.get('texte')
         couleur_fond = request.POST.get('couleur_fond')
-        publication = Publication.objects.create(contenu=texte, couleur_fond=couleur_fond)
+        publication = Publication_text.objects.create(utilisateur_id=utilisateur_id, contenu=texte, couleur_fond=couleur_fond)
         return redirect('Utilisateur:acceuil')

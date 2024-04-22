@@ -22,6 +22,10 @@
 {% url 'Utilisateur:acceuil' as Acceuil %}
 {% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur_detail.id as detail_url %}
 <style>
+    .blurred-background {
+        filter: blur(5px); /* Ajustez la valeur de flou selon vos préférences */
+    }
+
     .video-container {
         width: 100%;
         padding-bottom: 56.25%; /* Aspect ratio 16:9 */
@@ -565,6 +569,14 @@
             <form id="publicationForm" action="{% url 'Utilisateur:creer_publication' %}" method="post">
                 {% csrf_token %}
                 <textarea id="texteInput" name="texte" placeholder="Écrivez votre publication ici"></textarea>
+                <div id="emojiSection" style="position: absolute">
+                    <button id="emojiButton" type="button">😊</button>
+                    <div id="emojiPanel" style="display: none;">
+                        <span onclick="insertEmoji('😊')">😊</span>
+                        <span onclick="insertEmoji('❤️')">❤️</span>
+                        <span onclick="insertEmoji('👍')">👍</span>
+                    </div>
+                </div>
                 <input type="hidden" id="couleurFondHidden" name="couleur_fond" value="">
                 <div id="backgroundOptions" style="overflow-x: auto; white-space: nowrap;">
                     <div class="backgroundOption" data-value="linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5))" style="background-image: linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5)); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"></div>
@@ -580,7 +592,6 @@
             </form>
 
         </div>
-
 
         <i id="photo-icon" class="bi bi-patch-plus"></i>
         <form id="publish-form" style="display: none;">
@@ -1319,13 +1330,15 @@
         const texteInput = document.getElementById('texteInput');
         const textePreview = document.getElementById('textePreview');
         const couleurFondHidden = document.getElementById('couleurFondHidden');
+        const blurContainer = document.getElementById('blurContainer');
 
         publicationActionIcon.addEventListener('click', () => {
-            // Inverser la visibilité de la section de publication
             if (publicationSection.style.display === 'none') {
                 publicationSection.style.display = 'block';
+                body.classList.add('blurred-background');
             } else {
                 publicationSection.style.display = 'none';
+                body.classList.remove('blurred-background');
             }
         });
 
@@ -1343,9 +1356,34 @@
             textePreview.textContent = enteredText;
         }
     });
+</script>
 
+<script>
+    document.getElementById('emojiButton').addEventListener('click', function() {
+        var emojiPanel = document.getElementById('emojiPanel');
+        if (emojiPanel.style.display === 'none') {
+            emojiPanel.style.display = 'block';
+        } else {
+            emojiPanel.style.display = 'none';
+        }
+    });
 
+    function insertEmoji(emoji) {
+        var textarea = document.getElementById('texteInput');
+        var cursorPosition = textarea.selectionStart;
+        var textBeforeCursor = textarea.value.substring(0, cursorPosition);
+        var textAfterCursor = textarea.value.substring(cursorPosition);
+        textarea.value = textBeforeCursor + emoji + textAfterCursor;
+        // Mettre à jour l'aperçu
+        updatePreview();
+    }
 
+    function updatePreview() {
+        var selectedColor = couleurFondInput.value;
+        var enteredText = texteInput.value;
+        couleurPreview.style.backgroundColor = selectedColor;
+        textePreview.textContent = enteredText;
+    }
 </script>
 <script src="https://vjs.zencdn.net/5.10.4/video.js"></script>
 </body>

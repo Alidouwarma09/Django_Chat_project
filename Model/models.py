@@ -105,9 +105,10 @@ class Comment(models.Model):
     date_comment = models.DateTimeField(auto_now_add=True)
 
 
-class Publication(models.Model):
+class Publication_text(models.Model):
+    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, related_name='auteur2')
     contenu = models.TextField()
-    couleur_fond = models.CharField(blank=True, null=True, default='linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5));')
+    couleur_fond = models.CharField( default='linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5));')
 
     def __str__(self):
         return self.texte
