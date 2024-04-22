@@ -12,7 +12,7 @@ from django.http import HttpResponse, JsonResponse, StreamingHttpResponse
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from Model.models import Utilisateur, Message, VideoPhoto, Like, Comment, Publication_text
+from Model.models import Utilisateur, Message, Publication, Like, Comment, Publication
 from Utilisateur.forms import InscriptionForm, ConnexionForm, MessageForm, MessageimagesForm, \
     MessageAudioForm, PhotoForm
 
@@ -51,20 +51,18 @@ class Connexion_utlisateur(LoginView):
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 def acceuil(request):
 
-    photo_publier = VideoPhoto.objects.all()
-    publication_text = Publication_text.objects.all()
+    Publication_alls = Publication.objects.all()
     liked_photos = [like.publication_id for like in Like.objects.filter(utilisateur=request.user)]
     utilisateur_connecte = request.user if request.user.is_authenticated else None
     publication_likes = {}
-    for photo in photo_publier:
+    for photo in Publication_alls:
         publication_likes[photo.id] = photo.count_likes()
     context = {
         'utilisateur_connecte': utilisateur_connecte,
-        'photo_publier': photo_publier,
+        'Publication_alls': Publication_alls,
         'user': request.user,
         'liked_photos': liked_photos,
         'publication_likes': publication_likes,
-        'publication_text': publication_text
     }
 
     return render(request, 'accueil_utilisateur.html', context)
@@ -195,7 +193,7 @@ def liker_publication(request):
         data = json.loads(request.body)
         publication_id = data.get('publication_id')
         try:
-            publication = VideoPhoto.objects.get(id=publication_id)
+            publication = Publication.objects.get(id=publication_id)
             utilisateur = request.user
             like, created = Like.objects.get_or_create(utilisateur=utilisateur, publication=publication)
 
@@ -206,7 +204,7 @@ def liker_publication(request):
                 liked = True
             return JsonResponse({'liked': liked})
 
-        except VideoPhoto.DoesNotExist:
+        except Publication.DoesNotExist:
             return JsonResponse({'error': 'Publication non trouvée'}, status=404)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
@@ -234,8 +232,8 @@ def commenter_publication(request):
         print(utilisateur)
 
         try:
-            publication = VideoPhoto.objects.get(id=publication_id)
-        except VideoPhoto.DoesNotExist:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
             return JsonResponse({'error': 'Publication introuvable'}, status=404)
         commentaire = Comment(utilisateur=utilisateur, publication=publication, texte=texte)
         commentaire.save()
@@ -278,5 +276,5 @@ def creer_publication(request):
         utilisateur_id = request.user.id
         texte = request.POST.get('texte')
         couleur_fond = request.POST.get('couleur_fond')
-        publication = Publication_text.objects.create(utilisateur_id=utilisateur_id, contenu=texte, couleur_fond=couleur_fond)
+        publication = Publication.objects.create(utilisateur_id=utilisateur_id, contenu=texte, couleur_fond=couleur_fond)
         return redirect('Utilisateur:acceuil')

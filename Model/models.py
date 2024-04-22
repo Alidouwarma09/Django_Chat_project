@@ -55,7 +55,7 @@ class Utilisateur(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='ImageUser/', blank=True, null=True)
+    image = models.ImageField(upload_to='ImageUser/')
     USERNAME_FIELD = 'username'
     objects = MyUserManager()
 
@@ -73,48 +73,41 @@ class Message(models.Model):
     images = models.FileField(upload_to='messages/images/', blank=True, null=True)
 
 
-class VideoPhoto(models.Model):
-    titre_photo = models.CharField(max_length=100)
-    video_file = models.FileField(upload_to='videos/')
-    photo_file = models.FileField(upload_to='photo/')
+class Publication(models.Model):
+    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, related_name='publications')
+    titre = models.CharField(max_length=255, blank=True, null=True)
+    contenu = models.TextField(blank=True, null=True)
+    couleur_fond = models.CharField(max_length=255, default='linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5));')
+    photo_file = models.FileField(upload_to='photos/', blank=True, null=True)
+    video_file = models.FileField(upload_to='videos/', blank=True, null=True)
     date_publication = models.DateTimeField(auto_now_add=True)
-    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, related_name='auteur')
+
+    def __str__(self):
+        if self.titre:
+            return self.titre
+        elif self.contenu:
+            return self.contenu[:50]  # Retourne les 50 premiers caractères du contenu
+        else:
+            return f"Publication by {self.utilisateur.nom} on {self.date_publication.strftime('%Y-%m-%d')}"
 
     def date_pub(self):
-        if self.date_publication:
-            date_pub = timesince(self.date_publication)
-            return f"{date_pub}"
+        return timesince(self.date_publication) if self.date_publication else ""
 
     def count_likes(self):
         return Like.objects.filter(publication=self).count()
 
-    def __str__(self):
-        return self.titre_photo
-
 
 class Like(models.Model):
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
-    publication = models.ForeignKey(VideoPhoto, on_delete=models.CASCADE)
+    publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
     date_like = models.DateTimeField(auto_now_add=True)
 
 
 class Comment(models.Model):
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
-    publication = models.ForeignKey(VideoPhoto, on_delete=models.CASCADE)
+    publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
     texte = models.TextField()
     date_comment = models.DateTimeField(auto_now_add=True)
 
 
-class Publication_text(models.Model):
-    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, related_name='auteur2')
-    contenu = models.TextField()
-    couleur_fond = models.CharField(default='linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5));')
-    date_publication = models.DateTimeField(auto_now_add=True)
 
-    def date_pub(self):
-        if self.date_publication:
-            date_pub = timesince(self.date_publication)
-            return f"{date_pub}"
-
-    def __str__(self):
-        return self.texte

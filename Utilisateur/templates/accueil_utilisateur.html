@@ -565,6 +565,7 @@
 <div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}" id="Acceuil" style="margin-top: 60px; min-width: 100%">
     <div class="conversation-main">
         <i id="publication-action-icon" class="bi bi-fonts"></i>
+        <i id="photo-icon" class="bi bi-patch-plus"></i>
         <div id="publicationSection" style="display: none;">
             <form id="publicationForm" action="{% url 'Utilisateur:creer_publication' %}" method="post">
                 {% csrf_token %}
@@ -593,10 +594,10 @@
 
         </div>
 
-        <i id="photo-icon" class="bi bi-patch-plus"></i>
+
         <form id="publish-form" style="display: none;">
             <label for="titre_photo">Titre de l'image:</label>
-            <input type="text" id="titre_photo" name="titre_photo" required>
+            <input type="text" id="titre_photo" name="titre" required>
 
             <label for="photo_file">Sélectionner une image:</label>
             <input hidden="hidden" type="file" id="photo_file" name="photo_file" accept="image/*" required>
@@ -607,33 +608,41 @@
 
             <button type="submit">Publier</button>
         </form>
-        {% if photo_publier or publication_text %}
-            {% for photo in photo_publier %}
+        {% if Publication_alls  %}
+            {% for photo in Publication_alls %}
                 <div class="publication-container">
                     <div class="publication">
                         <div class="publication-header">
-                            <img src="" alt="Profil de l'utilisateur" class="user-profile">
+                            <img src="{{ photo.utilisateur.image.url }}" alt="Profil de l'utilisateur" class="user-profile">
                             <div class="user-info">
                                 <p class="user-name">{{ photo.utilisateur.nom }} {{ photo.utilisateur.prenom }}</p>
                                 <p class="publication-time">Il y a {{ photo.date_pub }}</p>
                             </div>
                         </div>
+                        {% if photo.photo_file  %}
                         <div class="publication-content">
-                            <p>{{ photo.titre_photo }}</p>
+                                <p>{{ photo.titre }}</p>
                             <img src="{{ photo.photo_file.url }}" alt="Image de la publication" class="publication-image">
                         </div>
+                        {% else  %}
+                        <div class="publication-content" style=" min-height: 400px; display: flex; justify-content: center; align-items: center; background-image:{{ photo.couleur_fond }} ">
+                            <div class="publication-content" style="color: white">
+                                {{ photo.contenu }}
+                            </div>
+                        </div>
+                        {% endif  %}
                         <div class="row publication-actions">
                             <div class="col-4 likes-container" style="font-size: 11px; padding-left: 20px;">
                                 <button class="action-button" id="like-button" data-publication-id="{{ photo.id }}">
                                     <i class="bi bi-heart-fill"></i>
                                 </button>
                                 <span class="likes-count">
-                                                    {% for key, value in publication_likes.items %}
-                                                        {% if key == photo.id %}
-                                                            {{ value }}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </span> likes
+                                    {% for key, value in publication_likes.items %}
+                                        {% if key == photo.id %}
+                                            {{ value }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </span> likes
                             </div>
                             <div class="col-4 comment-count-container" style="font-size: 11px; padding-right: 20px;">
                                 <button class="action-button" id="comment-button" data-publicationafficher-id="{{ photo.id }}"><i class="bi bi-chat"></i></button>
@@ -651,49 +660,6 @@
                                 {% csrf_token %}
                                 <input type="text" class="commentaire-input" id="commentaire-input-{{ photo.id }}" placeholder="Écrivez un commentaire...">
                                 <button type="submit" data-publications-id="{{ photo.id }}">▶️</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-            {% for publication_text in publication_text %}
-                <div class="publication-container">
-                    <div class="publication">
-                        <div class="publication-header">
-                            <img src="" alt="Profil de l'utilisateur" class="user-profile">
-                            <div class="user-info">
-                                <p class="user-name">{{ publication_text.utilisateur.nom }} {{ publication_text.utilisateur.prenom }}</p>
-                                <p class="publication-time">Il y a {{ publication_text.date_pub }}</p>
-                            </div>
-                        </div>
-                        <div class="publication-content" style=" min-height: 400px; display: flex; justify-content: center; align-items: center; background-image:{{ publication_text.couleur_fond }} ">
-                            <div class="publication-content" style="color: white">
-                                {{ publication_text.contenu }}
-                            </div>
-                        </div>
-                        <div class="row publication-actions">
-                            <div class="col-4 likes-container" style="font-size: 11px; padding-left: 20px;">
-                                <button class="action-button" id="like-button" data-publication-id="{{ publication_text.id }}">
-                                    <i class="bi bi-heart-fill"></i>
-                                </button>
-                                <span class="likes-count"></span> likes
-                            </div>
-                            <div class="col-4 comment-count-container" style="font-size: 11px; padding-right: 20px;">
-                                <button class="action-button" id="comment-button" data-publicationafficher-id="{{ publication_text.id }}"><i class="bi bi-chat"></i></button>
-                                <span class="comment-count" id="comment-count-{{ photo.id }}"></span> commentaires
-                            </div>
-                            <div class="col-4 comment-count-container" style="font-size: 10px; padding-right: 30px; margin-right: 10px;">
-                                <span class="comment-count">15,42k</span> Vues
-                            </div>
-                        </div>
-                        <div class="comments-section" id="comments-section-{{ publication_text.id }}" style="overflow-y: auto; overflow-x: none; max-height: 300px">
-                            <div class="comments-container" id="comments-container-{{ publication_text.id }}">
-                                <!-- Les commentaires seront ajoutés ici -->
-                            </div>
-                            <form class="commentaire-form" id="commentaire-form-{{ publication_text.id }}">
-                                {% csrf_token %}
-                                <input type="text" class="commentaire-input" id="commentaire-input-{{ publication_text.id }}" placeholder="Écrivez un commentaire...">
-                                <button type="submit" data-publications-id="{{ publication_text.id }}">▶️</button>
                             </form>
                         </div>
                     </div>

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from Model.models import Utilisateur, Message, VideoPhoto
+from Model.models import Utilisateur, Message, Publication
 
 
 class InscriptionForm(UserCreationForm):
@@ -14,9 +14,6 @@ class InscriptionForm(UserCreationForm):
         self.fields['username'].widget.attrs.update({
             'class': "form-control",
             'id': "selectModel",
-            'required': True,
-        })
-        self.fields['image'].widget = forms.PasswordInput(attrs={
             'required': True,
         })
         self.fields['password1'].widget = forms.PasswordInput(attrs={
@@ -77,5 +74,5 @@ class MessageAudioForm(forms.ModelForm):
 
 class PhotoForm(forms.ModelForm):
     class Meta:
-        model = VideoPhoto
-        fields = ['titre_photo', 'photo_file']
+        model = Publication
+        fields = ['titre', 'photo_file']
