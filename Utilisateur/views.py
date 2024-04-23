@@ -41,6 +41,7 @@ class Connexion_utlisateur(LoginView):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('Utilisateur:acceuil')
+        return super().get(request, *args, **kwargs)
 
     def form_invalid(self, form):
         form.add_error('username', 'Nom d\'utilisateur incorrect')
@@ -48,8 +49,9 @@ class Connexion_utlisateur(LoginView):
         return self.render_to_response(self.get_context_data(form=form))
 
     def get_success_url(self) -> str:
-        if self.request.user.roles == 'utilisateur':
+        if hasattr(self.request.user, 'roles') and self.request.user.roles == 'utilisateur':
             return reverse('Utilisateur:acceuil')
+        return super().get_success_url()
 
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')

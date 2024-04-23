@@ -148,11 +148,11 @@
         cursor: pointer;
     }
 
-.message-image_afficher{
-    max-width: 400px;
-    min-width: 300px;
-    height: auto;
-}
+    .message-image_afficher{
+        max-width: 400px;
+        min-width: 300px;
+        height: auto;
+    }
     #recordingDuration {
         font-size: 16px; /* Taille de police */
         color: #653737; /* Couleur du texte */
@@ -471,7 +471,7 @@
 
     .comment-time {
         font-size: 12px; /
-        color: #999999;
+    color: #999999;
     }
     @media (max-width: 480px) {
         .commentaire-form {
@@ -615,7 +615,7 @@
             <div class="profile-dropdown" style="margin-left: auto;">
                 <div onclick="toggle()" class="profile-dropdown-btn">
                     <div class="profile-img">
-                       <img class="profile-img" style="" src="{{ request.user.image.url }}">
+                        <img class="profile-img" style="" src="{{ request.user.image.url }}">
                     </div>
                 </div>
 
@@ -640,7 +640,7 @@
                     </li>
                     <hr />
                     <li class="profile-dropdown-list-item">
-                        <a href="#">
+                        <a href="#" onclick="deconnexion();">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
                             Déconnexion
                         </a>
@@ -661,16 +661,16 @@
                             </div>
                         </div>
                         {% if photo.photo_file  %}
-                        <div class="publication-content">
+                            <div class="publication-content">
                                 <p>{{ photo.titre }}</p>
-                            <img src="{{ photo.photo_file.url }}" alt="Image de la publication" class="publication-image">
-                        </div>
-                        {% else  %}
-                        <div class="publication-content" style=" min-height: 400px; display: flex; justify-content: center; align-items: center; background-image:{{ photo.couleur_fond }} ">
-                            <div class="publication-content" style="color: white">
-                                {{ photo.contenu }}
+                                <img src="{{ photo.photo_file.url }}" alt="Image de la publication" class="publication-image">
                             </div>
-                        </div>
+                        {% else  %}
+                            <div class="publication-content" style=" min-height: 400px; display: flex; justify-content: center; align-items: center; background-image:{{ photo.couleur_fond }} ">
+                                <div class="publication-content" style="color: white">
+                                    {{ photo.contenu }}
+                                </div>
+                            </div>
                         {% endif  %}
                         <div class="row publication-actions">
                             <div class="col-4 likes-container" style="font-size: 11px; padding-left: 20px;">
@@ -1450,6 +1450,23 @@
     window.addEventListener("click", function (e) {
         if (!btn.contains(e.target)) classList.remove("active");
     });
+</script>
+<script>
+    function deconnexion() {
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{% url 'Model:Deconnexion' %}';
+        var csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = 'csrfmiddlewaretoken';
+        csrf.value = '{{ csrf_token }}';
+        form.appendChild(csrf);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+
 </script>
 </body>
 </html>
