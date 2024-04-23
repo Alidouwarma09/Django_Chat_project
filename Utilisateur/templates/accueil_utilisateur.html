@@ -22,14 +22,14 @@
 {% url 'Utilisateur:acceuil' as Acceuil %}
 {% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur_detail.id as detail_url %}
 <style>
-    .blurred-background {
-        filter: blur(5px);
+    .blurred {
+        backdrop-filter: blur(20px);
         pointer-events: none;
     }
 
     .video-container {
         width: 100%;
-        padding-bottom: 56.25%; /* Aspect ratio 16:9 */
+        padding-bottom: 56.25%;
         position: relative;
         margin-bottom: 20px;
     }
@@ -44,7 +44,7 @@
 
     .full-screen-video {
         width: 100%;
-        height: 100vh; /* La vidéo occupe toute la hauteur de la fenêtre */
+        height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -159,7 +159,6 @@
         text-align: center; /* Centrage du texte */
         margin-bottom: 10px; /* Marge inférieure */
     }
-    /* Styles pour la section de publication de vidéos */
     #video-upload-section {
         display: flex;
         flex-direction: column;
@@ -503,10 +502,10 @@
         font-size: 20px;
     }
     .lien-utilisateur {
-        display: flex; /* Dispose les éléments en ligne */
-        align-items: center; /* Centre verticalement les éléments */
-        text-decoration: none; /* Supprime la décoration des liens */
-        color: #333; /* Couleur de texte */
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #333;
     }
     #publicationSection {
         position: fixed;
@@ -517,6 +516,7 @@
         padding: 16px;
         margin-top: 16px;
         min-height: 500px;
+        z-index: 100;
     }
 
     #publicationForm {
@@ -568,38 +568,44 @@
     }
 
 </style>
+<div id="publicationSection" style="display: none;">
+    <form id="publicationForm" action="{% url 'Utilisateur:creer_publication' %}" method="post">
+        {% csrf_token %}
+        <div id="emojiSection" style="position: absolute; right: 0; margin-right: 20px">
+            <button id="emojiButton" type="button" style="font-size: 40px; margin-top: 20px">😊</button>
+            <div id="emojiPanel" style="display: none;">
+                <span onclick="insertEmoji('😊')">😊</span>
+                <span onclick="insertEmoji('❤️')">❤️</span>
+                <span onclick="insertEmoji('👍')">👍</span>
+                <span onclick="insertEmoji('😟')">😟</span>
+                <span onclick="insertEmoji('😅')">😅</span>
+                <span onclick="insertEmoji('😰')">😰</span>
+            </div>
+        </div>
+        <textarea id="texteInput" name="texte" placeholder="Écrivez votre publication ici"></textarea>
 
+        <input type="hidden" id="couleurFondHidden" name="couleur_fond" value="">
+        <div id="backgroundOptions" style="overflow-x: auto; white-space: nowrap;">
+            <div class="backgroundOption" data-value="linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5))" style="background-image: linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5)); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"></div>
+            <div class="backgroundOption" data-value="linear-gradient(to bottom, rgba(128,0,128,0.5), rgba(0,0,128,0.5))" style="background-image: linear-gradient(to bottom, rgba(128,0,128,0.5), rgba(0,0,128,0.5)); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"></div>
+            <div class="backgroundOption" data-value="linear-gradient(to bottom, rgba(0,128,0,0.5), rgba(0,0,128,0.5))" style="background-image: linear-gradient(to bottom, rgba(0,128,0,0.5), rgba(0,0,128,0.5)); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"></div>
+            <div class="backgroundOption" data-value="linear-gradient(to bottom, rgba(255,105,180,0.5), rgba(255,165,0,0.5))" style="background-image: linear-gradient(to bottom, rgba(255,105,180,0.5), rgba(255,165,0,0.5)); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"> </div>
+            <div class="backgroundOption" data-value="linear-gradient(90deg, #020024 0%, #090979 35%, #00d4ff 100%)" style="background-image: linear-gradient(90deg, #020024 0%, #090979 35%, #00d4ff 100%);; border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"> </div>
+            <div class="backgroundOption" data-value="url('{% static 'bacground image/smile.png' %}')" style="background-image: url('{% static 'bacground image/smile.png' %}'); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;'"> </div>
+        </div>
+        <h3>Aperçu</h3>
+        <div id="preview">
+            <div id="textePreview"></div>
+        </div>
+        <button id="publicationButton" type="submit">Publier</button>
+    </form>
+
+</div>
 <div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}" id="Acceuil" style="margin-top: 60px; min-width: 100%">
     <div class="conversation-main">
         <i id="publication-action-icon" class="bi bi-fonts"></i>
         <i id="photo-icon" class="bi bi-patch-plus"></i>
-        <div id="publicationSection" style="display: none;">
-            <form id="publicationForm" action="{% url 'Utilisateur:creer_publication' %}" method="post">
-                {% csrf_token %}
-                <textarea id="texteInput" name="texte" placeholder="Écrivez votre publication ici"></textarea>
-                <div id="emojiSection" style="position: absolute">
-                    <button id="emojiButton" type="button">😊</button>
-                    <div id="emojiPanel" style="display: none;">
-                        <span onclick="insertEmoji('😊')">😊</span>
-                        <span onclick="insertEmoji('❤️')">❤️</span>
-                        <span onclick="insertEmoji('👍')">👍</span>
-                    </div>
-                </div>
-                <input type="hidden" id="couleurFondHidden" name="couleur_fond" value="">
-                <div id="backgroundOptions" style="overflow-x: auto; white-space: nowrap;">
-                    <div class="backgroundOption" data-value="linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5))" style="background-image: linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5)); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"></div>
-                    <div class="backgroundOption" data-value="linear-gradient(to bottom, rgba(128,0,128,0.5), rgba(0,0,128,0.5))" style="background-image: linear-gradient(to bottom, rgba(128,0,128,0.5), rgba(0,0,128,0.5)); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"></div>
-                    <div class="backgroundOption" data-value="linear-gradient(to bottom, rgba(0,128,0,0.5), rgba(0,0,128,0.5))" style="background-image: linear-gradient(to bottom, rgba(0,128,0,0.5), rgba(0,0,128,0.5)); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"></div>
-                    <div class="backgroundOption" data-value="linear-gradient(to bottom, rgba(255,105,180,0.5), rgba(255,165,0,0.5))" style="background-image: linear-gradient(to bottom, rgba(255,105,180,0.5), rgba(255,165,0,0.5)); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"> </div>
-                </div>
-                <h3>Aperçu</h3>
-                <div id="preview">
-                    <div id="textePreview"></div>
-                </div>
-                <button id="publicationButton" type="submit">Publier</button>
-            </form>
 
-        </div>
         <form id="publish-form" style="display: none;">
             <label for="titre">Titre de l'image:</label>
             <input type="text" id="titre_photo" name="titre" required>
@@ -610,7 +616,6 @@
             <div id="image-editor">
                 <img id="image-to-edit" alt="Prévisualisation">
             </div>
-
             <button type="submit">Publier</button>
         </form>
         {% if Publication_alls  %}
@@ -1349,10 +1354,9 @@
         publicationActionIcon.addEventListener('click', () => {
             if (publicationSection.style.display === 'none') {
                 publicationSection.style.display = 'block';
-                blurContainer.classList.add('blurred-background');
+                blurContainer.classList.add('blurred');
             } else {
                 publicationSection.style.display = 'none';
-                body.classList.remove('blurred-background');
             }
         });
 

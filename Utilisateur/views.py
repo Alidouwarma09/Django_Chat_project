@@ -38,6 +38,10 @@ class Connexion_utlisateur(LoginView):
     template_name = 'connexion_utilisateur.html'
     form_class = ConnexionForm
 
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('Utilisateur:acceuil')
+
     def form_invalid(self, form):
         form.add_error('username', 'Nom d\'utilisateur incorrect')
         form.add_error('password', 'Mot de passe incorrect')
@@ -50,7 +54,6 @@ class Connexion_utlisateur(LoginView):
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 def acceuil(request):
-
     Publication_alls = Publication.objects.all()
     liked_photos = [like.publication_id for like in Like.objects.filter(utilisateur=request.user)]
     utilisateur_connecte = request.user if request.user.is_authenticated else None
@@ -276,5 +279,6 @@ def creer_publication(request):
         utilisateur_id = request.user.id
         texte = request.POST.get('texte')
         couleur_fond = request.POST.get('couleur_fond')
-        publication = Publication.objects.create(utilisateur_id=utilisateur_id, contenu=texte, couleur_fond=couleur_fond)
+        publication = Publication.objects.create(utilisateur_id=utilisateur_id, contenu=texte,
+                                                 couleur_fond=couleur_fond)
         return redirect('Utilisateur:acceuil')
