@@ -515,12 +515,15 @@
         border-radius: 8px;
         padding: 16px;
         margin-top: 16px;
-        min-height: 500px;
         z-index: 100;
+        overflow-x: auto;
+
     }
 
     #publicationForm {
         margin-bottom: 16px;
+        overflow-y: auto;
+        max-height: 400px;
     }
 
     #texteInput {
@@ -545,11 +548,13 @@
         padding: 12px;
         border-radius: 8px;
         margin-bottom: 12px;
-        min-height: 300px;
-        min-height: 400px;
+        min-height: 200px;
+        max-height: 200px;
+        width: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
+        overflow-x: hidden;
     }
 
     #publicationButton {
@@ -569,6 +574,7 @@
 
 </style>
 <div id="publicationSection" style="display: none;">
+    <i class="bi bi-x-circle-fill"></i>
     <form id="publicationForm" action="{% url 'Utilisateur:creer_publication' %}" method="post">
         {% csrf_token %}
         <div id="emojiSection" style="position: absolute; right: 0; margin-right: 20px">
@@ -583,7 +589,6 @@
             </div>
         </div>
         <textarea id="texteInput" name="texte" placeholder="Écrivez votre publication ici"></textarea>
-
         <input type="hidden" id="couleurFondHidden" name="couleur_fond" value="">
         <div id="backgroundOptions" style="overflow-x: auto; white-space: nowrap;">
             <div class="backgroundOption" data-value="linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5))" style="background-image: linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5)); border-radius: 50%; width: 50px; height:  50px; display: inline-block; margin-right: 10px;"></div>
