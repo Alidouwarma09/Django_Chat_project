@@ -218,17 +218,6 @@
         background-color: #218838;
     }
 
-    /* Styles pour la prévisualisation de la vidéo */
-    #video-preview {
-        width: 100%; /* Utilise 100% de la largeur disponible */
-        height: auto; /* Maintient l'aspect ratio de la vidéo */
-        max-height: 600px; /* Limite la hauteur à 600px (ajustez selon vos besoins) */
-        border: 2px solid #ccc;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        margin-bottom: 10px;
-        display: none;
-    }
     #photo-icon {
         position: fixed;
         top: 10px;
@@ -254,18 +243,23 @@
     }
 
     #publish-form {
-        padding: 10px;
+        position: fixed;
+        width: 100%;
         background-color: #fff;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin: 20px auto;
-        height: 100vh;
+        border: 1px solid #dddfe2;
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 16px;
+        z-index: 100;
+        overflow-y: auto;
+        max-height: 400px;
     }
 
     #publish-form label {
         display: block;
         margin-bottom: 8px;
         font-weight: bold;
+
     }
 
     #publish-form input[type="text"],
@@ -297,7 +291,7 @@
         border-radius: 5px;
         overflow: hidden;
         width: 100%;
-        height: 300px;
+        height: 200px;
     }
 
     #image-editor img {
@@ -574,7 +568,7 @@
 
 </style>
 <div id="publicationSection" style="display: none;">
-    <i class="bi bi-x-circle-fill"></i>
+    <i onclick="" style="font-size: 30px" class="bi bi-x-circle-fill"></i>
     <form id="publicationForm" action="{% url 'Utilisateur:creer_publication' %}" method="post">
         {% csrf_token %}
         <div id="emojiSection" style="position: absolute; right: 0; margin-right: 20px">
@@ -606,23 +600,24 @@
     </form>
 
 </div>
+<form id="publish-form" style="display: none;">
+    <i onclick="" style="font-size: 30px" class="bi bi-x-circle-fill"></i>
+    <label for="titre">Titre de l'image:</label>
+    <input type="text" id="titre_photo" name="titre" required>
+
+    <label for="photo_file">Sélectionner une image:</label>
+    <input hidden="hidden" type="file" id="photo_file" name="photo_file" accept="image/*" required>
+
+    <div id="image-editor">
+        <img id="image-to-edit" alt="Prévisualisation">
+    </div>
+    <button type="submit">Publier</button>
+</form>
 <div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}" id="Acceuil" style="margin-top: 60px; min-width: 100%">
     <div class="conversation-main">
-        <i id="publication-action-icon" class="bi bi-fonts"></i>
-        <i id="photo-icon" class="bi bi-patch-plus"></i>
+        <i style="color: #7906a5;" id="publication-action-icon" class="bi bi-fonts"></i>
+        <i style="color: #7906a5;" id="photo-icon" class="bi bi-patch-plus"></i>
 
-        <form id="publish-form" style="display: none;">
-            <label for="titre">Titre de l'image:</label>
-            <input type="text" id="titre_photo" name="titre" required>
-
-            <label for="photo_file">Sélectionner une image:</label>
-            <input hidden="hidden" type="file" id="photo_file" name="photo_file" accept="image/*" required>
-
-            <div id="image-editor">
-                <img id="image-to-edit" alt="Prévisualisation">
-            </div>
-            <button type="submit">Publier</button>
-        </form>
         {% if Publication_alls  %}
             {% for photo in Publication_alls %}
                 <div class="publication-container">
@@ -1057,18 +1052,19 @@
     var photoIcon = document.getElementById('photo-icon');
     var publishForm = document.getElementById('publish-form');
     var imageElement = document.getElementById('image-to-edit');
+    const blurContainer = document.getElementById('Acceuil');
     var cropper = null;
 
     photoIcon.addEventListener('click', function() {
         publishForm.style.display = 'block';
+        blurContainer.classList.add('blurred');
+
     });
 
     document.querySelector('#photo_file').addEventListener('change', function(event) {
         var reader = new FileReader();
         reader.onload = function() {
             imageElement.src = reader.result;
-
-            // Détruire l'instance de cropper si elle existe déjà
             if (cropper) {
                 cropper.destroy();
             }
@@ -1147,6 +1143,7 @@
                     .then(data => {
                         if (data.success) {
                             publishForm.style.display = 'none';
+                            blurContainer.classList.add('blurred');
                         } else {
                             console.log('Erreur lors de la publication de l\'image : ' + data.errors);
                         }
@@ -1355,6 +1352,7 @@
         const textePreview = document.getElementById('textePreview');
         const couleurFondHidden = document.getElementById('couleurFondHidden');
         const blurContainer = document.getElementById('Acceuil');
+        const closeIcon = document.querySelector('#publicationSection i.bi-x-circle-fill');
 
         publicationActionIcon.addEventListener('click', () => {
             if (publicationSection.style.display === 'none') {
@@ -1371,6 +1369,10 @@
                 document.getElementById('preview').style.backgroundImage = backgroundImage;
                 couleurFondHidden.value = backgroundImage;
             });
+        });
+        closeIcon.addEventListener('click', () => {
+            publicationSection.style.display = 'none';
+            blurContainer.classList.remove('blurred');
         });
 
         texteInput.addEventListener('input', updatePreview);
@@ -1397,7 +1399,6 @@
         var textBeforeCursor = textarea.value.substring(0, cursorPosition);
         var textAfterCursor = textarea.value.substring(cursorPosition);
         textarea.value = textBeforeCursor + emoji + textAfterCursor;
-        // Mettre à jour l'aperçu
         updatePreview();
     }
 
