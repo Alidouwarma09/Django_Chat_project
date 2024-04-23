@@ -23,7 +23,8 @@
 {% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur_detail.id as detail_url %}
 <style>
     .blurred-background {
-        filter: blur(5px); /* Ajustez la valeur de flou selon vos préférences */
+        filter: blur(5px);
+        pointer-events: none;
     }
 
     .video-container {
@@ -1343,12 +1344,12 @@
         const texteInput = document.getElementById('texteInput');
         const textePreview = document.getElementById('textePreview');
         const couleurFondHidden = document.getElementById('couleurFondHidden');
-        const blurContainer = document.getElementById('blurContainer');
+        const blurContainer = document.getElementById('Acceuil');
 
         publicationActionIcon.addEventListener('click', () => {
             if (publicationSection.style.display === 'none') {
                 publicationSection.style.display = 'block';
-                body.classList.add('blurred-background');
+                blurContainer.classList.add('blurred-background');
             } else {
                 publicationSection.style.display = 'none';
                 body.classList.remove('blurred-background');
