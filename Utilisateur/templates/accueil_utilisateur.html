@@ -611,6 +611,9 @@
         white-space: nowrap;
         position: fixed;
         top: 60px;
+        z-index: 100;
+        background-color: #ccc6c6;
+        width: 100%;
     }
 
     .utilisateur-status {
@@ -683,7 +686,7 @@
     </div>
     <button type="submit">Publier</button>
 </form>
-<div class="conversation {% if request.path == Acceuil %}{% else %} {% endif %}" id="Acceuil" style="margin-top: 60px; min-width: 100%">
+<div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}" id="Acceuil" style="margin-top: 60px; min-width: 100%">
     <div class="conversation-main">
         <nav class="navbar">
             <i style="color: #7906a5;" id="publication-action-icon" class="bi bi-fonts"></i>
@@ -772,8 +775,35 @@
         {% endif %}
     </div>
 </div>
-<div class="conversation active {% if request.path == accueil_utilisateur %}active{% else %} {% endif %}"  id="Chats" style="margin-top: 60px">
+<div class="conversation  {% if request.path == accueil_utilisateur %}active{% else %} {% endif %}"  id="Chats" style="margin-top: 60px">
     <div class="conversation-main">
+        <nav class="navbar">
+            <i style="color: #7906a5;" id="publication-action-icon" class="bi bi-fonts"></i>
+            <i style="color: #7906a5; margin-left: 10px" id="photo-icon" class="bi bi-patch-plus"></i>
+            <div class="profile-dropdown" style="margin-left: auto;">
+                <div onclick="toggle()" class="profile-dropdown-btn">
+                    <div class="profile-img">
+                        <img class="profile-img" style="" src="{{ request.user.image.url }}">
+                    </div>
+                </div>
+
+                <ul class="profile-dropdown-list">
+                    <li class="profile-dropdown-list-item">
+                        <a href="{% url 'Utilisateur:parametre' %}">
+                            <i class="fa-solid fa-sliders"></i>
+                            Parametre
+                        </a>
+                    </li>
+                    <hr />
+                    <li class="profile-dropdown-list-item">
+                        <a href="#" onclick="deconnexion();">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            Déconnexion
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
         <div class="content-messages">
             <ul class="content-messages-list">
                 <div id="utilisateur_en_ligne" class="utilisateur-en-ligne">
@@ -813,6 +843,33 @@
         </div>
     </div>
 </div >
+<nav class="navbar">
+    <i style="color: #7906a5;" id="publication-action-icon" class="bi bi-fonts"></i>
+    <i style="color: #7906a5; margin-left: 10px" id="photo-icon" class="bi bi-patch-plus"></i>
+    <div class="profile-dropdown" style="margin-left: auto;">
+        <div onclick="toggle()" class="profile-dropdown-btn">
+            <div class="profile-img">
+                <img class="profile-img" style="" src="{{ request.user.image.url }}">
+            </div>
+        </div>
+
+        <ul class="profile-dropdown-list">
+            <li class="profile-dropdown-list-item">
+                <a href="{% url 'Utilisateur:parametre' %}">
+                    <i class="fa-solid fa-sliders"></i>
+                    Parametre
+                </a>
+            </li>
+            <hr />
+            <li class="profile-dropdown-list-item">
+                <a href="#" onclick="deconnexion();">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    Déconnexion
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
 {% if utilisateur_detail %}
     <div class="conversation conversation_message {% if request.path == detail_url %}active{% else %} {% endif %}" id="conversation-1" data-utilisateur-id="{{ utilisateur_detail.id }}" >
@@ -1418,6 +1475,7 @@
                         },
                         success: function(data) {
                             commentCountSpan.text(data.comment_count);
+
                         },
                         error: function(xhr, status, error) {
                             console.error("Erreur lors de la récupération du nombre de commentaires : " + error);
@@ -1439,7 +1497,8 @@
         window.addEventListener('load', () => {
             navigator.serviceWorker.register("{% static 'accueil_utilisateur/js/service-worker.js' %}")
                 .then((registration) => {
-                    console.log('Service worker registered with scope:', registration.scope);
+                    console.log('Service worker registered with scope:', registration.scope, );
+
                 })
                 .catch((error) => {
                     console.error('Service worker registration failed:', error);

@@ -81,14 +81,12 @@ body {
 
 
 .conversation {
-    height: 100%;
     display: none;
     width: 100%;
     margin-top: 60px;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    min-width: 100%;
 }
 .conversation.active {
     display: flex;
@@ -997,6 +995,7 @@ color: #999999;
     width: 100%;
     transition: opacity 0.3s ease;
     font-size: 35px;
+    z-index: 100;
 
 }
 

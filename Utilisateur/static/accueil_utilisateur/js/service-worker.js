@@ -1,12 +1,16 @@
 // Nom du cache
-const CACHE_NAME = 'my-app-cache-v1';
+const CACHE_NAME = 'my-app-cache-v2';
+// Liste des URLs à mettre en cache
 const urlsToCache = [
-    '/',
     '/static/chater_logo.png',
+    '/static/badge.png',
     '/static/font_decran.png',
-    ''
+    '/Utilisateur/apk/acceuil/',
+    '/Utilisateur/parametre/',
+    '/Utilisateur/apk/accueil_utilisateur/'
 ];
 
+// Écoute de l'événement 'install' pour installer le service worker
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
@@ -17,9 +21,13 @@ self.addEventListener('install', (event) => {
             .catch((error) => {
                 console.error('Service worker: Échec lors de l\'ajout d\'URLs au cache', error);
             })
+            .then(() => {
+                logCachedResources(); // Appelez ici pour logger après l'installation
+            })
     );
 });
 
+// Écoute de l'événement 'fetch' pour servir les contenus depuis le cache
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(event.request)
@@ -35,6 +43,8 @@ self.addEventListener('fetch', (event) => {
             })
     );
 });
+
+// Fonction pour logguer les ressources mises en cache
 function logCachedResources() {
     caches.open(CACHE_NAME)
         .then((cache) => {
@@ -50,4 +60,3 @@ function logCachedResources() {
             console.error('Service worker: Erreur lors de l\'accès au cache', error);
         });
 }
-
