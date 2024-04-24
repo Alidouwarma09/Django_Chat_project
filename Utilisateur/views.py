@@ -79,7 +79,13 @@ def acceuil(request):
 def accueil_utilisateur(request):
     connecte_id = request.user.id
     utilisateurs = Utilisateur.objects.exclude(id=connecte_id)
+
+    for utilisateur in utilisateurs:
+        print(utilisateur)
+        nombre_messages_non_lus = Message.objects.filter(recoi=request.user, envoi=utilisateur, vu=False).count()
+
     context = {
+        'nombre_messages_non_lus': nombre_messages_non_lus,
         'utilisateurs': utilisateurs,
     }
     return render(request, 'accueil_utilisateur.html', context)
@@ -216,19 +222,15 @@ def liker_publication(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     else:
-        # Si la méthode n'est pas POST, renvoyer une erreur
         return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 def commenter_publication(request):
     if request.method == 'POST':
-        print('Données POST reçues:', request.POST)
         data = json.loads(request.body)
         publication_id = data.get('publication_id')
         texte = data.get('texte')
-        print('Publication ID:', publication_id)
-        print('Texte:', texte)
         if publication_id is None or texte is None:
             return JsonResponse({'error': 'Données POST manquantes'}, status=400)
         try:

@@ -69,7 +69,7 @@ class Message(models.Model):
     recoi = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, related_name='recoi')
     contenu_message = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
-    lu = models.BooleanField(default=False)
+    vu = models.BooleanField(default=False)
     audio = models.FileField(upload_to='audio/', blank=True, null=True)
     images = models.FileField(upload_to='messages/images/', blank=True, null=True)
 

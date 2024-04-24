@@ -582,6 +582,61 @@
         background-color: #166fe5;
     }
 
+    .content-message-more {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .content-message-unread {
+        background-color: #f44336; /* Rouge pour l'urgence */
+        color: white;
+        border-radius: 50%; /* Forme circulaire */
+        padding: 5px 10px;
+        font-size: 14px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 10px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .content-message-unread i {
+        margin-right: 5px;
+    }
+    .utilisateur-en-ligne {
+        overflow-x: auto;
+        white-space: nowrap;
+        position: fixed;
+        top: 60px;
+    }
+
+    .utilisateur-status {
+        display: inline-block;
+        position: relative;
+        margin-right: 10px;
+    }
+
+    .utilisateur-image {
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+    }
+
+    .statut-indicateur {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #0d943c;
+        border: 3px solid white;
+    }
+
+
 </style>
 <div id="publicationSection" style="display: none;">
     <i onclick="" style="font-size: 30px" class="bi bi-x-circle-fill"></i>
@@ -628,7 +683,7 @@
     </div>
     <button type="submit">Publier</button>
 </form>
-<div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}" id="Acceuil" style="margin-top: 60px; min-width: 100%">
+<div class="conversation {% if request.path == Acceuil %}{% else %} {% endif %}" id="Acceuil" style="margin-top: 60px; min-width: 100%">
     <div class="conversation-main">
         <nav class="navbar">
             <i style="color: #7906a5;" id="publication-action-icon" class="bi bi-fonts"></i>
@@ -642,21 +697,9 @@
 
                 <ul class="profile-dropdown-list">
                     <li class="profile-dropdown-list-item">
-                        <a href="#">
-                            <i class="fa-regular fa-user"></i>
-                            Modifier le profile
-                        </a>
-                    </li>
-                    <li class="profile-dropdown-list-item">
                         <a href="{% url 'Utilisateur:parametre' %}">
                             <i class="fa-solid fa-sliders"></i>
                             Parametre
-                        </a>
-                    </li>
-                    <li class="profile-dropdown-list-item">
-                        <a href="#">
-                            <i class="fa-regular fa-circle-question"></i>
-                            Aide et support
                         </a>
                     </li>
                     <hr />
@@ -679,7 +722,6 @@
                                 <p class="user-name">{{ photo.utilisateur.nom }} {{ photo.utilisateur.prenom }}  <img style="width: 20px; margin-top: 10px" src="{% static 'badge.png' %}" alt="Badge certifié"></p>
                                 <p class="publication-time"><i class="bi bi-globe-americas"></i> Il y a {{ photo.date_pub }}</p>
                             </div>
-
                         </div>
                         {% if photo.photo_file  %}
                             <div class="publication-content">
@@ -730,31 +772,43 @@
         {% endif %}
     </div>
 </div>
-
-<div class="conversation {% if request.path == accueil_utilisateur %}active{% else %} {% endif %}"  id="Chats" style="margin-top: 60px">
+<div class="conversation active {% if request.path == accueil_utilisateur %}active{% else %} {% endif %}"  id="Chats" style="margin-top: 60px">
     <div class="conversation-main">
         <div class="content-messages">
             <ul class="content-messages-list">
-                <li class="content-message-title"><span>Utilisateur</span>
-                    {% if utilisateurs %}
-                        {% for utilisateur in utilisateurs %}
-                            <li >
-                                <a href="{% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur.id %}" class="lien-utilisateur" data-utilisateur-id="{{ utilisateur.id }}">
-                                    {% if utilisateur.image %}
-                                        <img class="content-message-image" src="{{ utilisateur.image.url }}" alt="Image de {{ utilisateur.nom }}">
-                                    {% else %}
-                                    {% endif %}
-                                    <span class="content-message-info">
+                <div id="utilisateur_en_ligne" class="utilisateur-en-ligne">
+                    {% for utilisateur in utilisateurs %}
+                    <div class="utilisateur-status">
+                        <img class="utilisateur-image" src="{{ utilisateur.image.url }}" alt="Image Utilisateur">
+                        <span class="statut-indicateur"></span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="liste_utilisateur">
+                       {% if utilisateurs %}
+                           {% for utilisateur in utilisateurs %}
+                               <li>
+                                   <a href="{% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur.id %}" class="lien-utilisateur" data-utilisateur-id="{{ utilisateur.id }}">
+                                       {% if utilisateur.image %}
+                                           <img class="content-message-image" src="{{ utilisateur.image.url }}" alt="Image de {{ utilisateur.nom }}">
+                                       {% else %}
+                                       {% endif %}
+                                       <span class="content-message-info">
                                         <span class="content-message-name">{{ utilisateur.nom }} {{ utilisateur.prenom }}</span>
                                         <span class="content-message-text">Ecrire a cet utilisateur</span>
                                     </span>
-                                    <span class="content-message-more">
-                                        <span class="content-message-unread"><i class="bi bi-chat"></i></span>
-                                    </span>
-                                </a>
-                            </li>
-                        {% endfor %}
-                    {% endif %}
+                                       <span class="content-message-more">
+                                    {% if nombre_messages_non_lus > 0 %}
+                                        <span class="content-message-unread">
+                                            <i class="bi bi-chat"></i>{{ nombre_messages_non_lus }}
+                                        </span>
+                                    {% endif %}
+                                </span>
+                                   </a>
+                               </li>
+                           {% endfor %}
+                       {% endif %}
+                   </div>
             </ul>
         </div>
     </div>

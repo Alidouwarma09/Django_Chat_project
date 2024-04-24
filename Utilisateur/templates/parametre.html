@@ -109,18 +109,50 @@
         transform: translateY(-50%) rotate(180deg);
     }
         .hauteur {
+            background-color: #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            height: 50px; /* Hauteur de la div */
-            background-color: #151313; /* Couleur de fond */
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
             margin-top: 50px;
         }
 
         .hauteur-item {
-            flex: 1;
+            color: #495057;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
             text-align: center;
+            flex-grow: 1;
         }
+
+        .cardreDeconnexion {
+            margin-top: 20px;
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            bottom: 100px;
+            position: absolute;
+            width: 80%;
+        }
+
+        .cardreDeconnexion a {
+            color: #d63384;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .cardreDeconnexion a:hover {
+            color: #721c24;
+            text-decoration: underline;
+        }
+
     </style>
 </head>
 <body data-theme-sombre="{% if request.user.theme_sombre %}true{% else %}false{% endif %}">
@@ -132,7 +164,7 @@
         <div class="hauteur-item">Partages</div>
     </div>
     <h1 class="settings-header">Paramètres <i class="fas fa-chevron-down"></i></h1>
-    <ul class="settings-menu">
+    <ul class="settings-menu show">
         <li><span class="icon"><i class="fas fa-user-circle"></i></span>Profil & Comptes</li>
         <li><span class="icon"><i class="fas fa-lock"></i></span>Sécurité</li>
         <li><span class="icon"><i class="fas fa-shield-alt"></i></span>Confidentialité & Sécurité</li>
@@ -140,7 +172,7 @@
     </ul>
 
     <h1 class="settings-header">Personnalisation <i class="fas fa-chevron-down"></i></h1>
-    <ul class="settings-menu">
+    <ul class="settings-menu show">
         <li><span class="icon"><i class="fas fa-moon"></i></span>Mode Sombre
             <label class="toggle">
                 <form method="post">
@@ -152,9 +184,16 @@
     </ul>
 
     <h1 class="settings-header">Aide et assistance <i class="fas fa-chevron-down"></i></h1>
-    <ul class="settings-menu">
+    <ul class="settings-menu show">
         <li><span class="icon"><i class="fas fa-question-circle"></i></span>Aide et support</li>
     </ul>
+
+</div>
+<div class="cardreDeconnexion">
+    <a href="#" onclick="deconnexion();">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        Déconnexion
+    </a>
 </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -198,6 +237,5 @@
             header.querySelector('.fa-chevron-down').classList.toggle('rotation');
         });
     });
-
 </script>
 </html>
