@@ -10,6 +10,8 @@ from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse, StreamingHttpResponse
 from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from Model.models import Utilisateur, Message, Publication, Like, Comment, Publication
@@ -284,3 +286,16 @@ def creer_publication(request):
         publication = Publication.objects.create(utilisateur_id=utilisateur_id, contenu=texte,
                                                  couleur_fond=couleur_fond)
         return redirect('Utilisateur:acceuil')
+
+
+def parametre(request):
+    return render(request, 'parametre.html')
+
+
+@method_decorator(login_required(login_url='Utilisateur:Connexion_utlisateur'), name='dispatch')
+class UpdateThemeSombre(View):
+    def post(self, request, *args, **kwargs):
+        theme_sombre = request.POST.get('theme_sombre', 'false')
+        request.user.theme_sombre = theme_sombre.lower() == 'true'
+        request.user.save()
+        return JsonResponse({'success': True, 'theme_sombre': request.user.theme_sombre})

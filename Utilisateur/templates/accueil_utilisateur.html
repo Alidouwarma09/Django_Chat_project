@@ -22,6 +22,13 @@
 {% url 'Utilisateur:acceuil' as Acceuil %}
 {% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur_detail.id as detail_url %}
 <style>
+    .conversation{
+    {% if request.user.theme_sombre %}
+        background-color: rgb(22 24 24);
+    {% else %}
+        background-color: rgb(255, 255, 255);
+    {% endif %}
+    }
     .blurred {
         backdrop-filter: blur(20px);
         pointer-events: none;
@@ -310,6 +317,21 @@
         border-radius: 5px;
         margin-bottom: 20px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    {% if request.user.theme_sombre %}
+        background-color:#020101;
+        color: white;
+    {% else %}
+        background-color: rgb(255, 255, 255);
+    {% endif %}
+
+    }
+    .navbar{
+    {% if request.user.theme_sombre %}
+        background-color:#020101;
+        color: white;
+    {% else %}
+        background-color: rgb(255, 255, 255);
+    {% endif %}
     }
 
     .publication-header {
@@ -383,9 +405,9 @@
         display: flex;
         justify-content: space-between;
         position: sticky;
-        bottom: 0; /* Positionne le formulaire au bas */
-        padding: 10px; /* Espacement interne */
-        background-color: #f9f9f9; /* Fond clair */
+        bottom: 0;
+        padding: 10px;
+        background-color: #f9f9f9;
         border-top: 1px solid #cccccc;
         z-index: 1;
         box-sizing: border-box;
@@ -393,8 +415,8 @@
     }
     .comment {
         box-sizing: border-box;
-        padding: 10px; /* Espacement interne pour chaque commentaire */
-        border-bottom: 1px solid #e0e0e0; /* Bordure inférieure pour séparer les commentaires */
+        padding: 10px;
+        border-bottom: 1px solid #e0e0e0;
         margin-bottom: 10px;
     }
 
@@ -608,7 +630,6 @@
 </form>
 <div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}" id="Acceuil" style="margin-top: 60px; min-width: 100%">
     <div class="conversation-main">
-
         <nav class="navbar">
             <i style="color: #7906a5;" id="publication-action-icon" class="bi bi-fonts"></i>
             <i style="color: #7906a5; margin-left: 10px" id="photo-icon" class="bi bi-patch-plus"></i>
@@ -627,7 +648,7 @@
                         </a>
                     </li>
                     <li class="profile-dropdown-list-item">
-                        <a href="#">
+                        <a href="{% url 'Utilisateur:parametre' %}">
                             <i class="fa-solid fa-sliders"></i>
                             Parametre
                         </a>
@@ -648,7 +669,6 @@
                 </ul>
             </div>
         </nav>
-
         {% if Publication_alls  %}
             {% for photo in Publication_alls %}
                 <div class="publication-container">
@@ -656,9 +676,10 @@
                         <div class="publication-header">
                             <img src="{{ photo.utilisateur.image.url }}" alt="Profil de l'utilisateur" class="user-profile">
                             <div class="user-info">
-                                <p class="user-name">{{ photo.utilisateur.nom }} {{ photo.utilisateur.prenom }}</p>
-                                <p class="publication-time">Il y a {{ photo.date_pub }}</p>
+                                <p class="user-name">{{ photo.utilisateur.nom }} {{ photo.utilisateur.prenom }}  <img style="width: 20px; margin-top: 10px" src="{% static 'badge.png' %}" alt="Badge certifié"></p>
+                                <p class="publication-time"><i class="bi bi-globe-americas"></i> Il y a {{ photo.date_pub }}</p>
                             </div>
+
                         </div>
                         {% if photo.photo_file  %}
                             <div class="publication-content">
@@ -790,7 +811,6 @@
         </form>
     </div>
 {% endif %}
-
 
 
 <script>

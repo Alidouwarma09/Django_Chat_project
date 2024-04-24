@@ -22,5 +22,8 @@ urlpatterns = [
     path('apk/afficher_commentaire/', afficher_commentaire, name='afficher_commentaire'),
     path('apk/get_comment_count/', get_comment_count, name='get_comment_count'),
     path('creer/', views.creer_publication, name='creer_publication'),
+    path('parametre/', views.parametre, name='parametre'),
+    path('UpdateThemeSombre/', views.UpdateThemeSombre.as_view(), name='UpdateThemeSombre'),
+
 
 ]
