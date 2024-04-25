@@ -56,6 +56,7 @@ body {
 }
 .content-message-name {
     font-size: 14px;
+    color: white;
     font-weight: bold; /* Texte en gras */
     display: block; /* Rend le texte sur une ligne distincte */
     margin-bottom: 4px; /* Espacement en dessous */
@@ -65,7 +66,7 @@ body {
     overflow: hidden;
     white-space: nowrap;
     font-size: 12px; /* Taille de la police plus petite */
-    color: #555; /* Couleur de texte plus claire */
+    color: #8a8787; /* Couleur de texte plus claire */
 }
 .content-message-more {
     text-align: right;
@@ -767,7 +768,7 @@ button {
     display: flex;
     justify-content: space-between;
     position: sticky;
-    bottom: 0; /* Positionne le formulaire au bas */
+    bottom: 0; /* Positionne le formulaire au bsdsdsdas */
     padding: 10px; /* Espacement interne */
     background-color: #f9f9f9; /* Fond clair */
     border-top: 1px solid #cccccc;
