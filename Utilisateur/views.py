@@ -94,7 +94,7 @@ def accueil_utilisateur(request):
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 def detail_utilisateur(request, utilisateur_detail_id):
     utilisateur_detail = get_object_or_404(Utilisateur, id=utilisateur_detail_id)
-    return render(request, 'accueil_utilisateur.html', {'utilisateur_detail': utilisateur_detail})
+    return render(request, 'detail_utilisateur.html', {'utilisateur_detail': utilisateur_detail})
 
 
 def envoyer_message_images(request):
@@ -184,13 +184,19 @@ def reception_message(request):
     chats = Message.objects.filter(
         (Q(envoi=utilisateur) & Q(recoi_id=utilisateur_detail_id)) |
         (Q(recoi=utilisateur) & Q(envoi_id=utilisateur_detail_id))
-    ).order_by('timestamp')
+    ).select_related('envoi', 'recoi').order_by('timestamp')  # Ajout de select_related
 
     arr = []
     for chat in chats:
+        # Gérer correctement l'accès à l'image du récepteur
+        reco_image_url = chat.envoi.image.url if chat.recoi.image else None
+        print(reco_image_url)
+
         message_dict = {
             'id': chat.id,
             'recoi_id': chat.recoi_id,
+            'envoi_id': chat.envoi_id,
+            'recoi_image': reco_image_url,
             'contenu_message': chat.contenu_message,
             'timestamp': chat.timestamp,
             'images': chat.images.url if chat.images else None,
@@ -198,6 +204,32 @@ def reception_message(request):
         }
         arr.append(message_dict)
     return JsonResponse(arr, safe=False)
+
+
+def utilisateur_en_train_decrire(request):
+    if request.method == 'POST':
+        utilisateur_id = request.user.id
+        utilisateur = Utilisateur.objects.get(id=utilisateur_id)
+        utilisateur.en_train_decrire = True
+        utilisateur.save()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+def utilisateur_fini_ecrire(request):
+    if request.method == 'POST':
+        utilisateur_id = request.user.id
+        utilisateur = Utilisateur.objects.get(id=utilisateur_id)
+        print(utilisateur.nom)
+        utilisateur.en_train_decrire = False
+        utilisateur.save()
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+def check_typing_status(request):
+    utilisateur_id2 = request.GET.get('utilisateur_id')
+    utilisateur = Utilisateur.objects.get(id=utilisateur_id2)
+    return JsonResponse({'en_train_decrire': utilisateur.en_train_decrire})
 
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')

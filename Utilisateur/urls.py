@@ -23,7 +23,10 @@ urlpatterns = [
     path('apk/get_comment_count/', get_comment_count, name='get_comment_count'),
     path('creer/', views.creer_publication, name='creer_publication'),
     path('parametre/', views.parametre, name='parametre'),
+    path('utilisateur_fini_ecrire/', views.utilisateur_fini_ecrire, name='utilisateur_fini_ecrire'),
+    path('utilisateur_en_train_decrire/', views.utilisateur_en_train_decrire, name='utilisateur_en_train_decrire'),
     path('UpdateThemeSombre/', views.UpdateThemeSombre.as_view(), name='UpdateThemeSombre'),
+    path('check_typing_status/', views.check_typing_status, name='check_typing_status'),
 
 
 ]
