@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/tailwindcss-colors.css' %}">
-    <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/publier_video.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -20,15 +19,355 @@
 {% url 'Utilisateur:acceuil' as Acceuil %}
 {% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur_detail.id as detail_url %}
 <style>
+    .conversation {
+        display: none;
+        width: 100%;
+        margin-top: 60px;
+        overflow: hidden;
 
-    .conversation{
-    {% if request.user.theme_sombre %}
-        background-color: rgb(22 24 24);
-    {% else %}
-        background-color: rgb(255, 255, 255);
-    {% endif %}
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .conversation.active {
+        display: flex;
+        flex-direction: column;
+    }
+    .conversation-top {
+        padding: 8px 16px;
+        background-color: #03141c;
+        display: flex;
+        align-items: center;
+        position: fixed;
+        z-index: 1000;
+        width: 100%;
+        height: 100px;
+    }
+    .conversation-back {
+        background-color: transparent;
+        border: none;
+        outline: none;
+        text-decoration: none;
+        width: 32px;
+        height: 32px;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        cursor: pointer;
+        color: var(--slate-400);
+        margin-right: 12px;
+        display: none;
+    }
+    .conversation-back:hover {
+        background-color: var(--slate-100);
+        border-radius: 50%;
+        color: var(--slate-600);
+    }
+    .conversation-back:active {
+        background-color: var(--slate-200);
+    }
+    .conversation-user {
+        display: flex;
+        align-items: center;
+    }
+    .conversation-user-name {
+        font-weight: 500;
+        font-size: 17px;
+    }
+    .conversation-user-status {
+        color: var(--slate-400);
+        font-size: 13px;
+    }
+    .conversation-user-statu-point {
+        width: 10px;
+        height: 10px;
+        background-color: #0d943c;
+        vertical-align: middle;
+        display: inline-block;
+        margin-right: 4px;
+        border-radius: 50%;
+
+    }
+    .conversation-buttons {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+    }
+    .conversation-buttons > * {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        font-size: 20px;
+        background-color: transparent;
+        border: none;
+        outline: transparent;
+        cursor: pointer;
+        color: var(--slate-600);
+        margin-left: 4px;
+    }
+    .conversation-buttons > :hover {
+        background-color: #887d7d;
+        color: var(--slate-700);
+    }
+    .conversation-buttons > :active {
+        background-color: var(--slate-200);
+    }
+    .conversation-wrapper {
+        list-style-type: none;
+        margin-bottom: 200px;
+        margin-top: 100px;
+    }
+    .conversation-item {
+        display: flex;
+        align-items: flex-end;
+        flex-direction: row-reverse;
+        margin-bottom: 16px;
+    }
+    .conversation-item.recoi {
+        flex-direction: row;
+    }
+    .conversation-item-side {
+        margin-right: 8px;
+    }
+    .conversation-item.recoi .conversation-item-side {
+        margin-left: 8px;
+    }
+    .conversation-item-image {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+    }
+    .conversation-item-content {
+        width: 100%;
+    }
+    .conversation-item-wrapper:not(:last-child) {
+        margin-bottom: 8px;
+    }
+    .conversation-item-box {
+        max-width: 720px;
+        position: relative;
+        margin-left: auto;
+    }
+    .conversation-item.recoi .conversation-item-box {
+        margin-left: unset;
+    }
+    .conversation-item-text {
+        padding: 12px 16px 8px;
+        background-color: #012e3d;
+        box-shadow: 0 2px 12px -2px rgba(0, 0, 0, .1);
+        font-size: 14px;
+        border-radius: 6px;
+        line-height: 1.5;
+        margin-left: 32px;
+        color: white;
+    }
+    .conversation-item.recoi .conversation-item-text {
+        margin-left: unset;
+        margin-right: 32px;
+    }
+    .conversation-item.recoi .conversation-item-text {
+        background-color: #fff;
+        box-shadow: 0 2px 12px -2px var(--emerald-500);
+        color: gray;
+    }
+    .conversation-item-time {
+        font-size: 10px;
+        color: white;
+        display: block;
+        text-align: right;
+        margin-top: 4px;
+        line-height: 1;
+    }
+    .conversation-item.recoi .conversation-item-time {
+        color: white;
+    }
+    .conversation-item-dropdown {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: all .15s ease-in-out;
+    }
+    .conversation-item.recoi .conversation-item-dropdown {
+        left: unset;
+        right: 0;
+    }
+    .conversation-item-wrapper:hover .conversation-item-dropdown {
+        opacity: 1;
+        visibility: visible;
+    }
+    .conversation-item-dropdown-toggle {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        background-color: var(--white);
+        outline: transparent;
+        border: 1px solid var(--slate-200);
+        cursor: pointer;
+        transition: all .15s ease-in-out;
+    }
+    .conversation-item-dropdown-toggle:hover {
+        background-color: var(--emerald-500);
+        color: var(--white);
+        box-shadow: 0 2px 12px -2px var(--emerald-500);
+    }
+    .conversation-item-dropdown-toggle:active {
+        background-color: var(--emerald-600);
+    }
+    .conversation-item.recoi .conversation-item-dropdown-list {
+        left: unset;
+        right: 0;
+    }
+    .conversation-item-dropdown.active .conversation-item-dropdown-list {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
     }
 
+    .conversation-form {
+        padding: 8px 16px;
+        background-color: var(--white);
+        display: flex;
+        align-items: flex-end;
+        position: fixed;
+        bottom: 0;
+        width: 100%; /* Assure que le formulaire s'étend sur toute la largeur de la fenêtre */
+        z-index: 1000;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Ajoute une ombre au formulaire pour le démarquer */
+    }
+    .conversation-form-group {
+        width: 100%;
+        position: relative;
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+    .conversation-form-input {
+        background-color: var(--slate-100);
+        border: 1px solid var(--slate-300);
+        border-radius: 50px;
+        outline: transparent;
+        padding: 10px 32px 10px 16px;
+        font: inherit;
+        font-size: 14px;
+        resize: none;
+        width: 100%;
+        display: block;
+        line-height: 1.5;
+        max-height: calc(20px + ((14px * 2) * 6));
+
+    }
+    .conversation-form-input:focus {
+        border-color: var(--slate-400);
+    }
+    .conversation-form-record {
+        position: absolute;
+        bottom: 0;
+        right: 5px;
+        display: flex; /* Utilisez flexbox pour centrer le contenu */
+        justify-content: center; /* Centre horizontalement */
+        align-items: center; /* Centre verticalement */
+        font-size: 25px;
+        color: var(--slate-400);
+        background-color: transparent;
+        border: none;
+        outline: transparent;
+        cursor: pointer;
+        height: 40px;
+    }
+    .image_input{
+        bottom: 0;
+        right: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 25px;
+        background-color: transparent;
+        border: none;
+        outline: transparent;
+        cursor: pointer;
+        height: 40px;
+        width:30px;
+        position: absolute;
+        opacity: 0;
+        z-index: 2;
+    }
+    .conversation-form-button {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        border: none;
+        background-color: transparent;
+        outline: transparent;
+        font-size: 20px;
+        color: var(--slate-400);
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+    .conversation-form-button:hover {
+        background-color: var(--slate-100);
+        color: var(--slate-600);
+    }
+    .conversation-form-button:active {
+        background-color: var(--slate-200);
+        color: var(--slate-600);
+    }
+    .conversation-form-submit {
+        background-color: #141c1b;
+        box-shadow: 0 2px 8px -2px var(--emerald-500);
+        color: var(--white);
+    }
+    .conversation-form-submit:hover {
+        background-color: var(--emerald-600);
+        color: var(--white);
+    }
+    .conversation-form-submit:active {
+        background-color: var(--emerald-700);
+        color: var(--white);
+    }
+    .conversation-default {
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        padding-left: calc(256px + 16px);
+        color: var(--slate-400);
+    }
+    .conversation-default i {
+        font-size: 32px;
+    }
+    .conversation-default p {
+        margin-top: 16px;
+    }
+
+    @media screen and (max-width: 1600px) {
+    }
+
+    @media screen and (max-width: 767px) {
+
+        .conversation {
+            padding-left: unset;
+        }
+        .conversation.active {
+            position: relative;
+            z-index: 20;
+        }
+        .conversation-back {
+            display: flex;
+        }
+        .conversation-default.active {
+            display: none;
+            padding: 16px;
+        }
+    }
     #audioPreviewContainer {
         display: flex;
         align-items: center;
@@ -43,7 +382,6 @@
         align-items: center;
         margin-left: 10px;
     }
-
     button {
         background-color: #fff;
         border: none;
@@ -104,14 +442,13 @@
         object-fit: cover;
     }
 </style>
-{% if utilisateur_detail %}
-    <div class="conversation conversation_message active" id="conversation-1" data-utilisateur-id="{{ utilisateur_detail.id }}" >
+    <div class="conversation conversation_message active" style="background-image: url('{% static 'font_decran.png' %}');background-size: contain;  " id="conversation-1" data-utilisateur-id="{{ utilisateur_detail.id }}" >
         <div class="conversation-top">
             <a class="conversation-back" href="{% url 'Utilisateur:accueil_utilisateur' %}"><i class="ri-arrow-left-line"></i></a>
             <div class="conversation-user">
-                <img class="content-message-image" src="{{ utilisateur_detail.image.url }}" alt="Image de {{ utilisateur.nom }}">
+                <img style="border-radius: 50%; width: 100px;" src="{{ utilisateur_detail.image.url }}" alt="Image de {{ utilisateur.nom }}">
                 <div>
-                    <div class="conversation-user-name">{{ utilisateur_detail.nom }} {{ utilisateur_detail.prenom }}</div>
+                    <div style="color: white">{{ utilisateur_detail.nom }} {{ utilisateur_detail.prenom }}</div>
 
                     <div class="conversation-user-status"><span class="conversation-user-statu-point"></span> En ligne
                         <br> {% if request.user %}<span id="typingIndicator"></span>{% endif %}
@@ -124,7 +461,7 @@
                 <button type="button"><i class="ri-information-line"></i></button>
             </div>
         </div>
-        <div class="conversation-main" style="background-image: url('{% static 'font_decran.png' %}'); background-size: contain; height:100vh" id="conversation-main">
+        <div class="conversation-main" style="height:100vh" id="conversation-main">
         </div>
         <div id="audioPreviewContainer" style="display: none;">
             <audio id="audioPreview"></audio>
@@ -153,9 +490,8 @@
             <audio id="submitSound" src="{% static 'SonEnvoi/envoiSon.mp3' %}"></audio>
         </form>
     </div>
-{% endif %}
 <script>
-    setInterval(reeceptionMesaage, 50000000)
+    setInterval(reeceptionMesaage, 500)
     let cunter = 0
     let displayedMessageIds = new Set();
     function afficherMessages(data) {
@@ -230,7 +566,7 @@
                 });
         }
     }
-    setInterval(reeceptionMesaage, 3000000);
+    setInterval(reeceptionMesaage, 300);
 </script>
 
 {#Envoi message#}

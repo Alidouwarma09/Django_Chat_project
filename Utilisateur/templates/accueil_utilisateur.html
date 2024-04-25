@@ -13,14 +13,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"/>
-
-
     <title>Chat</title>
 </head>
 <body>
-{% url 'Utilisateur:accueil_utilisateur' as accueil_utilisateur %}
 {% url 'Utilisateur:acceuil' as Acceuil %}
-{% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur_detail.id as detail_url %}
 <style>
     .conversation{
     {% if request.user.theme_sombre %}
@@ -708,155 +704,61 @@
     </nav>
     {% if Publication_alls  %}
         {% for photo in Publication_alls %}
-            <div class="publication-container">
-                <div class="publication">
-                    <div class="publication-header">
-                        <img src="{{ photo.utilisateur.image.url }}" alt="Profil de l'utilisateur" class="user-profile">
-                        <div class="user-info">
-                            <p class="user-name">{{ photo.utilisateur.nom }} {{ photo.utilisateur.prenom }}  <img style="width: 20px; margin-top: 10px" src="{% static 'badge.png' %}" alt="Badge certifié"></p>
-                            <p class="publication-time"><i class="bi bi-globe-americas"></i> Il y a {{ photo.date_pub }}</p>
+            <div class="publication">
+                <div class="publication-header">
+                    <img src="{{ photo.utilisateur.image.url }}" alt="Profil de l'utilisateur" class="user-profile">
+                    <div class="user-info">
+                        <p class="user-name">{{ photo.utilisateur.nom }} {{ photo.utilisateur.prenom }}  <img style="width: 20px; margin-top: 10px" src="{% static 'badge.png' %}" alt="Badge certifié"></p>
+                        <p class="publication-time"><i class="bi bi-globe-americas"></i> Il y a {{ photo.date_pub }}</p>
+                    </div>
+                </div>
+                {% if photo.photo_file  %}
+                    <div class="publication-content">
+                        <p>{{ photo.titre }}</p>
+                        <img src="{{ photo.photo_file.url }}" alt="Image de la publication" class="publication-image">
+                    </div>
+                {% else  %}
+                    <div class="publication-content" style=" min-height: 400px; display: flex; justify-content: center; align-items: center; background-image:{{ photo.couleur_fond }} ">
+                        <div class="publication-content" style="color: white">
+                            {{ photo.contenu }}
                         </div>
                     </div>
-                    {% if photo.photo_file  %}
-                        <div class="publication-content">
-                            <p>{{ photo.titre }}</p>
-                            <img src="{{ photo.photo_file.url }}" alt="Image de la publication" class="publication-image">
-                        </div>
-                    {% else  %}
-                        <div class="publication-content" style=" min-height: 400px; display: flex; justify-content: center; align-items: center; background-image:{{ photo.couleur_fond }} ">
-                            <div class="publication-content" style="color: white">
-                                {{ photo.contenu }}
-                            </div>
-                        </div>
-                    {% endif  %}
-                    <div class="row publication-actions">
-                        <div class="col-4 likes-container" style="font-size: 11px; padding-left: 20px;">
-                            <button class="action-button" id="like-button" data-publication-id="{{ photo.id }}">
-                                <i class="bi bi-heart-fill"></i>
-                            </button>
-                            <span class="likes-count">
+                {% endif  %}
+                <div class="row publication-actions">
+                    <div class="col-4 likes-container" style="font-size: 11px; padding-left: 20px;">
+                        <button class="action-button" id="like-button" data-publication-id="{{ photo.id }}">
+                            <i class="bi bi-heart-fill"></i>
+                        </button>
+                        <span class="likes-count">
                                     {% for key, value in publication_likes.items %}
                                         {% if key == photo.id %}
                                             {{ value }}
                                         {% endif %}
                                     {% endfor %}
                                 </span> likes
-                        </div>
-                        <div class="col-4 comment-count-container" style="font-size: 11px; padding-right: 20px;">
-                            <button class="action-button" id="comment-button" data-publicationafficher-id="{{ photo.id }}"><i class="bi bi-chat"></i></button>
-                            <span class="comment-count" id="comment-count-{{ photo.id }}"></span> commentaires
-                        </div>
-                        <div class="col-4 comment-count-container" style="font-size: 10px; padding-right: 30px; margin-right: 10px;">
-                            <span class="comment-count">15,42k</span> Vues
-                        </div>
                     </div>
-                    <div class="comments-section" id="comments-section-{{ photo.id }}" style="overflow-y: auto; overflow-x: none; max-height: 300px">
-                        <div class="comments-container" id="comments-container-{{ photo.id }}">
-                            <!-- Les commentaires seront ajoutés ici -->
-                        </div>
-                        <form class="commentaire-form" id="commentaire-form-{{ photo.id }}">
-                            {% csrf_token %}
-                            <input type="text" class="commentaire-input" id="commentaire-input-{{ photo.id }}" placeholder="Écrivez un commentaire...">
-                            <button type="submit" data-publications-id="{{ photo.id }}">▶️</button>
-                        </form>
+                    <div class="col-4 comment-count-container" style="font-size: 11px; padding-right: 20px;">
+                        <button class="action-button" id="comment-button" data-publicationafficher-id="{{ photo.id }}"><i class="bi bi-chat"></i></button>
+                        <span class="comment-count" id="comment-count-{{ photo.id }}"></span> commentaires
                     </div>
+                    <div class="col-4 comment-count-container" style="font-size: 10px; padding-right: 30px; margin-right: 10px;">
+                        <span class="comment-count">15,42k</span> Vues
+                    </div>
+                </div>
+                <div class="comments-section" id="comments-section-{{ photo.id }}" style="overflow-y: auto; overflow-x: none; max-height: 300px">
+                    <div class="comments-container" id="comments-container-{{ photo.id }}">
+                        <!-- Les commentaires seront ajoutés ici -->
+                    </div>
+                    <form class="commentaire-form" id="commentaire-form-{{ photo.id }}">
+                        {% csrf_token %}
+                        <input type="text" class="commentaire-input" id="commentaire-input-{{ photo.id }}" placeholder="Écrivez un commentaire...">
+                        <button type="submit" data-publications-id="{{ photo.id }}">▶️</button>
+                    </form>
                 </div>
             </div>
         {% endfor %}
     {% endif %}
 </div>
-
-<div class="conversation  {% if request.path == accueil_utilisateur %}active{% else %} {% endif %}"  id="Chats" style="margin-top: 100px; height:100vh">
-    <div class="content-messages">
-        <ul class="content-messages-list">
-            <div id="utilisateur_en_ligne" class="utilisateur-en-ligne">
-                {% for utilisateur in utilisateurs %}
-                    <div class="utilisateur-status">
-                        <img class="utilisateur-image" src="{{ utilisateur.image.url }}" alt="Image Utilisateur">
-                        <span class="statut-indicateur"></span>
-                    </div>
-                {% endfor %}
-            </div>
-            <div class="liste_utilisateur">
-                {% if utilisateurs %}
-                    {% for utilisateur in utilisateurs %}
-                        <li>
-                            <a href="{% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur.id %}" class="lien-utilisateur" data-utilisateur-id="{{ utilisateur.id }}">
-                                {% if utilisateur.image %}
-                                    <img class="content-message-image" src="{{ utilisateur.image.url }}" alt="Image de {{ utilisateur.nom }}">
-                                {% else %}
-                                {% endif %}
-                                <span class="content-message-info">
-                                        <span class="content-message-name">{{ utilisateur.nom }} {{ utilisateur.prenom }}</span>
-                                        <span class="content-message-text">Ecrire a cet utilisateur</span>
-                                    </span>
-                                <span class="content-message-more">
-                                <i class="bi bi-eye"></i>
-                                    {% if nombre_messages_non_lus > 0 %}
-                                        <span class="content-message-unread">
-                                            <i class="bi bi-chat"></i>{{ nombre_messages_non_lus }}
-                                        </span>
-                                    {% endif %}
-                                </span>
-                            </a>
-                        </li>
-                    {% endfor %}
-                {% endif %}
-            </div>
-        </ul>
-    </div>
-</div >
-
-
-{% if utilisateur_detail %}
-    <div class="conversation conversation_message {% if request.path == detail_url %}active{% else %} {% endif %}" id="conversation-1" data-utilisateur-id="{{ utilisateur_detail.id }}" >
-        <div class="conversation-top">
-            <a class="conversation-back" href="{% url 'Utilisateur:accueil_utilisateur' %}"><i class="ri-arrow-left-line"></i></a>
-            <div class="conversation-user">
-                <img class="content-message-image" src="{{ utilisateur_detail.image.url }}" alt="Image de {{ utilisateur.nom }}">
-                <div>
-                    <div class="conversation-user-name">{{ utilisateur_detail.nom }} {{ utilisateur_detail.prenom }}</div>
-
-                    <div class="conversation-user-status"><span class="conversation-user-statu-point"></span> En ligne</div>
-                </div>
-            </div>
-            <div class="conversation-buttons">
-                <button type="button"><i class="ri-phone-fill"></i></button>
-                <button type="button"><i class="ri-vidicon-line"></i></button>
-                <button type="button"><i class="ri-information-line"></i></button>
-            </div>
-        </div>
-        <div class="conversation-main" style="background-image: url('{% static 'font_decran.png' %}'); background-size: contain; height:100vh" id="conversation-main">
-        </div>
-        <div id="audioPreviewContainer" style="display: none;">
-            <audio id="audioPreview"></audio>
-            <div id="audioControls">
-                <button id="playButton"><i class="bi bi-play-circle-fill"></i></button>
-                <button id="pauseButton"><i class="bi bi-stop-circle"></i></button>
-                <input type="range" id="progressBar" min="0" max="100" value="0" step="0.1">
-            </div>
-            <button id="removeAudioButton"><i class="bi bi-trash"></i></button>
-
-        </div>
-        <form class="conversation-form message_image" id="message-form">
-            {% csrf_token %}
-            <input type="hidden" name="utilisateur_id" value="{{ utilisateur_detail.id }}">
-            <button class="recordButton" id="recordButton"><i style="font-size: 25px;" class="bi bi-mic"></i>
-
-            </button>
-            <div id="recordingDuration">00:00</div>
-            <input type="file" id="audioInput" name="audio" style="display: none;">
-            <div class="conversation-form-group">
-                <textarea id="message-input" name="contenu_message" class="conversation-form-input" rows="1" placeholder="Écrivez..."></textarea>
-                <input class="image_input" id="image_input" type="file" name="images" multiple accept="image/*">
-                <button type="button" class="conversation-form-record"><i style="font-size: 25px;" class="bi bi-image"></i></button>
-            </div>
-            <button type="submit" class="conversation-form-button conversation-form-submit"><i class="ri-send-plane-2-line"></i></button>
-            <audio id="submitSound" src="{% static 'SonEnvoi/envoiSon.mp3' %}"></audio>
-
-        </form>
-    </div>
-{% endif %}
 
 {#Publication#}
 <script>
@@ -1142,7 +1044,6 @@
     setInterval(nombreCommentaire, 2000);
 </script>
 <script>
-
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register("{% static 'accueil_utilisateur/js/service-worker.js' %}")

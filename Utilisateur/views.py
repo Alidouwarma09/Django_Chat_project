@@ -81,14 +81,13 @@ def accueil_utilisateur(request):
     utilisateurs = Utilisateur.objects.exclude(id=connecte_id)
 
     for utilisateur in utilisateurs:
-        print(utilisateur)
         nombre_messages_non_lus = Message.objects.filter(recoi=request.user, envoi=utilisateur, vu=False).count()
 
     context = {
         'nombre_messages_non_lus': nombre_messages_non_lus,
         'utilisateurs': utilisateurs,
     }
-    return render(request, 'accueil_utilisateur.html', context)
+    return render(request, 'tout_les_utilisateurs.html', context)
 
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
