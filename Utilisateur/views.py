@@ -14,7 +14,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from Model.models import Utilisateur, Message, Publication, Like, Comment, Publication
+from Model.models import Utilisateur, Message, Like, Comment, Publication
 from Utilisateur.forms import InscriptionForm, ConnexionForm, MessageForm, MessageimagesForm, \
     MessageAudioForm, PhotoForm
 
@@ -58,7 +58,7 @@ class Connexion_utlisateur(LoginView):
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 def acceuil(request):
-    Publication_alls = Publication.objects.all()
+    Publication_alls = Publication.objects.all().order_by('-date_publication')
     liked_photos = [like.publication_id for like in Like.objects.filter(utilisateur=request.user)]
     utilisateur_connecte = request.user if request.user.is_authenticated else None
     publication_likes = {}

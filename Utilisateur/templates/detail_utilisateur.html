@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html style="background-image: url('{% static 'font_decran.png' %}');" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,11 +19,39 @@
 {% url 'Utilisateur:acceuil' as Acceuil %}
 {% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur_detail.id as detail_url %}
 <style>
+    .parent-container {
+        position: fixed;
+        display: flex;
+        flex-direction: column;
+        padding: 8px 16px;
+        background-color: #050c10;
+        align-items: flex-end;
+        bottom: 0;
+        width: 100%; /* Assure que le formulaire s'étend sur toute la largeur de la fenêtre */
+        z-index: 1000;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Ajoute une ombre au formulaire pour le démarquer */
+    }
+
+    #audioPreviewContainer {
+        display: flex;
+        align-items: center;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        width: 100%;
+        margin-bottom: 60px;
+        background-color: #f0f0f0;
+        order: 1; /* Définir l'ordre pour placer cet élément au-dessus du formulaire */
+    }
+
+    #message-form {
+        order: 2; /* Définir l'ordre pour placer le formulaire en-dessous de l'élément audioPreviewContainer */
+    }
+
     .conversation {
         display: none;
         width: 100%;
-        margin-top: 60px;
-        overflow: hidden;
+        overflow-y: auto;
+        padding-bottom: 500px;
 
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
@@ -233,14 +261,14 @@
 
     .conversation-form {
         padding: 8px 16px;
-        background-color: var(--white);
+        background-color: #050c10;
         display: flex;
         align-items: flex-end;
         position: fixed;
         bottom: 0;
-        width: 100%; /* Assure que le formulaire s'étend sur toute la largeur de la fenêtre */
+        width: 100%;
         z-index: 1000;
-        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Ajoute une ombre au formulaire pour le démarquer */
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
     }
     .conversation-form-group {
         width: 100%;
@@ -347,35 +375,6 @@
     .conversation-default p {
         margin-top: 16px;
     }
-
-    @media screen and (max-width: 1600px) {
-    }
-
-    @media screen and (max-width: 767px) {
-
-        .conversation {
-            padding-left: unset;
-        }
-        .conversation.active {
-            position: relative;
-            z-index: 20;
-        }
-        .conversation-back {
-            display: flex;
-        }
-        .conversation-default.active {
-            display: none;
-            padding: 16px;
-        }
-    }
-    #audioPreviewContainer {
-        display: flex;
-        align-items: center;
-        padding: 8px;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        background-color: #f0f0f0;
-    }
     #audioControls {
         display: flex;
         gap: 10px;
@@ -441,15 +440,18 @@
         height: 100%;
         object-fit: cover;
     }
+    .parent-container {
+        display: flex;
+        flex-direction: column;
+    }
 </style>
-    <div class="conversation conversation_message active" style="background-image: url('{% static 'font_decran.png' %}');background-size: contain;  " id="conversation-1" data-utilisateur-id="{{ utilisateur_detail.id }}" >
+    <div class="conversation conversation_message active" style="background-size: contain;  " id="conversation-1" data-utilisateur-id="{{ utilisateur_detail.id }}" >
         <div class="conversation-top">
             <a class="conversation-back" href="{% url 'Utilisateur:accueil_utilisateur' %}"><i class="ri-arrow-left-line"></i></a>
             <div class="conversation-user">
-                <img style="border-radius: 50%; width: 100px;" src="{{ utilisateur_detail.image.url }}" alt="Image de {{ utilisateur.nom }}">
+                <img style="border-radius: 50%; width: 60px;" src="{{ utilisateur_detail.image.url }}" alt="Image de {{ utilisateur.nom }}">
                 <div>
-                    <div style="color: white">{{ utilisateur_detail.nom }} {{ utilisateur_detail.prenom }}</div>
-
+                    <div style="color: white; font-size: 10px">{{ utilisateur_detail.nom }} {{ utilisateur_detail.prenom }}</div>
                     <div class="conversation-user-status"><span class="conversation-user-statu-point"></span> En ligne
                         <br> {% if request.user %}<span id="typingIndicator"></span>{% endif %}
                     </div>
@@ -461,40 +463,41 @@
                 <button type="button"><i class="ri-information-line"></i></button>
             </div>
         </div>
-        <div class="conversation-main" style="height:100vh" id="conversation-main">
+        <div class="conversation-main" style="height:100vh; margin-top: 150px" id="conversation-main">
         </div>
-        <div id="audioPreviewContainer" style="display: none;">
-            <audio id="audioPreview"></audio>
-            <div id="audioControls">
-                <button id="playButton"><i class="bi bi-play-circle-fill"></i></button>
-                <button id="pauseButton"><i class="bi bi-stop-circle"></i></button>
-                <input type="range" id="progressBar" min="0" max="100" value="0" step="0.1">
-            </div>
-            <button id="removeAudioButton"><i class="bi bi-trash"></i></button>
-
+<div class="parent-container">
+    <div id="audioPreviewContainer" style="display: none;">
+        <audio id="audioPreview"></audio>
+        <div id="audioControls">
+            <button id="playButton"><i class="bi bi-play-circle-fill"></i></button>
+            <button id="pauseButton"><i class="bi bi-stop-circle"></i></button>
+            <input type="range" id="progressBar" min="0" max="100" value="0" step="0.1">
         </div>
-        <form class="conversation-form message_image" id="message-form">
-            {% csrf_token %}
-            <input type="hidden" name="utilisateur_id" value="{{ utilisateur_detail.id }}">
-            <button class="recordButton" id="recordButton"><i style="font-size: 25px;" class="bi bi-mic"></i>
-
-            </button>
-            <div id="recordingDuration"></div>
-            <input type="file" id="audioInput" name="audio" style="display: none;">
-            <div class="conversation-form-group">
-                <textarea id="message-input" name="contenu_message" class="conversation-form-input" rows="1" placeholder="Écrivez..."></textarea>
-                <input class="image_input" id="image_input" type="file" name="images" multiple accept="image/*">
-                <button type="button" class="conversation-form-record"><i style="font-size: 25px;" class="bi bi-image"></i></button>
-            </div>
-            <button type="submit" class="conversation-form-button conversation-form-submit"><i class="ri-send-plane-2-line"></i></button>
-            <audio id="submitSound" src="{% static 'SonEnvoi/envoiSon.mp3' %}"></audio>
-        </form>
+        <button id="removeAudioButton"><i class="bi bi-trash"></i></button>
+    </div>
+    <form class="conversation-form message_image" id="message-form">
+        {% csrf_token %}
+        <input type="hidden" name="utilisateur_id" value="{{ utilisateur_detail.id }}">
+        <button class="recordButton" id="recordButton"><i style="font-size: 25px;" class="bi bi-mic"></i>
+        </button>
+        <div id="recordingDuration"></div>
+        <input type="file" id="audioInput" name="audio" style="display: none;">
+        <div class="conversation-form-group">
+            <textarea id="message-input" name="contenu_message" class="conversation-form-input" rows="1" placeholder="Écrivez..."></textarea>
+            <input class="image_input" id="image_input" type="file" name="images" multiple accept="image/*">
+            <button type="button" class="conversation-form-record"><i style="font-size: 25px;" class="bi bi-image"></i></button>
+        </div>
+        <button type="submit" class="conversation-form-button conversation-form-submit"><i class="ri-send-plane-2-line"></i></button>
+        <audio id="submitSound" src="{% static 'SonEnvoi/envoiSon.mp3' %}"></audio>
+    </form>
+</div>
     </div>
 <script>
     setInterval(reeceptionMesaage, 500)
     let cunter = 0
     let displayedMessageIds = new Set();
     function afficherMessages(data) {
+
         let utilisateurConnecterId ={{ request.user.id }} ;
         var utilisateurImage;
         let conversationWrappers = document.getElementById('conversation-main');
@@ -502,6 +505,8 @@
             if (displayedMessageIds.has(message.id)) {
                 return;
             }
+            let messageDate = new Date(message.timestamp);
+            let formattedDate = messageDate.toLocaleString('fr-FR', { weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' });
             let chatMessageBox = document.createElement("li");
             chatMessageBox.classList.add("conversation-item");
             if (message.envoi_id === utilisateurConnecterId) {
@@ -512,33 +517,50 @@
             }
             let contenuHTML = '';
             if (message.images) {
-                contenuHTML += `<p class="message-image"><img class="message-image_afficher img-fluid" src="${message.images}" alt="Image"></p>`;
+
+                contenuHTML += `
+
+                       <div class="conversation-item-box">
+                            <img class="message-image_afficher img-fluid" src="${message.images}" alt="Image">
+                                <div class="conversation-item-time">${formattedDate}</div>
+                        </div>`;
             } else if (message.audio) {
                 contenuHTML += `
-        <div class="message-audio">
-            <audio controls>
-                <source src="${message.audio}" type="audio/webm">
-            </audio>
-        </div>
+
+                       <div class="conversation-item-box">
+                            <div class="conversation-item-text">
+                                <div class="message-audio">
+                            <audio controls>
+                                <source src="${message.audio}" type="audio/webm">
+                            </audio>
+                             </div>
+                                   <div class="conversation-item-time">${formattedDate} </div>
+                             </div>
+                        </div>
+
+
     `;
             } else if (message.contenu_message) {
-                contenuHTML += `<p class="message-text">${message.contenu_message}</p>`;
+                contenuHTML += `
+                       <div class="conversation-item-box">
+                             <div class="conversation-item-text">
+                                  ${message.contenu_message}
+                                  <div class="conversation-item-time">${formattedDate}</div>
+                             </div>
+                       </div>
+
+                `;
             }
             chatMessageBox.innerHTML = `
-    <div class="conversation-item-side">
-        <img class="conversation-item-image" src="${utilisateurImage}" alt="">
-    </div>
-    <div class="conversation-item-content">
-        <div class="conversation-item-wrapper">
-            <div class="conversation-item-box">
-                <div class="conversation-item-text">
-                    ${contenuHTML}
-                    <div class="conversation-item-time">${message.timestamp} </div>
-                </div>
-            </div>
-        </div>
-    </div>
-`;
+                    <div class="conversation-item-side">
+                        <img class="conversation-item-image" src="${utilisateurImage}" alt="">
+                    </div>
+                    <div class="conversation-item-content">
+                        <div class="conversation-item-wrapper">
+                            ${contenuHTML}
+                        </div>
+                    </div>
+                `;
             conversationWrappers.appendChild(chatMessageBox);
             displayedMessageIds.add(message.id);
         });
