@@ -184,7 +184,6 @@
         <li><span class="icon"><i class="fas fa-shield-alt"></i></span>Confidentialité & Sécurité</li>
         <li><span class="icon"><i class="fas fa-credit-card"></i></span>Facturation & Abonnement</li>
     </ul>
-
     <h1 class="settings-header">Personnalisation <i class="fas fa-chevron-down"></i></h1>
     <ul class="settings-menu show">
         <li><span class="icon"><i class="fas fa-moon"></i></span>Mode Sombre
@@ -195,8 +194,16 @@
                 </form>
             </label>
         </li>
+        <li>
+            <span class="icon"><i class="fas fa-fingerprint"></i></span> Autoriser l'empreinte digitale
+            <label class="toggle">
+                <form method="post">
+                    {% csrf_token %}
+                    <input id="empreinte-toggle" type="checkbox" {% if request.user.autoriser_empreinte %}checked{% endif %} name="empreinte">
+                </form>
+            </label>
+        </li>
     </ul>
-
     <h1 class="settings-header">Aide et assistance <i class="fas fa-chevron-down"></i></h1>
     <ul class="settings-menu show">
         <li><span class="icon"><i class="fas fa-question-circle"></i></span>Aide et support</li>
@@ -231,6 +238,31 @@
                         } else {
                             $('body').css('background-color', '#a5a5a5');
                         }
+                        console.log(response);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr.status + ": " + xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('#empreinte-toggle').change(function() {
+            var isChecked = $(this).is(':checked');
+            var url = '{% url "Utilisateur:updateEmpreinte" %}';
+            var csrftoken = $('[name="csrfmiddlewaretoken"]').val();
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    'autoriser_empreinte': isChecked,
+                    'csrfmiddlewaretoken': csrftoken
+                },
+                success: function(response) {
+                    if (response.success) {
                         console.log(response);
                     }
                 },

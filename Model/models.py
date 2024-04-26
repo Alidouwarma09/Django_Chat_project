@@ -60,6 +60,8 @@ class Utilisateur(AbstractBaseUser):
     objects = MyUserManager()
     theme_sombre = models.BooleanField(default=False)
     en_train_decrire = models.BooleanField(default=False)
+    autoriser_empreinte = models.BooleanField(default=False)
+
 
     def __str__(self):
         return f"{self.nom} {self.prenom}"

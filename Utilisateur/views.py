@@ -332,3 +332,11 @@ class UpdateThemeSombre(View):
         request.user.theme_sombre = theme_sombre.lower() == 'true'
         request.user.save()
         return JsonResponse({'success': True, 'theme_sombre': request.user.theme_sombre})
+
+
+class updateEmpreinte(View):
+    def post(self, request, *args, **kwargs):
+        autoriser_empreinte = request.POST.get('autoriser_empreinte', 'false')
+        request.user.autoriser_empreinte = autoriser_empreinte.lower() == 'true'
+        request.user.save()
+        return JsonResponse({'success': True, 'autoriser_empreinte': request.user.autoriser_empreinte})

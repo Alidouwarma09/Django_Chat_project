@@ -27,6 +27,6 @@ urlpatterns = [
     path('utilisateur_en_train_decrire/', views.utilisateur_en_train_decrire, name='utilisateur_en_train_decrire'),
     path('UpdateThemeSombre/', views.UpdateThemeSombre.as_view(), name='UpdateThemeSombre'),
     path('check_typing_status/', views.check_typing_status, name='check_typing_status'),
-
+    path('updateEmpreinte/', views.updateEmpreinte.as_view(), name='updateEmpreinte'),
 
 ]

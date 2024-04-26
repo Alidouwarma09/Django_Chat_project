@@ -19,6 +19,13 @@
 {% url 'Utilisateur:acceuil' as Acceuil %}
 {% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur_detail.id as detail_url %}
 <style>
+    .preview-image {
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        height: auto;
+        margin-bottom: 8px;
+    }
+
     .parent-container {
         position: fixed;
         display: flex;
@@ -264,7 +271,6 @@
         background-color: #050c10;
         display: flex;
         align-items: flex-end;
-        position: fixed;
         bottom: 0;
         width: 100%;
         z-index: 1000;
@@ -475,6 +481,8 @@
             </div>
             <button id="removeAudioButton"><i class="bi bi-trash"></i></button>
         </div>
+        <div id="imagePreviewContainer" style="display: flex; flex-wrap: wrap; margin-top: 10px;">
+        </div>
         <form class="conversation-form message_image" id="message-form">
             {% csrf_token %}
             <input type="hidden" name="utilisateur_id" value="{{ utilisateur_detail.id }}">
@@ -497,8 +505,7 @@
     let cunter = 0
     let displayedMessageIds = new Set();
     function afficherMessages(data) {
-
-        let utilisateurConnecterId ={{ request.user.id }} ;
+        let utilisateurConnecterId = "{{ request.user.id }}" ;
         var utilisateurImage;
         let conversationWrappers = document.getElementById('conversation-main');
         data.forEach((message) => {
@@ -517,16 +524,13 @@
             }
             let contenuHTML = '';
             if (message.images) {
-
                 contenuHTML += `
-
                        <div class="conversation-item-box">
                             <img class="message-image_afficher img-fluid" src="${message.images}" alt="Image">
                                 <div class="conversation-item-time">${formattedDate}</div>
                         </div>`;
             } else if (message.audio) {
                 contenuHTML += `
-
                        <div class="conversation-item-box">
                             <div class="conversation-item-text">
                                 <div class="message-audio">
@@ -537,8 +541,6 @@
                                    <div class="conversation-item-time">${formattedDate} </div>
                              </div>
                         </div>
-
-
     `;
             } else if (message.contenu_message) {
                 contenuHTML += `
@@ -548,7 +550,6 @@
                                   <div class="conversation-item-time">${formattedDate}</div>
                              </div>
                        </div>
-
                 `;
             }
             chatMessageBox.innerHTML = `
@@ -635,7 +636,6 @@
             startRecordingDuration();
             isRecording = true;
             recordButton.innerHTML = '<i style="font-size: 25px;" class="bi bi-stop"></i>';
-
         }
     });
     function startRecordingDuration() {
@@ -652,7 +652,6 @@
     function stopRecordingDuration() {
         clearInterval(intervalId);
     }
-
     $(document).ready(function() {
         $('#message-form').on('submit', function(event) {
             event.preventDefault();
@@ -686,7 +685,7 @@
                     const audioElement = document.getElementById('submitSound');
                     audioElement.play();
                     $('#conversation-main').scrollTop($('#conversation-main')[0].scrollHeight);
-                    $('#preview-container').empty();
+                    $('#imagePreviewContainer').empty();
                     $('#message-input').val('');
                     $('#image_input').val('');
                     $('#audioInput').val('');
@@ -778,10 +777,22 @@
 
     document.querySelector('input[name="images"]').addEventListener('change', function(event) {
         const files = event.target.files;
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        imagePreviewContainer.innerHTML = ''; // Effacer les anciennes prévisualisations
         for (const file of files) {
-            addPreviewImage(file);
+            const imgElement = document.createElement('img');
+            imgElement.src = URL.createObjectURL(file);
+            imgElement.classList.add('preview-image');
+            imgElement.style.width = '100px'; // Définir la taille des images de prévisualisation
+            imgElement.style.marginRight = '5px';
+            imgElement.onload = function() {
+                URL.revokeObjectURL(this.src); // Libérer la mémoire
+            };
+            imagePreviewContainer.appendChild(imgElement);
         }
     });
+
+
 
 </script>
 <script>
