@@ -1,4 +1,5 @@
 import json
+import os
 import time
 
 from django.contrib import messages
@@ -340,3 +341,31 @@ class updateEmpreinte(View):
         request.user.autoriser_empreinte = autoriser_empreinte.lower() == 'true'
         request.user.save()
         return JsonResponse({'success': True, 'autoriser_empreinte': request.user.autoriser_empreinte})
+
+
+def get_auth_options(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+    user = request.user
+    # Créez un challenge aléatoire pour la sécurité
+    challenge = os.urandom(32).hex()
+
+    options = {
+        "publicKey": {
+            "challenge": challenge,
+            "rp": {
+                "name": "Exemple WebAuthn App"
+            },
+            "user": {
+                "id": str(user.id),  # Nécessaire d'être en bytes normalement, dépend de votre implémentation
+                "name": user.username,
+                "displayName": f"{user.first_name} {user.last_name}"
+            },
+            "authenticatorSelection": {
+                "authenticatorAttachment": "platform",
+                "userVerification": "required"
+            }
+        }
+    }
+    return JsonResponse(options)

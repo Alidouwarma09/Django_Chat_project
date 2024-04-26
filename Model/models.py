@@ -62,7 +62,6 @@ class Utilisateur(AbstractBaseUser):
     en_train_decrire = models.BooleanField(default=False)
     autoriser_empreinte = models.BooleanField(default=False)
 
-
     def __str__(self):
         return f"{self.nom} {self.prenom}"
 
@@ -81,7 +80,8 @@ class Publication(models.Model):
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, related_name='publications')
     titre = models.CharField(max_length=255, blank=True, null=True)
     contenu = models.TextField(blank=True, null=True)
-    couleur_fond = models.CharField(max_length=255, default='linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5));')
+    couleur_fond = models.CharField(max_length=255,
+                                    default='linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5));')
     photo_file = models.FileField(upload_to='photos/', blank=True, null=True)
     video_file = models.FileField(upload_to='videos/', blank=True, null=True)
     date_publication = models.DateTimeField(auto_now_add=True)
@@ -112,6 +112,3 @@ class Comment(models.Model):
     publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
     texte = models.TextField()
     date_comment = models.DateTimeField(auto_now_add=True)
-
-
-

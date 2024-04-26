@@ -28,5 +28,6 @@ urlpatterns = [
     path('UpdateThemeSombre/', views.UpdateThemeSombre.as_view(), name='UpdateThemeSombre'),
     path('check_typing_status/', views.check_typing_status, name='check_typing_status'),
     path('updateEmpreinte/', views.updateEmpreinte.as_view(), name='updateEmpreinte'),
+    path('api/auth_options/', views.get_auth_options, name='auth_options'),
 
 ]

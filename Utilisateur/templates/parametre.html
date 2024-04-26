@@ -6,19 +6,19 @@
     <title>Paramètres de l'Application</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(function(OneSignal) {
-            OneSignal.init({
-                appId: "9d2a3c0b-f1b0-4ed8-aa94-b4790388c316",
-                safari_web_id: "web.onesignal.auto.01b20842-ed7c-48c4-bd42-e78491d78625",
-                notifyButton: {
-                    enable: true,
-                },
-                allowLocalhostAsSecureOrigin: true,
-            });
-        });
-    </script>
+{#    <script>#}
+{#        window.OneSignalDeferred = window.OneSignalDeferred || [];#}
+{#        OneSignalDeferred.push(function(OneSignal) {#}
+{#            OneSignal.init({#}
+{#                appId: "9d2a3c0b-f1b0-4ed8-aa94-b4790388c316",#}
+{#                safari_web_id: "web.onesignal.auto.01b20842-ed7c-48c4-bd42-e78491d78625",#}
+{#                notifyButton: {#}
+{#                    enable: true,#}
+{#                },#}
+{#                allowLocalhostAsSecureOrigin: true,#}
+{#            });#}
+{#        });#}
+{#    </script>#}
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -272,6 +272,22 @@
             });
         });
     });
+</script>
+<script>
+    async function startAuthentication() {
+        const options = await fetch('/api/auth_options/').then(data => data.json());
+        const credential = await navigator.credentials.get({ publicKey: options.publicKey });
+
+        // Envoyez la réponse authentifiée au serveur pour validation
+        const response = await fetch('/api/verify_credential/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(credential)
+        });
+        const result = await response.json();
+        console.log(result); // Traiter les résultats
+    }
+
 </script>
 <script>
     var settingsMenus = document.querySelectorAll('.settings-menu');
