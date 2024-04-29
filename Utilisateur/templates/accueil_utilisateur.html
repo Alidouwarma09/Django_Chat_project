@@ -7,7 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/tailwindcss-colors.css' %}">
     <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/publier_video.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
@@ -16,8 +15,24 @@
     <title>Chat</title>
 </head>
 <body>
-{% url 'Utilisateur:acceuil' as Acceuil %}
 <style>
+    .loading {
+        position: relative;
+        display: inline-block;
+    }
+    .loading::after {
+        content: 'C';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 24px;
+        height: 24px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid blue;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
     .conversation{
     {% if request.user.theme_sombre %}
         background-color: rgb(22 24 24);
@@ -26,91 +41,9 @@
     {% endif %}
     }
     .blurred {
-        backdrop-filter: blur(20px);
-        pointer-events: none;
+        backdrop-filter: blur(5px);
     }
 
-    .video-container {
-        width: 100%;
-        padding-bottom: 56.25%;
-        position: relative;
-        margin-bottom: 20px;
-    }
-
-    .video {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-
-    .full-screen-video {
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 100vh;
-    }
-
-    .full-screen-video video {
-        max-width: 100%;
-        max-height: 100%;
-    }
-    .preview-container {
-        margin-top: auto;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        min-height: 200px;
-        max-height: 500px;
-        overflow-y: auto;
-    }
-    .preview-container .preview-item {
-        position: relative;
-    }
-    .preview-container img.preview-image {
-        min-width: 550px;
-        max-width: 550px;
-        height: auto;
-        object-fit: cover;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-    }
-    .preview-container .remove-btn {
-        position: absolute;
-        top: 5px;
-        left: 5px;
-        background: red;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-size: 12px;
-    }
-    #audioPreviewContainer {
-        display: flex;
-        align-items: center;
-        padding: 8px;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        background-color: #f0f0f0;
-    }
-    #audioControls {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        margin-left: 10px;
-    }
 
     button {
         background-color: #fff;
@@ -123,102 +56,6 @@
         align-items: center;
         cursor: pointer;
         color: #007bff;
-    }
-    #removeAudioButton {
-        background-color: transparent;
-        border: none;
-        color: #ff5c5c;
-        cursor: pointer;
-        margin-left: auto;
-    }
-
-    /* Barre de progression */
-    #progressBar {
-        width: 150px;
-        height: 4px;
-        background-color: #e0e0e0;
-        border-radius: 2px;
-        appearance: none;
-    }
-
-    #progressBar::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 8px;
-        height: 8px;
-        background-color: #007bff;
-        border-radius: 50%;
-        cursor: pointer;
-    }
-
-    .message-image_afficher{
-        max-width: 400px;
-        min-width: 300px;
-        height: auto;
-    }
-    #recordingDuration {
-        font-size: 16px; /* Taille de police */
-        color: #653737; /* Couleur du texte */
-        text-align: center; /* Centrage du texte */
-        margin-bottom: 10px; /* Marge inférieure */
-    }
-    #video-upload-section {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 10px;
-        width: 100%; /* Utilise 100% de la largeur disponible */
-    }
-
-    /* Styles pour le bouton de téléchargement */
-    #upload-button {
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px;
-        font-size: 1.5rem;
-        cursor: pointer;
-        margin-bottom: 10px;
-        transition: background-color 0.3s;
-    }
-
-    #upload-button:hover {
-        background-color: #0056b3;
-    }
-
-    /* Styles pour les boutons d'envoi et d'annulation */
-    #form-controls {
-        display: flex;
-        justify-content: space-between; /* Place les boutons de manière égale */
-        width: 100%; /* Prend toute la largeur disponible */
-        margin-bottom: 10px; /* Ajoute de l'espace en bas */
-    }
-
-    #cancel-button, #send-button {
-        background-color: #f44336; /* Rouge pour le bouton annuler */
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    #send-button {
-        width: 100px;
-        background-color: #28a745; /* Vert pour le bouton envoyer */
-    }
-
-    #cancel-button:hover {
-        background-color: #d32f2f;
-        width: 100px;
-    }
-
-    #send-button:hover {
-        background-color: #218838;
     }
 
     #photo-icon {
@@ -246,10 +83,9 @@
         border: 1px solid #dddfe2;
         border-radius: 8px;
         padding: 16px;
-        margin-top: 16px;
         z-index: 100;
         overflow-y: auto;
-        max-height: 500px;
+        max-height: 700px;
     }
 
     #publish-form label {
@@ -287,17 +123,6 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-    }
-
-    .content-messages {
-        margin: 20px auto;
-        width: 100%;
-        overflow-y: auto;
-        height: 100%;
-        margin-top: 16px;
-    }
-    .publication-container {
-        margin: auto;
     }
 
     .publication {
@@ -401,12 +226,6 @@
         box-sizing: border-box;
 
     }
-    .comment {
-        box-sizing: border-box;
-        padding: 10px;
-        border-bottom: 1px solid #e0e0e0;
-        margin-bottom: 10px;
-    }
 
     .commentaire-input {
         border: 1px solid #ccc;
@@ -424,9 +243,6 @@
         cursor: pointer;
     }
 
-    .liked {
-        color: red;
-    }
     .action-button.liked i {
         color: #ff4d4d;
     }
@@ -453,10 +269,6 @@
     .comment-count-container span {
         margin-right: 5px;
     }
-    .comment-actions {
-        display: flex;
-        gap: 10px;
-    }
     .comments-container {
         width: 100%;
         border: 1px solid #cccccc;
@@ -466,23 +278,6 @@
         border-radius: 5px;
     }
 
-
-
-    .comment-user {
-        font-weight: bold;
-        color: #333333;
-    }
-
-    .comment-text {
-        margin: 5px 0;
-        color: #666666;
-    }
-
-
-    .comment-time {
-        font-size: 12px; /
-    color: #999999;
-    }
     @media (max-width: 480px) {
         .commentaire-form {
             width: 100%;
@@ -498,12 +293,6 @@
     .content-message-unread i {
         color: #007bff;
         font-size: 20px;
-    }
-    .lien-utilisateur {
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-        color: #333;
     }
     #publicationSection {
         position: fixed;
@@ -531,10 +320,6 @@
         border-radius: 8px;
         margin-bottom: 12px;
         resize: none;
-    }
-
-    #couleurFond {
-        margin-right: 8px;
     }
 
     #preview {
@@ -568,63 +353,6 @@
 
     #publicationButton:hover {
         background-color: #166fe5;
-    }
-
-    .content-message-more {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .content-message-unread {
-        background-color: #f44336; /* Rouge pour l'urgence */
-        color: white;
-        border-radius: 50%; /* Forme circulaire */
-        padding: 5px 10px;
-        font-size: 14px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-left: 10px;
-        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .content-message-unread i {
-        margin-right: 5px;
-    }
-    .utilisateur-en-ligne {
-        overflow-x: auto;
-        white-space: nowrap;
-        position: fixed;
-        top: 60px;
-        z-index: 100;
-        background-color: #ccc6c6;
-        width: 100%;
-    }
-
-    .utilisateur-status {
-        display: inline-block;
-        position: relative;
-        margin-right: 10px;
-    }
-
-    .utilisateur-image {
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-    }
-
-    .statut-indicateur {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background-color: #0d943c;
-        border: 3px solid white;
     }
 
 
@@ -662,19 +390,19 @@
         <button id="publicationButton" type="submit">Publier</button>
     </form>
 </div>
-<form  id="publish-form" style="display: none;">
-    <i onclick="" style="font-size: 30px" class="bi bi-x-circle-fill"></i>
-    <label for="titre">Titre de l'image:</label>
-    <input type="text" id="titre_photo" name="titre" required>
-    <label for="photo_file">Sélectionner une image:</label>
+<form  id="publish-form" style="display: none; ">
+    <i  style="font-size: 30px" class="bi bi-x-circle-fill" onclick="closePublishForm()"></i>
+    <label for="titre">Ajouter une legende:</label>
+    <input type="text" id="titre_photo" name="titre">
+    <label for="photo_file">Changer l'image: <i style="font-size: 30px" class="bi bi-camera"></i></label>
     <input hidden="hidden" type="file" id="photo_file" name="photo_file" accept="image/*" required>
 
     <div id="image-editor">
         <img id="image-to-edit" alt="Prévisualisation">
     </div>
-    <button type="submit">Publier</button>
+    <button id="publishFormButton" type="submit">Publier</button>
 </form>
-<div class="conversation {% if request.path == Acceuil %}active{% else %} {% endif %}" id="Acceuil" style="margin-top: 60px; min-width: 100%">
+<div class="conversation active" id="Acceuil" style="margin-top: 60px; min-width: 100%">
     <nav class="navbar">
         <i style="color: #7906a5;" id="publication-action-icon" class="bi bi-fonts"></i>
         <i style="color: #7906a5; margin-left: 10px" id="photo-icon" class="bi bi-patch-plus"></i>
@@ -762,117 +490,62 @@
 
 {#Publication#}
 <script>
-    // Sélectionner les éléments HTML
-    var photoIcon = document.getElementById('photo-icon');
     var publishForm = document.getElementById('publish-form');
     var imageElement = document.getElementById('image-to-edit');
     const blurContainer = document.getElementById('Acceuil');
-    var cropper = null;
-
-    photoIcon.addEventListener('click', function() {
-        publishForm.style.display = 'block';
-        blurContainer.classList.add('blurred');
-
-    });
 
     document.querySelector('#photo_file').addEventListener('change', function(event) {
         var reader = new FileReader();
         reader.onload = function() {
             imageElement.src = reader.result;
-            if (cropper) {
-                cropper.destroy();
-            }
-
-            cropper = new Cropper(imageElement, {
-                aspectRatio: NaN, // Permet un recadrage libre
-                viewMode: 2, // Mode d'affichage souhaité
-                movable: true, // Permet de déplacer l'image
-                zoomable: true, // Permet de zoomer sur l'image
-                rotatable: true, // Permet de faire pivoter l'image
-                scalable: true, // Permet d'agrandir ou de réduire l'image
-                ready: function() {
-                }
-            });
         };
         reader.readAsDataURL(event.target.files[0]);
     });
 
-    // Ajouter des contrôles pour les fonctionnalités d'édition d'image
-    function addImageEditingControls() {
-        // Exemples de contrôles pour la rotation, le zoom, et d'autres modifications
-        var rotateLeftButton = document.createElement('button');
-        rotateLeftButton.innerText = 'Pivoter à gauche';
-        rotateLeftButton.addEventListener('click', function() {
-            cropper.rotate(-45);
-        });
-
-        var rotateRightButton = document.createElement('button');
-        rotateRightButton.innerText = 'Pivoter à droite';
-        rotateRightButton.addEventListener('click', function() {
-            cropper.rotate(45);
-        });
-
-        var zoomInButton = document.createElement('button');
-        zoomInButton.innerText = 'Zoom avant';
-        zoomInButton.addEventListener('click', function() {
-            cropper.zoom(0.1);
-        });
-
-        var zoomOutButton = document.createElement('button');
-        zoomOutButton.innerText = 'Zoom arrière';
-        zoomOutButton.addEventListener('click', function() {
-            cropper.zoom(-0.1);
-        });
-
-        // Ajouter les boutons au DOM
-        publishForm.appendChild(rotateLeftButton);
-        publishForm.appendChild(rotateRightButton);
-        publishForm.appendChild(zoomInButton);
-        publishForm.appendChild(zoomOutButton);
-    }
-
-    // Appeler la fonction pour ajouter les contrôles après avoir initialisé Cropper.js
-    function onCropperReady() {
-        addImageEditingControls();
-    }
-
-    // Soumettre l'image modifiée
+    // Soumettre l'image chargée
     publishForm.addEventListener('submit', function(event) {
         event.preventDefault();
+        var fileInput = document.getElementById('photo_file');
+        if (fileInput.files.length > 0) {
+            var formData = new FormData();
+            formData.append('photo_file', fileInput.files[0]);
+            formData.append('titre', document.getElementById('titre_photo').value);
 
-        if (cropper) {
-            cropper.getCroppedCanvas().toBlob(function(blob) {
-                var formData = new FormData();
-                formData.append('photo_file', blob, 'image.jpg');
-                formData.append('titre', document.querySelector('#titre_photo').value);
-
-                fetch("{% url 'Utilisateur:publier_photo' %}", {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
+            fetch("{% url 'Utilisateur:publier_photo' %}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = data.redirect_url; // Redirect to the URL provided by the server
+                    } else {
+                        console.log('Erreur lors de la publication de l\'image : ' + data.errors);
                     }
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            publishForm.style.display = 'none';
-                            blurContainer.classList.add('blurred');
-                        } else {
-                            console.log('Erreur lors de la publication de l\'image : ' + data.errors);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erreur lors de la requête AJAX :', error);
-                        console.log('Une erreur s\'est produite lors de la soumission du formulaire.');
-                    });
-            });
+                .catch(error => {
+                    console.error('Erreur lors de la requête AJAX :', error);
+                    console.log('Une erreur s\'est produite lors de la soumission du formulaire.');
+                });
         } else {
             alert('Veuillez sélectionner une image.');
         }
     });
 
+
+    function closePublishForm() {
+        var publishForm = document.getElementById('publish-form');
+        var blurContainer = document.getElementById('Acceuil');
+        publishForm.style.display = "none";
+        blurContainer.classList.remove('blurred');
+        imageElement.src = "";
+    }
+
 </script>
+
 <script>
     var photoIcon = document.getElementById('photo-icon');
     var photoInput = document.getElementById('photo_file');
@@ -1152,6 +825,18 @@
     document.addEventListener('DOMContentLoaded', () => {
         const form = document.querySelector('.publier_text_form');
         const submitButton = document.getElementById('publicationButton');
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            submitButton.disabled = true;
+            submitButton.classList.add('loading');
+            form.submit();
+        });
+    });
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector('.publish-form');
+        const submitButton = document.getElementById('publishFormButton');
         form.addEventListener('submit', (event) => {
             event.preventDefault();
             submitButton.disabled = true;

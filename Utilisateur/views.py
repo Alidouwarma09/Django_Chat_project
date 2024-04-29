@@ -169,12 +169,13 @@ def publier_photo(request):
             photo = form.save(commit=False)
             photo.utilisateur = request.user
             photo = form.save()
-            return JsonResponse({'success': True, 'message': 'L\'image a été publiée avec succès.'})
+            return JsonResponse({'success': True, 'redirect_url': reverse('Utilisateur:acceuil')})
         else:
             errors = form.errors.as_json()
             return JsonResponse({'success': False, 'errors': errors}, status=400)
     else:
         return JsonResponse({'success': False, 'message': 'Méthode non autorisée.'}, status=405)
+
 
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
