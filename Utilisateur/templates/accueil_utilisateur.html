@@ -629,9 +629,10 @@
 
 
 </style>
+{% include 'bottom_bar.html' %}
 <div id="publicationSection" style="display: none;">
     <i onclick="" style="font-size: 30px" class="bi bi-x-circle-fill"></i>
-    <form id="publicationForm" action="{% url 'Utilisateur:creer_publication' %}" method="post">
+    <form class="publier_text_form" id="publicationForm" action="{% url 'Utilisateur:creer_publication' %}" method="post">
         {% csrf_token %}
         <div id="emojiSection" style="position: absolute; right: 0; margin-right: 20px">
             <button id="emojiButton" type="button" style="font-size: 40px; margin-top: 20px">😊</button>
@@ -661,11 +662,10 @@
         <button id="publicationButton" type="submit">Publier</button>
     </form>
 </div>
-<form id="publish-form" style="display: none;">
+<form  id="publish-form" style="display: none;">
     <i onclick="" style="font-size: 30px" class="bi bi-x-circle-fill"></i>
     <label for="titre">Titre de l'image:</label>
     <input type="text" id="titre_photo" name="titre" required>
-
     <label for="photo_file">Sélectionner une image:</label>
     <input hidden="hidden" type="file" id="photo_file" name="photo_file" accept="image/*" required>
 
@@ -745,7 +745,7 @@
                         <span class="comment-count">15,42k</span> Vues
                     </div>
                 </div>
-                <div class="comments-section" id="comments-section-{{ photo.id }}" style="overflow-y: auto; overflow-x: none; max-height: 300px">
+                <div class="comments-section" id="comments-section-{{ photo.id }}" style="overflow-y: auto; overflow-x: hidden; max-height: 300px">
                     <div class="comments-container" id="comments-container-{{ photo.id }}">
                         <!-- Les commentaires seront ajoutés ici -->
                     </div>
@@ -1147,6 +1147,18 @@
         document.body.appendChild(form);
         form.submit();
     }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector('.publier_text_form');
+        const submitButton = document.getElementById('publicationButton');
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            submitButton.disabled = true;
+            submitButton.classList.add('loading');
+            form.submit();
+        });
+    });
 </script>
 </body>
 </html>

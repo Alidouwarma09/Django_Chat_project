@@ -451,6 +451,7 @@
         flex-direction: column;
     }
 </style>
+{% include 'bottom_bar.html' %}
 <div class="conversation conversation_message active" style="background-size: contain;  " id="conversation-1" data-utilisateur-id="{{ utilisateur_detail.id }}" >
     <div class="conversation-top">
         <a class="conversation-back" href="{% url 'Utilisateur:accueil_utilisateur' %}"><i class="ri-arrow-left-line"></i></a>

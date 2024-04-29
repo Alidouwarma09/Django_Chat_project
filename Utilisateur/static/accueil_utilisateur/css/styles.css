@@ -393,26 +393,7 @@ body {
     margin-top: 16px;
 }
 
-@media screen and (max-width: 1600px) {
-}
 
-@media screen and (max-width: 767px) {
-
-    .conversation {
-        padding-left: unset;
-    }
-    .conversation.active {
-        position: relative;
-        z-index: 20;
-    }
-    .conversation-back {
-        display: flex;
-    }
-    .conversation-default.active {
-        display: none;
-        padding: 16px;
-    }
-}
 .video-container {
     width: 100%;
     padding-bottom: 56.25%; /* Aspect ratio 16:9 */
