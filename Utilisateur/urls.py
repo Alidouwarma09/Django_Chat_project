@@ -29,5 +29,6 @@ urlpatterns = [
     path('check_typing_status/', views.check_typing_status, name='check_typing_status'),
     path('updateEmpreinte/', views.updateEmpreinte.as_view(), name='updateEmpreinte'),
     path('api/auth_options/', views.get_auth_options, name='auth_options'),
+    path('api/messages/non-lus/', views.nombre_messages_non_lus, name='nombre_messages_non_lus'),
 
 ]

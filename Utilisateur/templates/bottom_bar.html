@@ -1,8 +1,9 @@
-<div class="navigation-bar">
+<div class="navigation-bar" >
     <a href="{% url 'Utilisateur:acceuil' %}" class="nav-icon home"><i class="fas fa-home"></i></a>
     <a href="#" class="nav-icon search"><i class="fas fa-search"></i></a>
-    <a href="{% url 'Utilisateur:accueil_utilisateur' %}" class="nav-icon add"><i class="fas fa-comments"></i></a>
-    <a href="#" class="nav-icon heart"><i class="fas fa-heart"></i></a>
+    <a href="{% url 'Utilisateur:accueil_utilisateur' %}" class="nav-icon add"><i class="fas fa-comments"><span id="nombre-messages-non-lus"></span>
+</i></a>
+    <a href="#" class="nav-icon heart"><i class="fas fa-circle-play"></i></a>
     <a href="#" class="nav-icon user"><i class="fas fa-user"></i></a>
 </div>
 <style>
@@ -11,6 +12,31 @@
         margin: 0;
         font-family: Arial, sans-serif;
     }
+
+#nombre-messages-non-lus {
+    background-color: #ff4500;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8em;
+    padding: 2px 6px;
+    border-radius: 50%;
+    position: relative;
+    top: -10px;
+    right: 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+/* Animation pour le badge */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+#nombre-messages-non-lus.animated {
+    animation: pulse 1s infinite;
+}
+
     .navigation-bar {
         display: flex;
         justify-content: space-around;
@@ -26,7 +52,7 @@
     .nav-icon {
         color: #333;
         text-decoration: none;
-        font-size: 20px;
+        font-size: 30px;
     }
     .nav-icon.add {
         font-size: 25px;
@@ -35,3 +61,37 @@
         padding: 10px 15px;
     }
 </style>
+
+<script>
+function updateNombreMessagesNonLus() {
+    fetch("{% url 'Utilisateur:nombre_messages_non_lus' %}")
+        .then(response => response.json())
+        .then(data => {
+            const nombreNonLus = data.nombre_non_lus;
+            localStorage.setItem('nombreNonLus', nombreNonLus);
+            const elem = document.getElementById('nombre-messages-non-lus');
+            if (nombreNonLus > 0) {
+                // Afficher elem et mettre à jour avec nombreNonLus.
+                elem.textContent = nombreNonLus;
+                elem.classList.add('animated');
+                elem.style.display = 'inline';  // S'assurer que l'élément est visible.
+            } else {
+                // Cacher l'élément si le nombre de messages non lus est 0 ou moins.
+                elem.style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Erreur lors de la récupération des messages non lus:', error));
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const nombreNonLus = localStorage.getItem('nombreNonLus');  // Récupérer depuis localStorage
+    const elem = document.getElementById('nombre-messages-non-lus');
+    if (elem && nombreNonLus) {
+        elem.textContent = nombreNonLus;
+    }
+    updateNombreMessagesNonLus();  // Fait également une mise à jour à partir du serveur
+});
+
+setInterval(updateNombreMessagesNonLus, 500);
+</script>

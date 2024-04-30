@@ -29,8 +29,6 @@ def Inscription(request):
             form.save()
             messages.success(request, 'Inscription reussi.')
             return redirect('Utilisateur:Connexion_utlisateur')
-        else:
-            print(form.errors)
     else:
         form = InscriptionForm()
 
@@ -82,10 +80,23 @@ def accueil_utilisateur(request):
     utilisateurs = Utilisateur.objects.exclude(id=connecte_id)
 
     for utilisateur in utilisateurs:
-        nombre_messages_non_lus = Message.objects.filter(recoi=request.user, envoi=utilisateur, vu=False).count()
+        utilisateur.nombre_messages_non_lus = Message.objects.filter(
+            recoi=request.user,
+            envoi=utilisateur,
+            vu=False
+        ).count()
+        dernier_message = Message.objects.filter(
+            recoi=request.user,
+            envoi=utilisateur
+        ).order_by('-timestamp').first()
+
+        if dernier_message and dernier_message.contenu_message:
+            mots = dernier_message.contenu_message.split()[:3]
+            utilisateur.preview_message = ' '.join(mots)
+        else:
+            utilisateur.preview_message = "auccun message"
 
     context = {
-        'nombre_messages_non_lus': nombre_messages_non_lus,
         'utilisateurs': utilisateurs,
     }
     return render(request, 'tout_les_utilisateurs.html', context)
@@ -93,6 +104,8 @@ def accueil_utilisateur(request):
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 def detail_utilisateur(request, utilisateur_detail_id):
+    messages = Message.objects.filter(recoi=request.user, envoi_id=utilisateur_detail_id, vu=False)
+    messages.update(vu=True)
     utilisateur_detail = get_object_or_404(Utilisateur, id=utilisateur_detail_id)
     return render(request, 'detail_utilisateur.html', {'utilisateur_detail': utilisateur_detail})
 
@@ -131,7 +144,6 @@ def envoyer_message_text(request):
                 contenu_message=contenu_message
             )
             nouveau_message.save()
-            print("reussi")
             return JsonResponse({'status': 'success', 'message': contenu_message,
                                  'timestamp': nouveau_message.timestamp.strftime("%Y-%m-%d %H:%M:%S")})
         else:
@@ -156,7 +168,6 @@ def envoyer_message_audio(request):
             return JsonResponse({'status': 'success',
                                  'timestamp': nouveau_message.timestamp.strftime("%Y-%m-%d %H:%M:%S")})
         else:
-            print('5f')
             return JsonResponse({'status': 'error', 'errors': form.errors})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
@@ -177,7 +188,6 @@ def publier_photo(request):
         return JsonResponse({'success': False, 'message': 'Méthode non autorisée.'}, status=405)
 
 
-
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 def reception_message(request):
     utilisateur = request.user
@@ -191,7 +201,6 @@ def reception_message(request):
     for chat in chats:
         # Gérer correctement l'accès à l'image du récepteur
         reco_image_url = chat.envoi.image.url if chat.recoi.image else None
-        print(reco_image_url)
 
         message_dict = {
             'id': chat.id,
@@ -221,7 +230,6 @@ def utilisateur_fini_ecrire(request):
     if request.method == 'POST':
         utilisateur_id = request.user.id
         utilisateur = Utilisateur.objects.get(id=utilisateur_id)
-        print(utilisateur.nom)
         utilisateur.en_train_decrire = False
         utilisateur.save()
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
@@ -271,7 +279,6 @@ def commenter_publication(request):
         except ValueError:
             return JsonResponse({'error': 'Format de données invalide'}, status=400)
         utilisateur = request.user
-        print(utilisateur)
 
         try:
             publication = Publication.objects.get(id=publication_id)
@@ -309,7 +316,6 @@ def afficher_commentaire(request):
 def get_comment_count(request):
     publication_id = request.GET.get('publication_id')
     comment_count = Comment.objects.filter(publication_id=publication_id).count()
-    print(comment_count)
     return JsonResponse({'comment_count': comment_count})
 
 
@@ -370,3 +376,10 @@ def get_auth_options(request):
         }
     }
     return JsonResponse(options)
+
+
+def nombre_messages_non_lus(request):
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        count = Message.objects.filter(recoi_id=user_id, vu=False).count()
+        return JsonResponse({'nombre_non_lus': count})

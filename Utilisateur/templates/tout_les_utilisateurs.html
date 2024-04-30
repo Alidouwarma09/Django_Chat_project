@@ -7,7 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/tailwindcss-colors.css' %}">
     <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/publier_video.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
@@ -16,8 +15,18 @@
     <title>Chat</title>
 </head>
 <body>
-{% url 'Utilisateur:acceuil' as Acceuil %}
 <style>
+.message-preview {
+    color: #555;
+    font-style: italic;
+    margin-top: 4px;
+    font-size: 0.9em;
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
     .conversation{
     {% if request.user.theme_sombre %}
         background-color: rgb(22 24 24);
@@ -28,30 +37,6 @@
     .blurred {
         backdrop-filter: blur(20px);
         pointer-events: none;
-    }
-
-    .video-container {
-        width: 100%;
-        padding-bottom: 56.25%;
-        position: relative;
-        margin-bottom: 20px;
-    }
-
-    .video {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-
-    .full-screen-video {
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 100vh;
     }
 
     .full-screen-video video {
@@ -602,6 +587,7 @@
         z-index: 100;
         background-color: #ccc6c6;
         width: 100%;
+        left: 0;
     }
 
     .utilisateur-status {
@@ -645,31 +631,34 @@
                 {% endfor %}
             </div>
             <div class="liste_utilisateur">
-                {% if utilisateurs %}
-                    {% for utilisateur in utilisateurs %}
-                        <li>
-                            <a href="{% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur.id %}" class="lien-utilisateur" data-utilisateur-id="{{ utilisateur.id }}">
-                                {% if utilisateur.image %}
-                                    <img class="content-message-image" src="{{ utilisateur.image.url }}" alt="Image de {{ utilisateur.nom }}">
-                                {% else %}
-                                {% endif %}
-                                <span class="content-message-info">
-                                        <span class="content-message-name">{{ utilisateur.nom }} {{ utilisateur.prenom }}</span>
-                                        <span class="content-message-text">Ecrire a cet utilisateur</span>
-                                    </span>
-                                <span class="content-message-more">
-                                <i class="bi bi-eye"></i>
-                                    {% if nombre_messages_non_lus > 0 %}
-                                        <span class="content-message-unread">
-                                            <i class="bi bi-chat"></i>{{ nombre_messages_non_lus }}
-                                        </span>
-                                    {% endif %}
-                                </span>
-                            </a>
-                        </li>
-                    {% endfor %}
-                {% endif %}
-            </div>
+    {% if utilisateurs %}
+        {% for utilisateur in utilisateurs %}
+            <li>
+                <a href="{% url 'Utilisateur:detail_utilisateur' utilisateur_detail_id=utilisateur.id %}" class="lien-utilisateur" data-utilisateur-id="{{ utilisateur.id }}">
+                    {% if utilisateur.image %}
+                        <img class="content-message-image" src="{{ utilisateur.image.url }}" alt="Image de {{ utilisateur.nom }}">
+                    {% endif %}
+                    <span class="content-message-info">
+                        <span class="content-message-name">{{ utilisateur.nom }} {{ utilisateur.prenom }}</span>
+                        <span class="content-message-text">Écrire à cet utilisateur</span>
+                        {% if utilisateur.preview_message %}
+                            <div class="message-preview">{{ utilisateur.preview_message }}...</div>
+                        {% endif %}
+                    </span>
+                    <span class="content-message-more">
+                        <i class="bi bi-eye"></i>
+                        {% if utilisateur.nombre_messages_non_lus > 0 %}
+                            <span class="content-message-unread">
+                                <i class="bi bi-chat"></i> {{ utilisateur.nombre_messages_non_lus }}
+                            </span>
+                        {% endif %}
+                    </span>
+                </a>
+            </li>
+        {% endfor %}
+    {% endif %}
+</div>
+
         </ul>
     </div>
 </div >
