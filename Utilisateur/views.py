@@ -14,7 +14,9 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from twilio.rest import Client
 
+from Chat import settings
 from Model.models import Utilisateur, Message, Like, Comment, Publication
 from Utilisateur.forms import InscriptionForm, ConnexionForm, MessageForm, MessageimagesForm, \
     MessageAudioForm, PhotoForm
@@ -383,3 +385,18 @@ def nombre_messages_non_lus(request):
         user_id = request.user.id
         count = Message.objects.filter(recoi_id=user_id, vu=False).count()
         return JsonResponse({'nombre_non_lus': count})
+
+
+def start_video_call(request):
+    client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+    utilisateur_id = request.GET.get('utilisateur_id')
+    try:
+        call = client.calls.create(
+            twiml='<Response><Dial><Number>+2250789817277</Number></Dial></Response>',
+            to='+2250789817277',
+            from_='+2250789817277'
+        )
+        print("yessssss")
+        return JsonResponse({'success': True, 'call_sid': call.sid})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
