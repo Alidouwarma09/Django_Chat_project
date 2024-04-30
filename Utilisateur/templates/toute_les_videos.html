@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulation TikTok</title>
+    <style>
+        /* Styles.css */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #000;
+    color: white;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.menu-icon span, .sound-icon span {
+    font-size: 24px;
+}
+
+.video-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.play-button {
+    font-size: 48px;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: absolute; /* Permet de le positionner librement à l'intérieur du conteneur parent */
+    top: 50%;           /* Centre verticalement */
+    left: 50%;          /* Centre horizontalement */
+    transform: translate(-50%, -50%); /* Compense la propre taille du bouton pour un centrage parfait */
+}
+
+
+.user-info {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.username, .music-info {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.interaction-icons {
+    display: flex;
+    padding: 10px;
+    justify-content: space-around;
+}
+
+.likes, .share {
+    display: flex;
+    align-items: center;
+}
+
+.likes span {
+    font-size: 24px;
+    margin-right: 5px;
+}
+
+.like-count {
+    font-size: 16px;
+}
+
+.share span {
+    font-size: 24px;
+}
+.progress-bar {
+    width: 100%;
+    height: 5px;
+    background-color: #444; /* Couleur de fond de la barre de progression */
+    position: absolute;
+    bottom: 0;
+}
+
+.progress {
+    height: 100%;
+    background-color: orange; /* Couleur de progression en orange */
+    width: 0%; /* Début sans progression */
+}
+
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <header>
+            <div class="menu-icon">
+                <span>&#9776;</span> <!-- Icône du menu -->
+            </div>
+            <div class="sound-icon">
+                <span>&#128266;</span> <!-- Icône du son -->
+            </div>
+        </header>
+
+        <div class="video-container">
+            <video id="videoPlayer" width="100%">
+                <source src="vide2.mp4" type="video/mp4">
+                Votre navigateur ne supporte pas la balise vidéo.
+            </video>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <button class="play-button" onclick="togglePlay()">&#9658;</button>
+        </div>
+
+
+
+        <div class="user-info">
+            <img src="" alt="Profile Image" class="profile-image">
+            <span class="username">@juliamenugarcia</span>
+            <div class="music-info">STUPID (feat. Yung Baby Tate)</div>
+        </div>
+
+        <div class="interaction-icons">
+            <div class="likes">
+                <span>&#10084;</span> <!-- Cœur -->
+                <span class="like-count">361.2k</span>
+            </div>
+            <div class="share">
+                <span>&#x1F4E4;</span> <!-- Icône de partage -->
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var video = document.getElementById("videoPlayer");
+        var playButton = document.querySelector(".play-button");
+        var progressBar = document.querySelector(".progress");
+        function updateProgressBar() {
+        var percentage = (video.currentTime / video.duration) * 100;
+        progressBar.style.width = percentage + "%";
+    }
+
+        function toggleVideoState() {
+            if (video.paused || video.ended) {
+                video.play();
+                playButton.style.display = 'none'; // Cache le bouton lors de la lecture
+            } else {
+                video.pause();
+                playButton.style.display = 'block'; // Affiche le bouton lors de la pause
+                playButton.innerHTML = "&#9658;"; // Change l'icône en play
+            }
+        }
+
+        // Fonction pour basculer entre jouer et pause
+        function togglePlay() {
+            toggleVideoState(); // Utilise la fonction réutilisable
+        }
+
+        // Gérer l'événement 'pause' pour afficher le bouton quand la vidéo est arrêtée
+        video.addEventListener('loadedmetadata', updateProgressBar);
+    video.addEventListener('timeupdate', updateProgressBar);
+        video.addEventListener('pause', function() {
+            playButton.style.display = 'block';
+        });
+
+        // Gérer l'événement 'play' pour cacher le bouton quand la vidéo joue
+        video.addEventListener('play', function() {
+            playButton.style.display = 'none';
+        });
+
+        // Ajouter l’événement click au bouton
+        playButton.addEventListener('click', togglePlay);
+
+        // Ajouter l’événement click sur la vidéo pour basculer l’état de lecture
+        video.addEventListener('click', toggleVideoState);
+    });
+</script>
+
+
+
+
+</html>
