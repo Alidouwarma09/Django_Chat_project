@@ -28,24 +28,24 @@
         right: 0;
     }
 
-.conversation-form {
-    display: flex;
-    justify-content: center;
-    background-color: white;
-    border-radius: 24px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-    padding: 8px 16px;
-    align-items: center;
-    text-align: center;
-    bottom: 0;
-    width: 90%;
-    z-index: 1000;
-}
+    .conversation-form {
+        display: flex;
+        justify-content: center;
+        background-color: white;
+        border-radius: 24px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        padding: 8px 16px;
+        align-items: center;
+        text-align: center;
+        bottom: 0;
+        width: 90%;
+        z-index: 1000;
+    }
 
-.conversation-form-input {
-    flex: 1;
-    background: #F2F2F2;
-    outline: none;
+    .conversation-form-input {
+        flex: 1;
+        background: #F2F2F2;
+        outline: none;
         border: 1px solid var(--slate-300);
         outline: transparent;
         padding: 10px 32px 10px 16px;
@@ -56,24 +56,24 @@
         display: block;
         line-height: 1.5;
         max-height: calc(20px + ((14px * 2) * 6));
-    z-index: 100;
-    border-radius: 20px;
-    cursor: pointer;
+        z-index: 100;
+        border-radius: 20px;
+        cursor: pointer;
         height: 40px;
         align-items: center;
         justify-content: center;
         outline: transparent;
         flex-shrink: 0;
-}
+    }
 
-.record-button {
-    background: #00BFA5;
-    border: none;
-    border-radius: 50%;
-    padding: 12px;
-    cursor: pointer;
-    color: white;
-            width: 40px;
+    .record-button {
+        background: #00BFA5;
+        border: none;
+        border-radius: 50%;
+        padding: 12px;
+        cursor: pointer;
+        color: white;
+        width: 40px;
         height: 40px;
         display: flex;
         align-items: center;
@@ -81,19 +81,19 @@
         outline: transparent;
         font-size: 20px;
         flex-shrink: 0;
-}
+    }
 
-.image-preview-container, .audio-preview-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
-}
+    .image-preview-container, .audio-preview-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
 
-.audio-preview-container audio {
-    width: 100%;
-    margin: 0 5px;
-}
+    .audio-preview-container audio {
+        width: 100%;
+        margin: 0 5px;
+    }
 
 
     .preview-image {
@@ -271,8 +271,6 @@
         visibility: visible;
         transform: scale(1);
     }
-
-
     .conversation-form-group {
         width: 100%;
         position: relative;
@@ -407,48 +405,91 @@
         height: 100%;
         object-fit: cover;
     }
-    .header {
-        background-color: #128C7E;
-        color: white;
-        padding: 10px 20px;
+    body {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        background-color: #EDEDED;
+        margin: 0;
+        padding: 0;
+    }
+
+    .whatsapp-header {
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        background-color: #075E54;
+        padding: 10px;
+        color: white;
         position: fixed;
         z-index: 100;
         width: 100%;
         left: 0;
         top: 0;
+
     }
-    .back-arrow {
+    .whatsapp-header-user-info{
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        color: white;
+
+    }
+
+    .header-btn {
+        border: none;
+        background: none;
+        color: white;
+        font-size: 20px;
         margin-right: 10px;
+        cursor: pointer;
     }
-    .group-title {
-        flex-grow: 1;
-    }
-    .group-info {
-        font-size: 0.85em;
-        color: #d2d2d2;
-    }
-    .group-image {
-        background: url('{{ utilisateur_detail.image.url }}') no-repeat center;
-        background-size: cover;
+
+    .whatsapp-avatar img {
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
-        width: 30px;
-        height: 30px;
+        margin-right: 15px;
+    }
+
+    .whatsapp-info h1, .whatsapp-info p {
+        margin: 0;
+    }
+
+    .whatsapp-info h1 {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .whatsapp-info p {
+        font-size: 12px;
+        color: #D3D3D3;
+    }
+
+    .whatsapp-actions .header-btn {
+        margin-left: auto; /* Pour déplacer cette section vers la droite */
+    }
+    .whatsapp-actions  {
+        display: flex;
     }
 
 </style>
 
 <div class="conversation conversation_message active" id="conversation-1" data-utilisateur-id="{{ utilisateur_detail.id }}" >
-    <div class="header">
-       <a style="text-decoration: none; color: white" href="{% url 'Utilisateur:accueil_utilisateur' %}">
-           <span class="back-arrow">&#8592;</span>
-       </a>
-        <div class="group-image"></div>
-        <div class="group-title">
-             {{ utilisateur_detail.nom }} {{ utilisateur_detail.prenom }}
-            <div  class="group-info">En ligne</div>
-            <div id="typingIndicator" class="group-info"></div>
+    <div class="whatsapp-header">
+        <div class="whatsapp-header-user-info">
+            <a  href="{% url 'Utilisateur:accueil_utilisateur' %}" class="header-btn" id="back-btn"><i class="fas fa-chevron-left"></i></a>
+            <div class="whatsapp-avatar">
+                <img src="{{ utilisateur_detail.image.url }}" alt="Avatar" />
+            </div>
+            <div class="whatsapp-info">
+                <h1> {{ utilisateur_detail.nom }} {{ utilisateur_detail.prenom }}</h1>
+                <p>en ligne</p>
+                <div id="typingIndicator" class="group-info"></div>
+            </div>
+        </div>
+        <div class="whatsapp-actions">
+            <button class="header-btn"><i class="fas fa-phone"></i></button>
+            <button class="header-btn"><i class="fas fa-video"></i></button>
+            <button class="header-btn"><i class="fas fa-ellipsis-v"></i></button>
         </div>
     </div>
 
@@ -834,5 +875,22 @@
     }
     setInterval(updateTypingIndicator, 500);
 </script>
+<script>
+    document.getElementById('videoCallButton').addEventListener('click', function() {
+        console.log('Lancement d\'un appel vidéo.');
+    });
+
+    document.getElementById('voiceCallButton').addEventListener('click', function() {
+        console.log('Lancement d'un appel téléphonique.');
+    });
+
+    document.getElementById('moreOptionsButton').addEventListener('click', function() {
+        console.log('Affichage de plus d\'options.');
+        // Afficher un menu contextuel ou un modal avec plus d'options
+    });
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

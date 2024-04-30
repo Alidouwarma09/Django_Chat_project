@@ -56,7 +56,6 @@ body {
 }
 .content-message-name {
     font-size: 14px;
-    color: white;
     font-weight: bold; /* Texte en gras */
     display: block; /* Rend le texte sur une ligne distincte */
     margin-bottom: 4px; /* Espacement en dessous */

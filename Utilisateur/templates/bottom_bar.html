@@ -85,7 +85,7 @@ function updateNombreMessagesNonLus() {
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    const nombreNonLus = localStorage.getItem('nombreNonLus');  // Récupérer depuis localStorage
+    const nombreNonLus = localStorage.getItem('nombreNonLus');
     const elem = document.getElementById('nombre-messages-non-lus');
     if (elem && nombreNonLus) {
         elem.textContent = nombreNonLus;
