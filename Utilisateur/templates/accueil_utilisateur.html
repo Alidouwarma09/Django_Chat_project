@@ -16,6 +16,42 @@
 </head>
 <body>
 <style>
+#story-section {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 5px;
+    border-bottom: 1px solid #ccc;
+    background-color: #f8f9fa;
+    margin-top: 100px;
+}
+
+.story {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 10px;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #007bff;
+}
+
+.story img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.story-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
+}
+
     .loading {
         position: relative;
         display: inline-block;
@@ -358,6 +394,17 @@
 
 </style>
 {% include 'bottom_bar.html' %}
+<div id="story-section">
+    <div class="story">
+        <img src="{% static 'chater_logo.png' %}" alt="Story image">
+        <div class="story-indicator"></div>
+    </div>
+     <div class="story">
+        <img src="{% static 'font_decran.png' %}" alt="Story image">
+        <div class="story-indicator"></div>
+    </div>
+</div>
+
 <div id="publicationSection" style="display: none;">
     <i onclick="" style="font-size: 30px" class="bi bi-x-circle-fill"></i>
     <form class="publier_text_form" id="publicationForm" action="{% url 'Utilisateur:creer_publication' %}" method="post">

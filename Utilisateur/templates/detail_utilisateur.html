@@ -488,8 +488,7 @@
         </div>
         <div class="whatsapp-actions">
             <button class="header-btn"><i class="fas fa-phone"></i></button>
-            <button class="header-btn" onclick="startVideoCall('{{ utilisateur_detail.id }}')"><i class="fas fa-video"></i></button>
-{#            <button class="header-btn" id="videoCallButton"><i class="fas fa-video"></i></button>#}
+            <button class="header-btn" id="videoCallButton"><i class="fas fa-video"></i></button>
             <button class="header-btn"><i class="fas fa-ellipsis-v"></i></button>
         </div>
     </div>
@@ -525,21 +524,6 @@
         </form>
     </div>
 </div>
-<script>
-// JavaScript
-function startVideoCall(utilisateurId) {
-    fetch("{% url 'Utilisateur:start_video_call' %}?utilisateur_id=" + utilisateurId)
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log('Appel vidéo lancé avec succès. SID de :', data.call_sid);
-        } else {
-            console.error('Erreur lors du lancement de l\'appel vidéo :', data.error);
-        }
-    })
-    .catch(error => console.error('Erreur lors du lancement de l\'appel vidéo :', error));
-}
-</script>
 <script>
     setInterval(reeceptionMesaage, 500)
     let cunter = 0

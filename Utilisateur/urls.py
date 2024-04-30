@@ -4,7 +4,7 @@ from django.urls import path
 from Utilisateur import views
 from Utilisateur.views import Inscription, Connexion_utlisateur, accueil_utilisateur, detail_utilisateur, publier_photo, \
     acceuil, reception_message, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, \
-    commenter_publication, afficher_commentaire, get_comment_count, start_video_call
+    commenter_publication, afficher_commentaire, get_comment_count, start_video_call, toute_les_videos
 
 app_name = 'Utilisateur'
 
@@ -33,5 +33,6 @@ urlpatterns = [
     path('api/auth_options/', views.get_auth_options, name='auth_options'),
     path('api/messages/non-lus/', views.nombre_messages_non_lus, name='nombre_messages_non_lus'),
     path('start-video-call/', start_video_call, name='start_video_call'),
+    path('toute_les_videos/', toute_les_videos, name='toute_les_videos'),
 
 ]

@@ -400,3 +400,7 @@ def start_video_call(request):
         return JsonResponse({'success': True, 'call_sid': call.sid})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+
+
+def toute_les_videos(request):
+    return render(request, 'toute_les_videos.html')
