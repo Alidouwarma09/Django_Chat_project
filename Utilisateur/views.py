@@ -430,8 +430,7 @@ def messages_non_lus_sse(request):
             with lock:
                 try:
                     if last_checked_time:
-                        new_messages = Message.objects.filter(recoi_id=request.user.id, vu=False,
-                                                              date_envoye__gt=last_checked_time).count()
+                        new_messages = Message.objects.filter(recoi_id=request.user.id, vu=False).count()
                     else:
                         new_messages = Message.objects.filter(recoi_id=request.user.id, vu=False).count()
 
