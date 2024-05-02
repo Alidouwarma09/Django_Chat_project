@@ -1,6 +1,7 @@
 import json
 import os
 import time
+from asyncio import sleep
 
 from django.contrib import messages
 from django.contrib.auth import login
@@ -14,6 +15,7 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
 from twilio.rest import Client
 
 from Chat import settings
@@ -300,18 +302,39 @@ def commenter_publication(request):
 
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
-def afficher_commentaire(request):
-    publication_id = request.GET.get('publication_id')
-    commentaire = Comment.objects.filter(publication_id=publication_id).order_by('-date_comment')
-    comments_data = []
-    for comment in commentaire:
-        comments_data.append({
-            'utilisateur_id': comment.utilisateur.id,
-            'utilisateur': f'{comment.utilisateur.nom} {comment.utilisateur.prenom}',
-            'texte': comment.texte,
-            'date_comment': comment.date_comment.strftime('%Y-%m-%d %H:%M:%S'),
-        })
-    return JsonResponse(comments_data, safe=False)
+@require_GET
+def comment_sse(request):
+    def event_stream():
+        last_comment_id = None
+        while True:
+            try:
+                # Récupérer le dernier commentaire basé sur la date
+                latest_comment = Comment.objects.latest('date_comment')
+                # Vérifier si ce commentaire est déjà envoyé
+                if latest_comment.id != last_comment_id:
+                    last_comment_id = latest_comment.id
+                    # Format des données JSON envoyé au client
+                    data = {
+                        'publication_id': latest_comment.publication.id,
+                        'last_comment_id': latest_comment.id,
+                        'texte': latest_comment.texte,
+                        'utilisateur': latest_comment.utilisateur.username,  # Supposons un attribut username
+                        'date_comment': latest_comment.date_comment.strftime('%Y-%m-%d %H:%M:%S'),
+                    }
+                    yield f"data: {json.dumps(data)}\n\n"
+                else:
+                    # Envoyer un commentaire pour garder la connexion ouverte
+                    yield ':keep-alive\n\n'
+            except Comment.DoesNotExist:
+                # Envoyer un commentaire pour garder la connexion ouverte si aucun commentaire n'est trouvé
+                yield 'data: Test message\n\n'
+                sleep(1)
+
+    # En-têtes pour autoriser les SSE
+    response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+    response['Cache-Control'] = 'no-cache'
+    response['X-Accel-Buffering'] = 'no'  # Désactive le buffering Nginx si utilisé
+    return response
 
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
