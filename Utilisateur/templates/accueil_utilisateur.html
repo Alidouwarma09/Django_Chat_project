@@ -479,7 +479,7 @@
     </nav>
     {% if Publication_alls  %}
         {% for photo in Publication_alls %}
-            <div class="publication">
+            <div class="publication"  data-post-id="{{ publication.id }}"  id="publicationIdPub">
                 <div class="publication-header">
                     <img src="{{ photo.utilisateur.image.url }}" alt="Profil de l'utilisateur" class="user-profile">
                     <div class="user-info">
@@ -523,7 +523,7 @@
                     </div>
                 </div>
 
-            <div class="comments-section" id="comments-section-{{ photo.id }}" style="display: block; overflow-y: auto; overflow-x: hidden; max-height: 300px">
+            <div class="comments-section" id="comments-section-{{ photo.id }}" data-url="{% url 'Utilisateur:get_comments' photo.id %}" style="display: block; overflow-y: auto; overflow-x: hidden; max-height: 300px">
                 <div class="comments-container" id="comments-container-{{ photo.id }}">
                     <!-- Les commentaires seront ajoutés ici -->
                 </div>
@@ -772,12 +772,9 @@
 <script>
 function createEventSource() {
     const eventSource = new EventSource("{% url 'Utilisateur:comment_sse' %}");
-
     eventSource.onmessage = function(event) {
         const newComment = JSON.parse(event.data);
         const commentsContainer = document.getElementById(`comments-container-${newComment.publication_id}`);
-        console.log(commentsContainer)
-
         if (commentsContainer) {
             const newCommentDiv = document.createElement('div');
             newCommentDiv.classList.add('comment');
@@ -787,21 +784,46 @@ function createEventSource() {
                 <p class="comment-time">${newComment.date_comment}</p>
             `;
             commentsContainer.appendChild(newCommentDiv);
-            commentsContainer.scrollTop = commentsContainer.scrollHeight;  // Auto-scroll pour afficher le nouveau commentaire
+            commentsContainer.scrollTop = commentsContainer.scrollHeight;
         } else {
-            console.error("Element not found: comments-container-" + newComment.last_comment_id);
+            console.error("Element not found: comments-container-" + newComment.publication_id);
         }
     };
-
-    eventSource.onerror = function(event) {
-        console.error("Erreur SSE:", event);
-        // Reconnaître automatiquement en cas d'erreur
-        eventSource.close();
-        setTimeout(createEventSource, 5000);
-    };
 }
-
 createEventSource();
+function loadInitialComments() {
+    document.querySelectorAll('.comments-section').forEach(commentsSection => {
+        const publicationId = commentsSection.id.split('-')[2];
+        console.log(`Traitement de la publication ID: ${publicationId}`);
+        const commentsContainer = document.getElementById(`comments-container-${publicationId}`);
+        if (!commentsContainer) {
+            console.error(`Conteneur de commentaires introuvable pour la publication ID ${publicationId}`);
+            return;
+        }
+        const url = commentsSection.dataset.url;
+        console.log(url);
+        fetch(url)
+            .then(response => response.json())
+            .then(comments => {
+                commentsContainer.innerHTML = '';
+                comments.forEach(comment => {
+                    const commentDiv = document.createElement('div');
+                    commentDiv.classList.add('comment');
+                    commentDiv.innerHTML = `
+                        <p class="comment-user">User ${comment.utilisateur}</p>
+                        <p class="comment-text">${comment.texte}</p>
+                        <p class="comment-time">${new Date(comment.date_comment).toLocaleString()}</p>
+                    `;
+                    commentsContainer.appendChild(commentDiv);
+                });
+                commentsContainer.scrollTop = commentsContainer.scrollHeight;
+            })
+            .catch(error => {
+                console.error(`Erreur lors du chargement des commentaires pour la publication ID ${publicationId}:`, error);
+            });
+    });
+}
+document.addEventListener('DOMContentLoaded', loadInitialComments);
 </script>
 
 <script>
@@ -811,7 +833,6 @@ createEventSource();
             var commentButton = actionsSection.find('.action-button#comment-button');
             if (commentButton.length > 0) {
                 var publicationId = commentButton.data('publicationafficher-id');
-                console.log('Publication ID:', publicationId);
                 var commentCountSpan = actionsSection.find('#comment-count-' + publicationId);
                 if (commentCountSpan.length > 0) {
                     $.ajax({

@@ -2,6 +2,7 @@ import json
 import os
 import time
 from asyncio import sleep
+from threading import Lock
 
 from django.contrib import messages
 from django.contrib.auth import login
@@ -301,40 +302,48 @@ def commenter_publication(request):
         return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
 
+lock = Lock()
+
+
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 @require_GET
 def comment_sse(request):
     def event_stream():
         last_comment_id = None
         while True:
-            try:
-                # Récupérer le dernier commentaire basé sur la date
-                latest_comment = Comment.objects.latest('date_comment')
-                # Vérifier si ce commentaire est déjà envoyé
-                if latest_comment.id != last_comment_id:
-                    last_comment_id = latest_comment.id
-                    # Format des données JSON envoyé au client
-                    data = {
-                        'publication_id': latest_comment.publication.id,
-                        'last_comment_id': latest_comment.id,
-                        'texte': latest_comment.texte,
-                        'utilisateur': latest_comment.utilisateur.username,  # Supposons un attribut username
-                        'date_comment': latest_comment.date_comment.strftime('%Y-%m-%d %H:%M:%S'),
-                    }
-                    yield f"data: {json.dumps(data)}\n\n"
-                else:
-                    # Envoyer un commentaire pour garder la connexion ouverte
-                    yield ':keep-alive\n\n'
-            except Comment.DoesNotExist:
-                # Envoyer un commentaire pour garder la connexion ouverte si aucun commentaire n'est trouvé
-                yield 'data: Test message\n\n'
-                sleep(1)
-
-    # En-têtes pour autoriser les SSE
+            with lock:
+                try:
+                    latest_comment = Comment.objects.latest('date_comment')
+                    if latest_comment.id != last_comment_id:
+                        last_comment_id = latest_comment.id
+                        data = {
+                            'publication_id': latest_comment.publication.id,
+                            'last_comment_id': latest_comment.id,
+                            'texte': latest_comment.texte,
+                            'utilisateur': latest_comment.utilisateur.username,  # Suppose username
+                            'date_comment': latest_comment.date_comment.strftime('%Y-%m-%d %H:%M:%S'),
+                        }
+                        yield f"data: {json.dumps(data)}\n\n"
+                    else:
+                        yield ':\n\n'
+                except Comment.DoesNotExist:
+                    yield 'data: Test message\n\n'
+                    sleep(1)
     response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
     response['Cache-Control'] = 'no-cache'
-    response['X-Accel-Buffering'] = 'no'  # Désactive le buffering Nginx si utilisé
+    response['X-Accel-Buffering'] = 'no'
     return response
+
+
+def get_comments(request, publication_id):
+    comments = Comment.objects.filter(publication_id=publication_id).order_by('-date_comment')
+    comments_data = [{
+        'id': comment.id,
+        'texte': comment.texte,
+        'utilisateur': comment.utilisateur.username,
+        'date_comment': comment.date_comment.strftime('%Y-%m-%d %H:%M:%S'),
+    } for comment in comments]
+    return JsonResponse(comments_data, safe=False)
 
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
