@@ -607,168 +607,100 @@
     });
 </script>
 {#Liker & commenter &afficher_commentaire#}
-{#<script>#}
-{#    document.querySelectorAll('#like-button').forEach(button => {#}
-{#        button.addEventListener('click', function() {#}
-{#            const publicationId = this.getAttribute('data-publication-id');#}
-{#            fetch("{% url 'Utilisateur:liker_publication' %}", {#}
-{#                method: 'POST',#}
-{#                headers: {#}
-{#                    'Content-Type': 'application/json',#}
-{#                    'X-CSRFToken': getCookie('csrftoken'),#}
-{#                },#}
-{#                body: JSON.stringify({ publication_id: publicationId }),#}
-{#            })#}
-{#                .then(response => response.json())#}
-{#                .then(data => {#}
-{#                    const likesCountElement = this.closest('.publication').querySelector('.likes-count');#}
-{##}
-{#                    if (data.liked) {#}
-{#                        this.classList.add('liked');#}
-{#                        likesCountElement.textContent = parseInt(likesCountElement.textContent) + 1;#}
-{#                    } else {#}
-{#                        this.classList.remove('liked');#}
-{#                        likesCountElement.textContent = parseInt(likesCountElement.textContent) - 1;#}
-{#                    }#}
-{#                });#}
-{#        });#}
-{#    });#}
-{##}
-{#    document.addEventListener('DOMContentLoaded', function() {#}
-{#    const publicationId = commentButton.getAttribute('data-publicationafficher-id');#}
-{#    const ws = new WebSocket(`ws://votre_serveur/ws/publication/${publicationId}/`);#}
-{##}
-{#    ws.onmessage = function(event) {#}
-{#        const data = JSON.parse(event.data);#}
-{#        afficherCommentaires(data);#}
-{#    };#}
-{##}
-{#    document.querySelectorAll('.comment-form').forEach(form => {#}
-{#        form.addEventListener('submit', function(event) {#}
-{#            event.preventDefault();#}
-{#            const texte = this.querySelector('.comment-input').value.trim();#}
-{#            if (!texte) {#}
-{#                console.log('Le commentaire ne peut pas être vide');#}
-{#                return;#}
-{#            }#}
-{#            ws.send(JSON.stringify({texte: texte}));  // Envoyer le commentaire via WebSocket#}
-{#        });#}
-{#    });#}
-{##}
-{#    function afficherCommentaires(data) {#}
-{#        const container = document.querySelector('#comments-container');#}
-{#        container.innerHTML = ''; // Nettoyer les commentaires précédents#}
-{#        data.forEach(comment => {#}
-{#            const commentElement = document.createElement('div');#}
-{#            commentElement.textContent = comment.texte;  // Ajoutez plus de détails selon vos besoins#}
-{#            container.appendChild(commentElement);#}
-{#        });#}
-{#    }#}
-{#});#}
-{##}
-{##}
-{##}
-{#    document.addEventListener('DOMContentLoaded', function() {#}
-{#        document.querySelectorAll('.publication').forEach(publication => {#}
-{#            // Définir publicationId avant de l'utiliser#}
-{#            const commentButton = publication.querySelector(`[id^="comment-button"]`);#}
-{#            const publicationId = commentButton.getAttribute('data-publicationafficher-id');#}
-{##}
-{#            const commentsSection = publication.querySelector(`#comments-section-${publicationId}`);#}
-{#            const commentForm = publication.querySelector(`#commentaire-form-${publicationId}`);#}
-{##}
-{#            commentsSection.setAttribute('data-visible', 'false');#}
-{##}
-{#            commentButton.addEventListener('click', function() {#}
-{#                const isVisible = commentsSection.getAttribute('data-visible') === 'true';#}
-{##}
-{#                if (isVisible) {#}
-{#                    commentsSection.style.display = 'none';#}
-{#                    commentsSection.setAttribute('data-visible', 'false');#}
-{#                    clearInterval(intervalId);#}
-{#                } else {#}
-{#                    commentsSection.style.display = 'block';#}
-{#                    commentsSection.setAttribute('data-visible', 'true');#}
-{#                    afficherCommentaires(publicationId);#}
-{#                }#}
-{#            });#}
-{##}
-{#            commentForm.addEventListener('submit', function(event) {#}
-{#                event.preventDefault();#}
-{#                const texte = commentForm.querySelector(`#commentaire-input-${publicationId}`).value;#}
-{##}
-{#                if (texte.trim() === '') {#}
-{#                    console.log('Le commentaire ne peut pas être vide');#}
-{#                    return;#}
-{#                }#}
-{#                fetch("{% url 'Utilisateur:commenter_publication' %}", {#}
-{#                    method: 'POST',#}
-{#                    headers: {#}
-{#                        'Content-Type': 'application/json',#}
-{#                        'X-CSRFToken': getCookie('csrftoken'),#}
-{#                    },#}
-{#                    body: JSON.stringify({#}
-{#                        publication_id: publicationId,#}
-{#                        texte: texte#}
-{#                    }),#}
-{#                })#}
-{#                    .then(response => response.json())#}
-{#                    .then(data => {#}
-{#                        if (data && data.utilisateur_nom && data.utilisateur_prenom && data.texte) {#}
-{#                            commentForm.querySelector(`#commentaire-input-${publicationId}`).value = '';#}
-{#                        } else {#}
-{#                            console.error('Erreur lors de l\'ajout du commentaire :', data.error);#}
-{#                        }#}
-{#                    })#}
-{#                    .catch(error => {#}
-{#                        console.error('Erreur :', error);#}
-{#                    });#}
-{#            });#}
-{#        });#}
-{#        let intervalId;#}
-{#        function afficherCommentaires(publicationId) {#}
-{#            const commentsContainer = document.querySelector(`#comments-container-${publicationId}`);#}
-{#            function actualiserCommentaires() {#}
-{#                fetch("{% url 'Utilisateur:afficher_commentaire' %}?publication_id=" + publicationId)#}
-{#                    .then(response => response.json())#}
-{#                    .then(data => {#}
-{#                        commentsContainer.innerHTML = '';#}
-{#                        data.forEach(commentaire => {#}
-{#                            const commentaireElement = document.createElement('div');#}
-{#                            commentaireElement.classList.add('comment');#}
-{#                            var utilisateurConnecteId = {{ utilisateur_connecte.id|default:"null" }};#}
-{#                            let nomUtilisateur = commentaire.utilisateur_id;#}
-{#                            if (commentaire.utilisateur_id === utilisateurConnecteId) {#}
-{#                                nomUtilisateur = 'vous';#}
-{#                            } else {#}
-{#                                nomUtilisateur = commentaire.utilisateur;#}
-{#                                console.log(commentaire.utilisateur)#}
-{#                            }#}
-{#                            commentaireElement.innerHTML = `#}
-{#                    <p class="comment-user">${nomUtilisateur}</p>#}
-{#                    <p class="comment-text">${commentaire.texte}</p>#}
-{#                    <p class="comment-time">${commentaire.date_comment}</p>#}
-{#                `;#}
-{#                            commentsContainer.appendChild(commentaireElement);#}
-{#                        });#}
-{#                    })#}
-{#                    .catch(error => {#}
-{#                        console.error('Erreur lors de la récupération des commentaires :', error);#}
-{#                    });#}
-{#            }#}
-{#            intervalId = setInterval(actualiserCommentaires, 500);#}
-{##}
-{#            actualiserCommentaires();#}
-{#        }#}
-{#    });#}
-{##}
-{##}
-{##}
-{#    function getCookie(name) {#}
-{#        const cookieValue = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');#}
-{#        return cookieValue ? decodeURIComponent(cookieValue[2]) : null;#}
-{#    }#}
-{#</script>#}
+<script>
+    document.querySelectorAll('#like-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const publicationId = this.getAttribute('data-publication-id');
+            fetch("{% url 'Utilisateur:liker_publication' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({ publication_id: publicationId }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const likesCountElement = this.closest('.publication').querySelector('.likes-count');
+
+                    if (data.liked) {
+                        this.classList.add('liked');
+                        likesCountElement.textContent = parseInt(likesCountElement.textContent) + 1;
+                    } else {
+                        this.classList.remove('liked');
+                        likesCountElement.textContent = parseInt(likesCountElement.textContent) - 1;
+                    }
+                });
+        });
+    });
+
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.publication').forEach(publication => {
+            const commentButton = publication.querySelector(`[id^="comment-button"]`);
+            const publicationId = commentButton.getAttribute('data-publicationafficher-id');
+
+            const commentsSection = publication.querySelector(`#comments-section-${publicationId}`);
+            const commentForm = publication.querySelector(`#commentaire-form-${publicationId}`);
+
+            commentsSection.setAttribute('data-visible', 'false');
+
+            commentButton.addEventListener('click', function() {
+                const isVisible = commentsSection.getAttribute('data-visible') === 'true';
+
+                if (isVisible) {
+                    commentsSection.style.display = 'none';
+                    commentsSection.setAttribute('data-visible', 'false');
+                    clearInterval(intervalId);
+                } else {
+                    commentsSection.style.display = 'block';
+                    commentsSection.setAttribute('data-visible', 'true');
+                }
+            });
+
+            commentForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const texte = commentForm.querySelector(`#commentaire-input-${publicationId}`).value;
+
+                if (texte.trim() === '') {
+                    console.log('Le commentaire ne peut pas être vide');
+                    return;
+                }
+                fetch("{% url 'Utilisateur:commenter_publication' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: JSON.stringify({
+                        publication_id: publicationId,
+                        texte: texte
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.utilisateur_nom && data.utilisateur_prenom && data.texte) {
+                            commentForm.querySelector(`#commentaire-input-${publicationId}`).value = '';
+                        } else {
+                            console.error('Erreur lors de l\'ajout du commentaire :', data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur :', error);
+                    });
+            });
+        });
+    });
+
+
+
+    function getCookie(name) {
+        const cookieValue = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        return cookieValue ? decodeURIComponent(cookieValue[2]) : null;
+    }
+</script>
 <script>
 function createEventSource() {
     const eventSource = new EventSource("{% url 'Utilisateur:comment_sse' %}");
