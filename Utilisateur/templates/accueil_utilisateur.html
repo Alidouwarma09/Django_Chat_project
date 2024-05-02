@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -242,13 +242,7 @@
     }
 
     /* Section des commentaires */
-    .comments-section {
-        align-items: center;
-        display: none;
-        border-top: 1px solid #ccc;
-        padding-top: 10px;
-        position: relative;
-    }
+
 
     .commentaire-form {
         display: flex;
@@ -449,7 +443,7 @@
     </div>
     <button id="publishFormButton" type="submit">Publier</button>
 </form>
-<div class="conversation active" id="Acceuil" style="margin-top: 60px; min-width: 100%">
+<div class="conversation active" id="Acceuil" style="margin-top: 60px; min-width: 100%; padding-bottom: 200px;">
     <nav class="navbar">
         <i style="color: #7906a5;" id="publication-action-icon" class="bi bi-fonts"></i>
         <i style="color: #7906a5; margin-left: 10px" id="photo-icon" class="bi bi-patch-plus"></i>
@@ -523,7 +517,7 @@
                     </div>
                 </div>
 
-            <div class="comments-section" id="comments-section-{{ photo.id }}" data-url="{% url 'Utilisateur:get_comments' photo.id %}" style="display: block; overflow-y: auto; overflow-x: hidden; max-height: 300px">
+            <div class="comments-section" id="comments-section-{{ photo.id }}" data-url="{% url 'Utilisateur:get_comments' photo.id %}" style="overflow-y: auto; overflow-x: hidden; max-height: 300px">
                 <div class="comments-container" id="comments-container-{{ photo.id }}">
                     <!-- Les commentaires seront ajoutés ici -->
                 </div>
@@ -706,19 +700,19 @@ function createEventSource() {
     const eventSource = new EventSource("{% url 'Utilisateur:comment_sse' %}");
     eventSource.onmessage = function(event) {
         const newComment = JSON.parse(event.data);
+
         const commentsContainer = document.getElementById(`comments-container-${newComment.publication_id}`);
         if (commentsContainer) {
             const newCommentDiv = document.createElement('div');
             newCommentDiv.classList.add('comment');
             newCommentDiv.innerHTML = `
-                <p class="comment-user">${newComment.utilisateur}</p>
+                <p class="comment-user">${newComment.utilisateur_nom} ${newComment.utilisateur_prenom}</p>
                 <p class="comment-text">${newComment.texte}</p>
                 <p class="comment-time">${newComment.date_comment}</p>
             `;
             commentsContainer.appendChild(newCommentDiv);
-            commentsContainer.scrollTop = commentsContainer.scrollHeight;
-        } else {
-            console.error("Element not found: comments-container-" + newComment.publication_id);
+            commentsContainer.scrollBottom = commentsContainer.scrollHeight;
+            nombreCommentaire()
         }
     };
 }
@@ -742,13 +736,14 @@ function loadInitialComments() {
                     const commentDiv = document.createElement('div');
                     commentDiv.classList.add('comment');
                     commentDiv.innerHTML = `
-                        <p class="comment-user">User ${comment.utilisateur}</p>
+                        <p class="comment-user">${comment.utilisateur_nom} ${comment.utilisateur_prenom}</p>
                         <p class="comment-text">${comment.texte}</p>
                         <p class="comment-time">${new Date(comment.date_comment).toLocaleString()}</p>
                     `;
                     commentsContainer.appendChild(commentDiv);
                 });
                 commentsContainer.scrollTop = commentsContainer.scrollHeight;
+                nombreCommentaire()
             })
             .catch(error => {
                 console.error(`Erreur lors du chargement des commentaires pour la publication ID ${publicationId}:`, error);
@@ -789,7 +784,6 @@ document.addEventListener('DOMContentLoaded', loadInitialComments);
             }
         });
     }
-    setInterval(nombreCommentaire, 2000);
 </script>
 <script>
     if ('serviceWorker' in navigator) {

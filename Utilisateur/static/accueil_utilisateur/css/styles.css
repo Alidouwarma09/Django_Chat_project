@@ -744,6 +744,7 @@ button {
     padding-top: 10px;
     position: relative;
     margin-bottom: 60px;
+        border-top: 1px solid #ccc;
 }
 
 .commentaire-form {

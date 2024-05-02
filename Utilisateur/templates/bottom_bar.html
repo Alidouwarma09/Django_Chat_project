@@ -62,36 +62,25 @@
     }
 </style>
 
+
 <script>
-function updateNombreMessagesNonLus() {
-    fetch("{% url 'Utilisateur:nombre_messages_non_lus' %}")
-        .then(response => response.json())
-        .then(data => {
+    function createEventSource() {
+    const eventSource = new EventSource("{% url 'Utilisateur:messages_non_lus_sse' %}");
+    eventSource.onmessage = function(event) {
+         const data = JSON.parse(event.data);
             const nombreNonLus = data.nombre_non_lus;
-            localStorage.setItem('nombreNonLus', nombreNonLus);
             const elem = document.getElementById('nombre-messages-non-lus');
-            if (nombreNonLus > 0) {
-                // Afficher elem et mettre à jour avec nombreNonLus.
+        if (nombreNonLus > 0) {
                 elem.textContent = nombreNonLus;
                 elem.classList.add('animated');
-                elem.style.display = 'inline';  // S'assurer que l'élément est visible.
+                elem.style.display = 'inline';
             } else {
-                // Cacher l'élément si le nombre de messages non lus est 0 ou moins.
-                elem.style.display = 'none';
+                elem.style.display = 'none';  // Cacher l'élément si le nombre de messages non lus est 0 ou moins.
             }
-        })
-        .catch(error => console.error('Erreur lors de la récupération des messages non lus:', error));
+            };
+    eventSource.onerror = function(error) {
+    console.error('Erreur SSE', error);
+};
 }
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    const nombreNonLus = localStorage.getItem('nombreNonLus');
-    const elem = document.getElementById('nombre-messages-non-lus');
-    if (elem && nombreNonLus) {
-        elem.textContent = nombreNonLus;
-    }
-    updateNombreMessagesNonLus();  // Fait également une mise à jour à partir du serveur
-});
-
-setInterval(updateNombreMessagesNonLus, 500);
+createEventSource()
 </script>

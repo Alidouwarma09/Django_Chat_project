@@ -4,7 +4,8 @@ from django.urls import path
 from Utilisateur import views
 from Utilisateur.views import Inscription, Connexion_utlisateur, accueil_utilisateur, detail_utilisateur, publier_photo, \
     acceuil, reception_message, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, \
-    commenter_publication, get_comment_count, start_video_call, toute_les_videos, comment_sse, get_comments
+    commenter_publication, get_comment_count, start_video_call, toute_les_videos, comment_sse, get_comments, \
+    messages_non_lus_sse
 
 app_name = 'Utilisateur'
 
@@ -35,4 +36,5 @@ urlpatterns = [
     path('toute_les_videos/', toute_les_videos, name='toute_les_videos'),
     path('get_comments/<int:publication_id>/', get_comments, name='get_comments'),
     path('apk/comment_sse/', comment_sse, name='comment_sse'),
+    path('apk/messages_non_lus_sse/', messages_non_lus_sse, name='messages_non_lus_sse'),
 ]
