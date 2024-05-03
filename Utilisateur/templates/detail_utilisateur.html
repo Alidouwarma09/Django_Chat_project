@@ -123,8 +123,10 @@
     .conversation {
         display: none;
         width: 100%;
-        overflow-y: auto;
         padding-bottom: 500px;
+        max-height: 800px;
+        overflow-y: auto;
+        margin-bottom: 100px;
 
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
@@ -407,7 +409,6 @@
     }
     body {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        background-color: #EDEDED;
         margin: 0;
         padding: 0;
     }
@@ -535,9 +536,7 @@
 
             eventSource.onmessage = function(event) {
                 try {
-                    console.log('Données reçues:', event.data);
                     let data = JSON.parse(event.data);
-                    console.log('Données reçues:', event.data);
                     if (data && Array.isArray(data)) {
                         let displayedMessageIds = new Set();
                         let utilisateurConnecterId = "{{ request.user.id }}";
@@ -613,11 +612,6 @@
                 console.error('Error occurred:', error);
                 eventSource.close();
             };
-
-            eventSource.onopen = function() {
-                console.log('Connection established successfully');
-            };
-
             window.onbeforeunload = function() {
                 eventSource.close();
             };
@@ -626,8 +620,24 @@
 
     createEventSource();
 
-</script>
 
+
+</script>
+<script>
+function scrollToBottom() {
+    let conversationElement = document.getElementById('conversation-1');
+    if (conversationElement) {
+        conversationElement.scrollTop = conversationElement.scrollHeight;
+    }
+}
+window.onload = function() {
+    scrollToBottom();
+};
+const observer = new MutationObserver(function() {
+    scrollToBottom();
+});
+observer.observe(document.getElementById('conversation-main'), { childList: true });
+</script>
 
 {#Envoi message#}
 <script>
@@ -721,7 +731,6 @@
                 success: function(response) {
                     const audioElement = document.getElementById('submitSound');
                     audioElement.play();
-                    $('#conversation-main').scrollTop($('#conversation-main')[0].scrollHeight);
                     $('#imagePreviewContainer').empty();
                     $('#message-input').val('');
                     $('#image_input').val('');
