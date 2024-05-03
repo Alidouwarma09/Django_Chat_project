@@ -19,7 +19,7 @@ urlpatterns = [
     path('apk/envoyer_message_audio/', envoyer_message_audio, name='envoyer_message_audio'),
     path('apk/publier_photo/', publier_photo, name='publier_photo'),
     path('apk/acceuil/', acceuil, name='acceuil'),
-    path('apk/reception_message/', reception_message, name='reception_message'),
+
     path('apk/liker_publication/', liker_publication, name='liker_publication'),
     path('apk/commenter_publication/', commenter_publication, name='commenter_publication'),
     path('apk/get_comment_count/', get_comment_count, name='get_comment_count'),
@@ -37,4 +37,6 @@ urlpatterns = [
     path('get_comments/<int:publication_id>/', get_comments, name='get_comments'),
     path('apk/comment_sse/', comment_sse, name='comment_sse'),
     path('apk/messages_non_lus_sse/', messages_non_lus_sse, name='messages_non_lus_sse'),
+    path('apk/stream_messages/<int:utilisateur_detail_id>/', views.stream_messages, name='stream_messages'),
+    path('apk/reception_message/', reception_message, name='reception_message'),
 ]

@@ -9,6 +9,7 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse, StreamingHttpResponse
@@ -191,34 +192,6 @@ def publier_photo(request):
             return JsonResponse({'success': False, 'errors': errors}, status=400)
     else:
         return JsonResponse({'success': False, 'message': 'Méthode non autorisée.'}, status=405)
-
-
-@login_required(login_url='Utilisateur:Connexion_utlisateur')
-def reception_message(request):
-    utilisateur = request.user
-    utilisateur_detail_id = request.GET.get('utilisateur_detail_id')
-    chats = Message.objects.filter(
-        (Q(envoi=utilisateur) & Q(recoi_id=utilisateur_detail_id)) |
-        (Q(recoi=utilisateur) & Q(envoi_id=utilisateur_detail_id))
-    ).select_related('envoi', 'recoi').order_by('timestamp')  # Ajout de select_related
-
-    arr = []
-    for chat in chats:
-        # Gérer correctement l'accès à l'image du récepteur
-        reco_image_url = chat.envoi.image.url if chat.recoi.image else None
-
-        message_dict = {
-            'id': chat.id,
-            'recoi_id': chat.recoi_id,
-            'envoi_id': chat.envoi_id,
-            'recoi_image': reco_image_url,
-            'contenu_message': chat.contenu_message,
-            'timestamp': chat.timestamp,
-            'images': chat.images.url if chat.images else None,
-            'audio': chat.audio.url if chat.audio else None
-        }
-        arr.append(message_dict)
-    return JsonResponse(arr, safe=False)
 
 
 def utilisateur_en_train_decrire(request):
@@ -449,6 +422,57 @@ def messages_non_lus_sse(request):
     response['Cache-Control'] = 'no-cache'
     response['X-Accel-Buffering'] = 'no'
     return response
+
+
+@require_GET
+def stream_messages(request, utilisateur_detail_id):
+    def event_stream():
+        last_id = request.GET.get("last_id", 0)
+        while True:
+            new_messages = Message.objects.filter(id__gt=last_id).order_by('id')
+            if new_messages.exists():
+                last_id = new_messages.last().id
+                messages_json = json.dumps(
+                    list(new_messages.values(
+                        'id', 'envoi_id', 'recoi_id', 'contenu_message',
+                        'timestamp', 'vu', 'audio', 'images')),
+                    cls=DjangoJSONEncoder  # Utilisation de DjangoJSONEncoder
+                )
+                yield f"data: {messages_json}\n\n"
+            time.sleep(1)
+
+    response = StreamingHttpResponse(event_stream(), content_type="text/event-stream")
+    response['Cache-Control'] = 'no-cache'
+    return response
+
+
+
+@login_required(login_url='Utilisateur:Connexion_utlisateur')
+def reception_message(request):
+    utilisateur = request.user
+    utilisateur_detail_id = request.GET.get('utilisateur_detail_id')
+    chats = Message.objects.filter(
+        (Q(envoi=utilisateur) & Q(recoi_id=utilisateur_detail_id)) |
+        (Q(recoi=utilisateur) & Q(envoi_id=utilisateur_detail_id))
+    ).select_related('envoi', 'recoi').order_by('timestamp')  # Ajout de select_related
+
+    arr = []
+    for chat in chats:
+        reco_image_url = chat.envoi.image.url if chat.recoi.image else None
+
+        message_dict = {
+            'id': chat.id,
+            'recoi_id': chat.recoi_id,
+            'envoi_id': chat.envoi_id,
+            'recoi_image': reco_image_url,
+            'contenu_message': chat.contenu_message,
+            'timestamp': chat.timestamp,
+            'images': chat.images.url if chat.images else None,
+            'audio': chat.audio.url if chat.audio else None
+        }
+        print(chat)
+        arr.append(message_dict)
+    return JsonResponse(arr, safe=False)
 
 
 def start_video_call(request):

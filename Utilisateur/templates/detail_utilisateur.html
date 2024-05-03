@@ -474,6 +474,8 @@
 </style>
 
 <div class="conversation conversation_message active" id="conversation-1" data-utilisateur-id="{{ utilisateur_detail.id }}" >
+    <div id="config" data-utilisateur-detail-id="{{ utilisateur_detail.id }}" hidden data-event-url="{% url 'Utilisateur:stream_messages' utilisateur_detail.id %}"></div>
+
     <div class="whatsapp-header">
         <div class="whatsapp-header-user-info">
             <a  href="{% url 'Utilisateur:accueil_utilisateur' %}" class="header-btn" id="back-btn"><i class="fas fa-chevron-left"></i></a>
@@ -525,96 +527,106 @@
     </div>
 </div>
 <script>
-    setInterval(reeceptionMesaage, 500)
-    let cunter = 0
-    let displayedMessageIds = new Set();
-    function afficherMessages(data) {
-        let utilisateurConnecterId = "{{ request.user.id }}" ;
-        var utilisateurImage;
-        let conversationWrappers = document.getElementById('conversation-main');
-        data.forEach((message) => {
-            if (displayedMessageIds.has(message.id)) {
-                return;
-            }
-            let messageDate = new Date(message.timestamp);
-            let formattedDate = messageDate.toLocaleString('fr-FR', { weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' });
-            let chatMessageBox = document.createElement("li");
-            chatMessageBox.classList.add("conversation-item");
-            if (message.envoi_id != utilisateurConnecterId) {
-                utilisateurImage = "{{ request.user.image.url|safe }}"
-            }else {
-                chatMessageBox.classList.add("recoi");
-                utilisateurImage = message.recoi_image
-            }
-            let contenuHTML = '';
-            if (message.images) {
-                contenuHTML += `
-                       <div class="conversation-item-box">
-                            <img class="message-image_afficher img-fluid" src="${message.images}" alt="Image">
-                                <div class="conversation-item-time">${formattedDate}</div>
-                        </div>`;
-            } else if (message.audio) {
-                contenuHTML += `
-                       <div class="conversation-item-box">
-                            <div class="conversation-item-text">
-                                <div class="message-audio">
-                            <audio controls>
-                                <source src="${message.audio}" type="audio/webm">
-                            </audio>
-                             </div>
-                                   <div class="conversation-item-time">${formattedDate} </div>
-                             </div>
-                        </div>
-    `;
-            } else if (message.contenu_message) {
-                contenuHTML += `
-                       <div class="conversation-item-box">
-                             <div class="conversation-item-text">
-                                  ${message.contenu_message}
-                                  <div class="conversation-item-time">${formattedDate}</div>
-                             </div>
-                       </div>
-                `;
-            }
-            chatMessageBox.innerHTML = `
-                    <div class="conversation-item-side">
-                        <img class="conversation-item-image" src="${utilisateurImage}" alt="">
-                    </div>
-                    <div class="conversation-item-content">
-                        <div class="conversation-item-wrapper">
-                            ${contenuHTML}
-                        </div>
-                    </div>
-                `;
-            conversationWrappers.appendChild(chatMessageBox);
-            displayedMessageIds.add(message.id);
-        });
-    }
-    let lastMessageId = null;
-    function reeceptionMesaage() {
-        let utilisateur_detail_id = document.querySelector('.conversation_message').dataset.utilisateurId;
-        if (utilisateur_detail_id) {
-            let url = `{% url "Utilisateur:reception_message" %}?utilisateur_detail_id=${utilisateur_detail_id}`;
-            if (lastMessageId) {
-                url += `&since_id=${lastMessageId}`;
-            }
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Données reçues:', data);
-                    if (data.length > 0) {
-                        afficherMessages(data);
-                        lastMessageId = data[data.length - 1].id;
-                        console.log('Nouveau lastMessageId:', lastMessageId);
+    function createEventSource() {
+        let utilisateurDetailId = document.getElementById('config').dataset.utilisateurDetailId;
+        if (utilisateurDetailId) {
+            let eventSourceUrl = document.getElementById('config').getAttribute('data-event-url');
+            let eventSource = new EventSource(eventSourceUrl);
+
+            eventSource.onmessage = function(event) {
+                try {
+                    console.log('Données reçues:', event.data);
+                    let data = JSON.parse(event.data);
+                    console.log('Données reçues:', event.data);
+                    if (data && Array.isArray(data)) {
+                        let displayedMessageIds = new Set();
+                        let utilisateurConnecterId = "{{ request.user.id }}";
+                        let conversationWrappers = document.getElementById('conversation-main');
+                        data.forEach((message) => {
+                            if (displayedMessageIds.has(message.id)) {
+                                return;
+                            }
+                            let messageDate = new Date(message.timestamp);
+                            let formattedDate = messageDate.toLocaleString('fr-FR', { weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' });
+                            let chatMessageBox = document.createElement("li");
+                            chatMessageBox.classList.add("conversation-item");
+                            let utilisateurImage;
+                            if (message.envoi_id != utilisateurConnecterId) {
+                                chatMessageBox.classList.add("recoi");
+
+                            } else {
+
+                                utilisateurImage = message.recoi_image;
+                                utilisateurImage = "{{ request.user.image.url|safe }}"
+                            }
+                            let contenuHTML = '';
+
+                            if (message.images) {
+                                contenuHTML += `
+                                    <div class="conversation-item-box">
+                                        <img class="message-image_afficher img-fluid" src="${message.images}" alt="Image">
+                                        <div class="conversation-item-time">${formattedDate}</div>
+                                    </div>`;
+                            } else if (message.audio) {
+                                contenuHTML += `
+                                    <div class="conversation-item-box">
+                                        <div class="conversation-item-text">
+                                            <div class="message-audio">
+                                                <audio controls>
+                                                    <source src="${message.audio}" type="audio/webm">
+                                                </audio>
+                                            </div>
+                                            <div class="conversation-item-time">${formattedDate}</div>
+                                        </div>
+                                    </div>`;
+                            } else if (message.contenu_message) {
+                                contenuHTML += `
+                                    <div class="conversation-item-box">
+                                        <div class="conversation-item-text">
+                                            ${message.contenu_message}
+                                            <div class="conversation-item-time">${formattedDate}</div>
+                                        </div>
+                                    </div>`;
+                            }
+                            chatMessageBox.innerHTML = `
+                                <div class="conversation-item-side">
+                                    <img class="conversation-item-image" src="${utilisateurImage}" alt="">
+                                </div>
+                                <div class="conversation-item-content">
+                                    <div class="conversation-item-wrapper">
+                                        ${contenuHTML}
+                                    </div>
+                                </div>`;
+                            conversationWrappers.appendChild(chatMessageBox);
+                            displayedMessageIds.add(message.id);
+                        });
+                    } else {
+                        console.error("Les données reçues ne sont pas un tableau:", event.data);
                     }
-                })
-                .catch(error => {
-                    console.log("Erreur lors de la récupération des messages:", error);
-                });
+                } catch (error) {
+                    console.error("Erreur lors de l'analyse des données reçues:", error);
+                }
+            };
+
+            eventSource.onerror = function(error) {
+                console.error('Error occurred:', error);
+                eventSource.close();
+            };
+
+            eventSource.onopen = function() {
+                console.log('Connection established successfully');
+            };
+
+            window.onbeforeunload = function() {
+                eventSource.close();
+            };
         }
     }
-    setInterval(reeceptionMesaage, 300);
+
+    createEventSource();
+
 </script>
+
 
 {#Envoi message#}
 <script>
@@ -873,7 +885,7 @@
             }
         });
     }
-    setInterval(updateTypingIndicator, 500);
+    {#setInterval(updateTypingIndicator, 500);#}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
