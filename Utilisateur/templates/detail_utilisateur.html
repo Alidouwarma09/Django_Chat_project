@@ -553,10 +553,11 @@
                             let utilisateurImage;
                             if (message.envoi_id != utilisateurConnecterId) {
                                 chatMessageBox.classList.add("recoi");
+                                utilisateurImage = "{{ request.user.image.url|safe }}"
 
                             } else {
 
-                                utilisateurImage = message.recoi_image;
+
                                 utilisateurImage = "{{ request.user.image.url|safe }}"
                             }
                             let contenuHTML = '';
