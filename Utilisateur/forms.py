@@ -75,4 +75,4 @@ class MessageAudioForm(forms.ModelForm):
 class PhotoForm(forms.ModelForm):
     class Meta:
         model = Publication
-        fields = ['titre', 'photo_file']
+        fields = ['titre', 'photo_file', 'video_file']

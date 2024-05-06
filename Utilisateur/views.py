@@ -63,7 +63,7 @@ class Connexion_utlisateur(LoginView):
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 def acceuil(request):
-    Publication_alls = Publication.objects.all().order_by('-date_publication')
+    Publication_alls = Publication.objects.filter(video_file='').order_by('-date_publication')
     liked_photos = [like.publication_id for like in Like.objects.filter(utilisateur=request.user)]
     utilisateur_connecte = request.user if request.user.is_authenticated else None
     publication_likes = {}

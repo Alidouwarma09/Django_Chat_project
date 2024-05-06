@@ -431,13 +431,12 @@
         <button id="publicationButton" type="submit">Publier</button>
     </form>
 </div>
-<form  id="publish-form" style="display: none; ">
+<form class="publish-form"  id="publish-form" style="display: none; ">
     <i  style="font-size: 30px" class="bi bi-x-circle-fill" onclick="closePublishForm()"></i>
     <label for="titre">Ajouter une legende:</label>
     <input type="text" id="titre_photo" name="titre">
     <label for="photo_file">Changer l'image: <i style="font-size: 30px" class="bi bi-camera"></i></label>
-    <input hidden="hidden" type="file" id="photo_file" name="photo_file" accept="image/*" required>
-
+    <input hidden="hidden" type="file" id="photo_file" accept="image/*" required>
     <div id="image-editor">
         <img id="image-to-edit" alt="Prévisualisation">
     </div>
@@ -446,8 +445,9 @@
 <div class="conversation active" id="Acceuil" style="margin-top: 60px; min-width: 100%; padding-bottom: 200px;">
     <nav class="navbar">
         <i style="color: #7906a5;" id="publication-action-icon" class="bi bi-fonts"></i>
-        <i style="color: #7906a5; margin-left: 10px" id="photo-icon" class="bi bi-patch-plus"></i>
-        <i style="color: #7906a5; margin-left: 10px" id="video-icon" class="bi bi-camera-video"></i>
+        <i style="color: #7906a5; margin-left: 10px" id="video-icon" class="bi bi-camera-video" ></i>
+        <i style="color: #7906a5; margin-left: 10px" id="photo-icon" class="bi bi-patch-plus" ></i>
+
 
         <div class="profile-dropdown" style="margin-left: auto;">
             <div onclick="toggle()" class="profile-dropdown-btn">
@@ -490,7 +490,8 @@
                         {% endif  %}
                             <img src="{{ photo.photo_file.url }}" alt="Image de la publication" class="publication-image">
                     </div>
-                {% else  %}
+                 {% endif  %}
+                {% if photo.contenu  %}
                     <div class="publication-content" style=" min-height: 400px; display: flex; justify-content: center; align-items: center; background-image:{{ photo.couleur_fond }} ">
                         <div class="publication-content" style="color: white">
                             {{ photo.contenu }}
@@ -553,9 +554,10 @@
     publishForm.addEventListener('submit', function(event) {
         event.preventDefault();
         var fileInput = document.getElementById('photo_file');
+        var fileName = fileInput.getAttribute('name');
         if (fileInput.files.length > 0) {
             var formData = new FormData();
-            formData.append('photo_file', fileInput.files[0]);
+             formData.append(fileName, fileInput.files[0]);
             formData.append('titre', document.getElementById('titre_photo').value);
 
             fetch("{% url 'Utilisateur:publier_photo' %}", {
@@ -595,12 +597,22 @@
 
 <script>
     var photoIcon = document.getElementById('photo-icon');
-    var photoInput = document.getElementById('photo_file');
+    var fileInput = document.getElementById('photo_file');
+    var videoIcon = document.getElementById('video-icon');
     var publishForm = document.getElementById('publish-form');
     photoIcon.addEventListener('click', function() {
-        photoInput.click();
+        fileInput.setAttribute('name', 'photo_file');
+        fileInput.setAttribute('accept', 'image/*');
+        fileInput.click();
         publishForm.style.display = 'block';
     });
+
+    videoIcon.addEventListener('click', function() {
+    fileInput.setAttribute('name', 'video_file');
+    fileInput.setAttribute('accept', 'video/*');
+    fileInput.click();
+    publishForm.style.display = 'block';
+});
 </script>
 {#Liker & commenter &afficher_commentaire#}
 <script>
@@ -893,28 +905,32 @@ document.addEventListener('DOMContentLoaded', loadInitialComments);
     }
 </script>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const form = document.querySelector('.publier_text_form');
-        const submitButton = document.getElementById('publicationButton');
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-            submitButton.disabled = true;
-            submitButton.classList.add('loading');
-            form.submit();
-        });
-    });
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('.publier_text_form');
+    const submitButton = document.getElementById('publicationButton');
+    const texteInput = document.getElementById('texteInput');
 
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const form = document.querySelector('.publish-form');
-        const submitButton = document.getElementById('publishFormButton');
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-            submitButton.disabled = true;
-            submitButton.classList.add('loading');
-            form.submit();
-        });
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (texteInput.value.trim() === '') {
+            return;
+        }
+        submitButton.disabled = true;
+        submitButton.classList.add('loading');
+        form.submit();
     });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const form2 = document.querySelector('.publish-form');
+    const submitButton2 = document.getElementById('publishFormButton');
+    form2.addEventListener('submit', (event) => {
+        event.preventDefault();
+        submitButton2.disabled = true;
+        submitButton2.classList.add('loading');
+        form2.submit();
+    });
+});
 </script>
 </body>
 </html>
