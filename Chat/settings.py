@@ -18,7 +18,6 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -27,7 +26,6 @@ SECRET_KEY = 'django-insecure-&8dj8sr)t@_!5ivh!0ko%(-22sb45gh*m(5z91^etshs-h1ba2
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 
 # Application definition
 
@@ -55,7 +53,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
 
 ]
 ALLOWED_HOSTS = [
@@ -95,8 +92,9 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:8000',
 ]
 
-# Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
+# Internal Database
 
 # DATABASES = {
 #     'default': {
@@ -108,8 +106,18 @@ CORS_ALLOWED_ORIGINS = [
 #         'PORT': '5432',
 #     }
 # }
+
+# external Database
+
 DATABASES = {
-    'default': dj_database_url.parse(config('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Wally09$chater_db',
+        'USER': 'Wally09',
+        'PASSWORD': '09102079Darius',
+        'HOST': 'Wally09.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
+    }
 }
 
 # Password validation
@@ -130,7 +138,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -142,12 +149,10 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 TWILIO_ACCOUNT_SID = 'AC344a9c2dbaaa999ad4e7d4525275bc4b'
 TWILIO_AUTH_TOKEN = '898526264acded659f7bb8d25c13974f'
-
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

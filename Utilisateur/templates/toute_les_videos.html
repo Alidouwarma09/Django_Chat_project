@@ -1,163 +1,331 @@
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Simulation TikTok</title>
-    <style>
-        /* Styles.css */
-body, html {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #000;
-    color: white;
-}
-
-#app {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-}
-
-.menu-icon span, .sound-icon span {
-    font-size: 24px;
-}
-
-.video-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.play-button {
-    font-size: 48px;
-    color: white;
-    background: none;
-    border: none;
-    cursor: pointer;
-    position: absolute; /* Permet de le positionner librement à l'intérieur du conteneur parent */
-    top: 50%;           /* Centre verticalement */
-    left: 50%;          /* Centre horizontalement */
-    transform: translate(-50%, -50%); /* Compense la propre taille du bouton pour un centrage parfait */
-}
-
-
-.user-info {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-}
-
-.profile-image {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-}
-
-.username, .music-info {
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.interaction-icons {
-    display: flex;
-    padding: 10px;
-    justify-content: space-around;
-}
-
-.likes, .share {
-    display: flex;
-    align-items: center;
-}
-
-.likes span {
-    font-size: 24px;
-    margin-right: 5px;
-}
-
-.like-count {
-    font-size: 16px;
-}
-
-.share span {
-    font-size: 24px;
-}
-.progress-bar {
-    width: 100%;
-    height: 5px;
-    background-color: #444; /* Couleur de fond de la barre de progression */
-    position: absolute;
-    bottom: 0;
-}
-
-.progress {
-    height: 100%;
-    background-color: orange; /* Couleur de progression en orange */
-    width: 0%; /* Début sans progression */
-}
-
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/tailwindcss-colors.css' %}">
+    <link rel="stylesheet" href="{% static 'accueil_utilisateur/css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"/>
+    <title>Video</title>
 </head>
 <body>
+<style>
 
-    <div id="app">
-        <header>
-            <div class="menu-icon">
-                <span>&#9776;</span> <!-- Icône du menu -->
-            </div>
-            <div class="sound-icon">
-                <span>&#128266;</span> <!-- Icône du son -->
-            </div>
-        </header>
+        .menu-icon span, .sound-icon span {
+            font-size: 24px;
+        }
 
-        <div class="video-container">
-            <video id="videoPlayer" width="100%">
-                <source src="vide2.mp4" type="video/mp4">
-                Votre navigateur ne supporte pas la balise vidéo.
-            </video>
-            <div class="progress-bar">
-                <div class="progress"></div>
+        .play-button {
+            font-size: 48px;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background-color: #444;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: orange;
+            width: 0%;
+        }
+    .conversation{
+    {% if request.user.theme_sombre %}
+        background-color: rgb(22 24 24);
+    {% else %}
+        background-color: rgb(255, 255, 255);
+    {% endif %}
+    }
+
+
+    button {
+        background-color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        color: #007bff;
+    }
+    #publication-action-icon {
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        transition: opacity 0.3s ease;
+        font-size: 40px;
+    }
+
+    #image-editor img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .publication {
+        border-radius: 5px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    {% if request.user.theme_sombre %}
+        background-color:#020101;
+        color: white;
+    {% else %}
+        background-color: rgb(255, 255, 255);
+    {% endif %}
+
+    }
+    .navbar{
+    {% if request.user.theme_sombre %}
+        background-color:#020101;
+        color: white;
+    {% else %}
+        background-color: rgb(255, 255, 255);
+    {% endif %}
+    }
+
+    .publication-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .user-profile {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+    }
+    .user-name {
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .publication-time {
+        margin: 0;
+        font-size: 0.9rem;
+        color: gray;
+    }
+
+    /* Contenu de la publication */
+    .publication-content {
+        margin-bottom: 10px;
+    }
+
+    .publication-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .action-button {
+        border: none;
+        background-color: #f0f2f5;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.5rem;
+    }
+
+    .action-button:hover {
+        background-color: #e9ebee;
+    }
+
+    /* Section des commentaires */
+
+
+    .commentaire-form {
+        display: flex;
+        justify-content: space-between;
+        position: sticky;
+        bottom: 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-top: 1px solid #cccccc;
+        z-index: 1;
+        box-sizing: border-box;
+
+    }
+
+    .commentaire-input {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px;
+        width: 100%;
+    }
+
+    .commentaire-form button {
+        border: none;
+        background-color: #007bff;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .action-button.liked i {
+        color: #ff4d4d;
+    }
+    .comment-count {
+        font-size: 1rem;
+        color: #888;
+        margin-left: 5px;
+    }
+    .likes-container {
+        display: flex;
+        align-items: center;
+    }
+    .comment-count-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /
+    }
+
+    .likes-container button,
+    .likes-container span {
+        margin-right: 5px;
+    }
+    .comment-count-container button,
+    .comment-count-container span {
+        margin-right: 5px;
+    }
+    .comments-container {
+        width: 100%;
+        border: 1px solid #cccccc;
+        padding: 10px;
+        margin-top: 10px;
+        background-color: #dcd9d9;
+        border-radius: 5px;
+    }
+
+    @media (max-width: 480px) {
+        .commentaire-form {
+            width: 100%;
+        }
+        .comments-container {
+            width: 100%;
+        }
+    }
+</style>
+{% include 'bottom_bar.html' %}
+<div class="conversation active" id="Acceuil" style="margin-top: 60px; min-width: 100%; padding-bottom: 200px;">
+    <nav class="navbar">
+<a href="{% url 'Utilisateur:acceuil' %}" class="back-link"><i class="fas fa-arrow-left"></i></a>
+        <div class="profile-dropdown" style="margin-left: auto;">
+            <div onclick="toggle()" class="profile-dropdown-btn">
+                <div class="profile-img">
+                    <img class="profile-img" style="" src="{{ request.user.image.url }}">
+                </div>
             </div>
-            <button class="play-button" onclick="togglePlay()">&#9658;</button>
+
+            <ul class="profile-dropdown-list">
+                <li class="profile-dropdown-list-item">
+                    <a href="{% url 'Utilisateur:parametre' %}">
+                        <i class="fa-solid fa-sliders"></i>
+                        Parametre
+                    </a>
+                </li>
+                <hr />
+                <li class="profile-dropdown-list-item">
+                    <a href="#" onclick="deconnexion();">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        Déconnexion
+                    </a>
+                </li>
+            </ul>
         </div>
+    </nav>
+    {% if Toutes_les_videos  %}
+        {% for videos in Toutes_les_videos %}
+            <div class="publication"  data-post-id="{{ publication.id }}"  id="publicationIdPub">
+                <div class="publication-header">
+                    <img src="{{ videos.utilisateur.image.url }}" alt="Profil de l'utilisateur" class="user-profile">
+                    <div class="user-info">
+                        <p class="user-name">{{ videos.utilisateur.nom }} {{ videos.utilisateur.prenom }}  <img style="width: 20px; margin-top: 10px" src="{% static 'badge.png' %}" alt="Badge certifié"></p>
+                        <p class="publication-time"><i class="bi bi-globe-americas"></i> Il y a {{ photo.date_pub }}</p>
+                    </div>
+                </div>
+                    <div class="publication-content" style=" min-height: 400px; display: flex; justify-content: center; align-items: center; background-image:{{ photo.couleur_fond }} ">
+                        <div class="publication-content" style="color: white">
+                            <p>{{ videos.titre }}</p>
+                             <video id="videoPlayer" width="100%">
+                                    <source src="{{ videos.video_file.url }}" type="video/mp4">
+                                </video>
+                                <div class="progress-bar">
+                                    <div class="progress"></div>
+                                </div>
+                                 <button class="play-button" onclick="togglePlay()">&#9658;</button>
+                        </div>
+                    </div>
+                <div class="row publication-actions">
+                    <div class="col-4 likes-container" style="font-size: 11px; padding-left: 20px;">
+                        <button class="action-button" id="like-button" data-publication-id="{{ videos.id }}">
+                            <i class="bi bi-heart-fill"></i>
+                        </button>
+                        <span class="likes-count">
+                                    {% for key, value in publication_likes.items %}
+                                        {% if key == videos.id %}
+                                            {{ value }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </span> likes
+                    </div>
+                    <div class="col-4 comment-count-container" style="font-size: 11px; padding-right: 20px;">
+                        <button class="action-button" id="comment-button" data-publicationafficher-id="{{ videos.id }}"><i class="bi bi-chat"></i></button>
+                        <span class="comment-count" id="comment-count-{{ videos.id }}"></span> commentaires
+                    </div>
+                    <div class="col-4 comment-count-container" style="font-size: 10px; padding-right: 30px; margin-right: 10px;">
+                        <span class="comment-count">15,42k</span> Vues
+                    </div>
+                </div>
 
+                <div class="comments-section" id="comments-section-{{ videos.id }}" data-url="{% url 'Utilisateur:get_comments' videos.id %}" style="overflow-y: auto; overflow-x: hidden; max-height: 300px">
+                    <div class="comments-container" id="comments-container-{{ videos.id }}">
+                        <!-- Les commentaires seront ajoutés ici -->
+                    </div>
+                    <form class="commentaire-form" id="commentaire-form-{{ videos.id }}">
+                        {% csrf_token %}
+                        <input type="text" class="commentaire-input" id="commentaire-input-{{ photo.id }}" placeholder="Écrivez un commentaire...">
+                        <button type="submit" data-publications-id="{{ videos.id }}">▶️</button>
+                    </form>
+                </div>
 
-
-        <div class="user-info">
-            <img src="" alt="Profile Image" class="profile-image">
-            <span class="username">@juliamenugarcia</span>
-            <div class="music-info">STUPID (feat. Yung Baby Tate)</div>
-        </div>
-
-        <div class="interaction-icons">
-            <div class="likes">
-                <span>&#10084;</span> <!-- Cœur -->
-                <span class="like-count">361.2k</span>
             </div>
-            <div class="share">
-                <span>&#x1F4E4;</span> <!-- Icône de partage -->
-            </div>
-        </div>
-    </div>
-
-</body>
+        {% endfor %}
+    {% endif %}
+</div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var video = document.getElementById("videoPlayer");
         var playButton = document.querySelector(".play-button");
         var progressBar = document.querySelector(".progress");
         function updateProgressBar() {
-        var percentage = (video.currentTime / video.duration) * 100;
-        progressBar.style.width = percentage + "%";
-    }
+            var percentage = (video.currentTime / video.duration) * 100;
+            progressBar.style.width = percentage + "%";
+        }
 
         function toggleVideoState() {
             if (video.paused || video.ended) {
@@ -177,7 +345,7 @@ header {
 
         // Gérer l'événement 'pause' pour afficher le bouton quand la vidéo est arrêtée
         video.addEventListener('loadedmetadata', updateProgressBar);
-    video.addEventListener('timeupdate', updateProgressBar);
+        video.addEventListener('timeupdate', updateProgressBar);
         video.addEventListener('pause', function() {
             playButton.style.display = 'block';
         });
@@ -194,8 +362,227 @@ header {
         video.addEventListener('click', toggleVideoState);
     });
 </script>
+{#Liker & commenter &afficher_commentaire#}
+<script>
+    document.querySelectorAll('#like-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const publicationId = this.getAttribute('data-publication-id');
+            fetch("{% url 'Utilisateur:liker_publication' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({ publication_id: publicationId }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const likesCountElement = this.closest('.publication').querySelector('.likes-count');
+
+                    if (data.liked) {
+                        this.classList.add('liked');
+                        likesCountElement.textContent = parseInt(likesCountElement.textContent) + 1;
+                    } else {
+                        this.classList.remove('liked');
+                        likesCountElement.textContent = parseInt(likesCountElement.textContent) - 1;
+                    }
+                });
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.publication').forEach(publication => {
+            const commentButton = publication.querySelector(`[id^="comment-button"]`);
+            const publicationId = commentButton.getAttribute('data-publicationafficher-id');
+
+            const commentsSection = publication.querySelector(`#comments-section-${publicationId}`);
+            const commentForm = publication.querySelector(`#commentaire-form-${publicationId}`);
+
+            commentsSection.setAttribute('data-visible', 'false');
+
+            commentButton.addEventListener('click', function() {
+                const isVisible = commentsSection.getAttribute('data-visible') === 'true';
+
+                if (isVisible) {
+                    commentsSection.style.display = 'none';
+                    commentsSection.setAttribute('data-visible', 'false');
+                    clearInterval(intervalId);
+                } else {
+                    commentsSection.style.display = 'block';
+                    commentsSection.setAttribute('data-visible', 'true');
+                }
+            });
+
+            commentForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const texte = commentForm.querySelector(`#commentaire-input-${publicationId}`).value;
+
+                if (texte.trim() === '') {
+                    console.log('Le commentaire ne peut pas être vide');
+                    return;
+                }
+                fetch("{% url 'Utilisateur:commenter_publication' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: JSON.stringify({
+                        publication_id: publicationId,
+                        texte: texte
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.utilisateur_nom && data.utilisateur_prenom && data.texte) {
+                            commentForm.querySelector(`#commentaire-input-${publicationId}`).value = '';
+                        } else {
+                            console.error('Erreur lors de l\'ajout du commentaire :', data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur :', error);
+                    });
+            });
+        });
+    });
 
 
 
+    function getCookie(name) {
+        const cookieValue = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        return cookieValue ? decodeURIComponent(cookieValue[2]) : null;
+    }
+</script>
+<script>
+    function createEventSource() {
+        const eventSource = new EventSource("{% url 'Utilisateur:comment_sse' %}");
+        eventSource.onmessage = function(event) {
+            const newComment = JSON.parse(event.data);
 
+            const commentsContainer = document.getElementById(`comments-container-${newComment.publication_id}`);
+            if (commentsContainer) {
+                const newCommentDiv = document.createElement('div');
+                newCommentDiv.classList.add('comment');
+                newCommentDiv.innerHTML = `
+                <p class="comment-user">${newComment.utilisateur_nom} ${newComment.utilisateur_prenom}</p>
+                <p class="comment-text">${newComment.texte}</p>
+                <p class="comment-time">${newComment.date_comment}</p>
+            `;
+                commentsContainer.appendChild(newCommentDiv);
+                commentsContainer.scrollBottom = commentsContainer.scrollHeight;
+                nombreCommentaire()
+            }
+        };
+    }
+    createEventSource();
+    function loadInitialComments() {
+        document.querySelectorAll('.comments-section').forEach(commentsSection => {
+            const publicationId = commentsSection.id.split('-')[2];
+            console.log(`Traitement de la publication ID: ${publicationId}`);
+            const commentsContainer = document.getElementById(`comments-container-${publicationId}`);
+            if (!commentsContainer) {
+                console.error(`Conteneur de commentaires introuvable pour la publication ID ${publicationId}`);
+                return;
+            }
+            const url = commentsSection.dataset.url;
+            console.log(url);
+            fetch(url)
+                .then(response => response.json())
+                .then(comments => {
+                    commentsContainer.innerHTML = '';
+                    comments.forEach(comment => {
+                        const commentDiv = document.createElement('div');
+                        commentDiv.classList.add('comment');
+                        commentDiv.innerHTML = `
+                        <p class="comment-user">${comment.utilisateur_nom} ${comment.utilisateur_prenom}</p>
+                        <p class="comment-text">${comment.texte}</p>
+                        <p class="comment-time">${new Date(comment.date_comment).toLocaleString()}</p>
+                    `;
+                        commentsContainer.appendChild(commentDiv);
+                    });
+                    commentsContainer.scrollTop = commentsContainer.scrollHeight;
+                    nombreCommentaire()
+                })
+                .catch(error => {
+                    console.error(`Erreur lors du chargement des commentaires pour la publication ID ${publicationId}:`, error);
+                });
+        });
+    }
+    document.addEventListener('DOMContentLoaded', loadInitialComments);
+</script>
+
+<script>
+    function nombreCommentaire() {
+        $('.publication').each(function() {
+            var actionsSection = $(this).find('.publication-actions');
+            var commentButton = actionsSection.find('.action-button#comment-button');
+            if (commentButton.length > 0) {
+                var publicationId = commentButton.data('publicationafficher-id');
+                var commentCountSpan = actionsSection.find('#comment-count-' + publicationId);
+                if (commentCountSpan.length > 0) {
+                    $.ajax({
+                        url: "{% url 'Utilisateur:get_comment_count' %}",
+                        type: 'GET',
+                        data: {
+                            publication_id: publicationId
+                        },
+                        success: function(data) {
+                            commentCountSpan.text(data.comment_count);
+
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Erreur lors de la récupération du nombre de commentaires : " + error);
+                        }
+                    });
+                } else {
+                    console.error('Aucun élément `comment-count-' + publicationId + '` trouvé');
+                }
+            } else {
+                console.error('Aucun bouton de commentaire trouvé');
+            }
+        });
+    }
+</script>
+
+<script>
+    let profileDropdownList = document.querySelector(".profile-dropdown-list");
+    let btn = document.querySelector(".profile-dropdown-btn");
+
+    let classList = profileDropdownList.classList;
+
+    const toggle = () => classList.toggle("active");
+
+    window.addEventListener("click", function (e) {
+        if (!btn.contains(e.target)) classList.remove("active");
+    });
+</script>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register("{% static 'accueil_utilisateur/js/service-worker.js' %}")
+                .then((registration) => {
+                    console.log('Service worker registered with scope:', registration.scope, );
+
+                })
+                .catch((error) => {
+                    console.error('Service worker registration failed:', error);
+                });
+        });
+    }
+</script>
+<script>
+    function deconnexion() {
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{% url 'Model:Deconnexion' %}';
+        var csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = 'csrfmiddlewaretoken';
+        csrf.value = '{{ csrf_token }}';
+        form.appendChild(csrf);
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+</body>
 </html>

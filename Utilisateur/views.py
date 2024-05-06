@@ -491,4 +491,17 @@ def start_video_call(request):
 
 
 def toute_les_videos(request):
-    return render(request, 'toute_les_videos.html')
+    Toutes_les_videos = Publication.objects.exclude(video_file='').order_by('-date_publication')
+    liked_photos = [like.publication_id for like in Like.objects.filter(utilisateur=request.user)]
+    utilisateur_connecte = request.user if request.user.is_authenticated else None
+    publication_likes = {}
+    for photo in Toutes_les_videos:
+        publication_likes[photo.id] = photo.count_likes()
+    context = {
+        'utilisateur_connecte': utilisateur_connecte,
+        'Toutes_les_videos': Toutes_les_videos,
+        'user': request.user,
+        'liked_photos': liked_photos,
+        'publication_likes': publication_likes,
+    }
+    return render(request, 'toute_les_videos.html', context=context)

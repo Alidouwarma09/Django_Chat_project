@@ -7,7 +7,8 @@ const urlsToCache = [
     '/static/font_decran.png',
     '/Utilisateur/apk/acceuil/',
     '/Utilisateur/parametre/',
-    '/Utilisateur/apk/accueil_utilisateur/'
+    '/Utilisateur/apk/accueil_utilisateur/',
+    '/Utilisateur/apk/comment_sse/'
 ];
 
 // Écoute de l'événement 'install' pour installer le service worker
