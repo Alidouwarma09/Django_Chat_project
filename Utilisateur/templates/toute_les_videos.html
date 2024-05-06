@@ -556,20 +556,7 @@
         if (!btn.contains(e.target)) classList.remove("active");
     });
 </script>
-<script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register("{% static 'accueil_utilisateur/js/service-worker.js' %}")
-                .then((registration) => {
-                    console.log('Service worker registered with scope:', registration.scope, );
 
-                })
-                .catch((error) => {
-                    console.error('Service worker registration failed:', error);
-                });
-        });
-    }
-</script>
 <script>
     function deconnexion() {
         var form = document.createElement('form');

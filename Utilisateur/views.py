@@ -446,7 +446,6 @@ def stream_messages(request, utilisateur_detail_id):
     return response
 
 
-
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 def reception_message(request):
     utilisateur = request.user
@@ -470,7 +469,6 @@ def reception_message(request):
             'images': chat.images.url if chat.images else None,
             'audio': chat.audio.url if chat.audio else None
         }
-        print(chat)
         arr.append(message_dict)
     return JsonResponse(arr, safe=False)
 
