@@ -89,7 +89,7 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = 'Chat.wsgi.application'
+WSGI_APPLICATION = 'Chat.wsgi.application'
 
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:8000',
