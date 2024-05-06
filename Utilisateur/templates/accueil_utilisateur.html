@@ -447,6 +447,8 @@
     <nav class="navbar">
         <i style="color: #7906a5;" id="publication-action-icon" class="bi bi-fonts"></i>
         <i style="color: #7906a5; margin-left: 10px" id="photo-icon" class="bi bi-patch-plus"></i>
+        <i style="color: #7906a5; margin-left: 10px" id="video-icon" class="bi bi-camera-video"></i>
+
         <div class="profile-dropdown" style="margin-left: auto;">
             <div onclick="toggle()" class="profile-dropdown-btn">
                 <div class="profile-img">
@@ -566,7 +568,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        window.location.href = data.redirect_url; // Redirect to the URL provided by the server
+                        window.location.href = data.redirect_url;
                     } else {
                         console.log('Erreur lors de la publication de l\'image : ' + data.errors);
                     }
@@ -785,20 +787,20 @@ document.addEventListener('DOMContentLoaded', loadInitialComments);
         });
     }
 </script>
-<script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register("{% static 'accueil_utilisateur/js/service-worker.js' %}")
-                .then((registration) => {
-                    console.log('Service worker registered with scope:', registration.scope, );
-
-                })
-                .catch((error) => {
-                    console.error('Service worker registration failed:', error);
-                });
-        });
-    }
-</script>
+{#<script>#}
+{#    if ('serviceWorker' in navigator) {#}
+{#        window.addEventListener('load', () => {#}
+{#            navigator.serviceWorker.register("{% static 'accueil_utilisateur/js/service-worker.js' %}")#}
+{#                .then((registration) => {#}
+{#                    console.log('Service worker registered with scope:', registration.scope, );#}
+{##}
+{#                })#}
+{#                .catch((error) => {#}
+{#                    console.error('Service worker registration failed:', error);#}
+{#                });#}
+{#        });#}
+{#    }#}
+{#</script>#}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const publicationActionIcon = document.getElementById('publication-action-icon');
