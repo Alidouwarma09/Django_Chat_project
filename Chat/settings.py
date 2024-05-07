@@ -82,15 +82,12 @@ TEMPLATES = [
     },
 ]
 
-
-cloudinary.config(
-    cloud_name="dp7nell7v",
-    api_key="848777645924315",
-    api_secret="5GiGXjplGFtQu5xIbaLwytbTyV0"
-)
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dp7nell7v',
+    'API_KEY': '848777645924315',
+    'API_SECRET': '5GiGXjplGFtQu5xIbaLwytbTyV0'
+}
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-
 
 WSGI_APPLICATION = 'Chat.wsgi.application'
 
@@ -181,4 +178,3 @@ AUTH_USER_MODEL = 'Model.Utilisateur'
 BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_UeUtwYdXhrkG2b3M_XYDFLki0WWDVLPm3zR66D59FZuE3Rk"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
