@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
+import cloudinary
 from pathlib import Path
 
 import dj_database_url
@@ -80,6 +81,16 @@ TEMPLATES = [
         },
     },
 ]
+
+
+cloudinary.config(
+    cloud_name="dp7nell7v",
+    api_key="848777645924315",
+    api_secret="5GiGXjplGFtQu5xIbaLwytbTyV0"
+)
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+
 
 WSGI_APPLICATION = 'Chat.wsgi.application'
 
@@ -163,7 +174,7 @@ TWILIO_AUTH_TOKEN = '898526264acded659f7bb8d25c13974f'
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'static')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'Model.Utilisateur'
