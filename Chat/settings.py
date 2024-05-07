@@ -158,7 +158,7 @@ TWILIO_AUTH_TOKEN = '898526264acded659f7bb8d25c13974f'
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'static')
-STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 STATICFILES_DIRS = [BASE_DIR / "static",]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
