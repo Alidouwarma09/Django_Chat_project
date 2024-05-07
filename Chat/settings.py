@@ -163,7 +163,7 @@ TWILIO_ACCOUNT_SID = 'AC344a9c2dbaaa999ad4e7d4525275bc4b'
 TWILIO_AUTH_TOKEN = '898526264acded659f7bb8d25c13974f'
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'static')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
