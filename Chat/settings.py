@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'Model',
     'Utilisateur',
     'channels'
+    'storages',
 ]
 
 MIDDLEWARE = [
