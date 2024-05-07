@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'Model',
     'Utilisateur',
-    'channels'
     'storages',
 ]
 
