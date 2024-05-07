@@ -182,4 +182,3 @@ BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_UeUtwYdXhrkG2b3M_XYDFLki0WWDVLPm3zR66D59
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
