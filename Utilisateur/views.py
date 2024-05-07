@@ -469,6 +469,7 @@ def reception_message(request):
             'images': chat.images.url if chat.images else None,
             'audio': chat.audio.url if chat.audio else None
         }
+        print(chat)
         arr.append(message_dict)
     return JsonResponse(arr, safe=False)
 

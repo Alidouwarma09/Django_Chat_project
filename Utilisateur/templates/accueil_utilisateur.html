@@ -160,7 +160,11 @@
         height: 100%;
         object-fit: cover;
     }
-
+    #image-editor video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
     .publication {
         background-color: #fff;
         border-radius: 5px;
@@ -438,8 +442,10 @@
     <label for="photo_file">Changer l'image: <i style="font-size: 30px" class="bi bi-camera"></i></label>
     <input hidden="hidden" type="file" id="photo_file" accept="image/*" required>
     <div id="image-editor">
-        <img id="image-to-edit" alt="Prévisualisation">
+         <video id="media-to-edit" controls autoplay loop muted style="display:none; max-height: 1000px"></video>
+        <img style="display:none;" id="image-to-edit" alt="Prévisualisation">
     </div>
+
     <button id="publishFormButton" type="submit">Publier</button>
 </form>
 <div class="conversation active" id="Acceuil" style="margin-top: 60px; min-width: 100%; padding-bottom: 200px;">
@@ -542,13 +548,28 @@
     var imageElement = document.getElementById('image-to-edit');
     const blurContainer = document.getElementById('Acceuil');
 
-    document.querySelector('#photo_file').addEventListener('change', function(event) {
-        var reader = new FileReader();
-        reader.onload = function() {
-            imageElement.src = reader.result;
-        };
-        reader.readAsDataURL(event.target.files[0]);
-    });
+document.querySelector('#photo_file').addEventListener('change', function(event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function(event) {
+        var fileInput = document.getElementById('photo_file');
+        var fileName = fileInput.getAttribute('name');
+        if (fileName === 'photo_file') {
+            var imageElement = document.getElementById('image-to-edit');
+            imageElement.src = URL.createObjectURL(file);
+            imageElement.style.display = 'block';
+        }
+        if (fileName === 'video_file') {
+            var videoElement = document.getElementById('media-to-edit');
+            videoElement.src = URL.createObjectURL(file);
+            videoElement.style.display = 'block';
+        }
+    };
+
+    reader.readAsDataURL(file);
+});
+
 
     // Soumettre l'image chargée
     publishForm.addEventListener('submit', function(event) {

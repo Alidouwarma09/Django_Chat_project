@@ -60,6 +60,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1:8000',
     'django-chat-project.onrender.com',
     '127.0.0.1',
+    '.vercel.app',
 ]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
@@ -109,14 +110,25 @@ CORS_ALLOWED_ORIGINS = [
 
 # external Database
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'Wally09$chater_db',
+#         'USER': 'Wally09',
+#         'PASSWORD': '09102079Darius',
+#         'HOST': 'Wally09.mysql.pythonanywhere-services.com',
+#         'PORT': '3306',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Wally09$chater_db',
-        'USER': 'Wally09',
-        'PASSWORD': '09102079Darius',
-        'HOST': 'Wally09.mysql.pythonanywhere-services.com',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres.tiscmfmferpvuppnybxd',
+        'PASSWORD': 'Nshqb6V0KSbeiUSu',
+        'HOST': 'aws-0-eu-central-1.pooler.supabase.com',
+        'PORT': '5432',
     }
 }
 
