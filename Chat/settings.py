@@ -55,13 +55,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
 ]
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1:8000',
-    'django-chat-project.onrender.com',
-    '127.0.0.1',
-    '.vercel.app',
-]
+ALLOWED_HOSTS = ['.vercel.app', '.now.sh']
+
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
@@ -169,7 +164,7 @@ TWILIO_ACCOUNT_SID = 'AC344a9c2dbaaa999ad4e7d4525275bc4b'
 TWILIO_AUTH_TOKEN = '898526264acded659f7bb8d25c13974f'
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
