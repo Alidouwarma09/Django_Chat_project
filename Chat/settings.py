@@ -110,19 +110,6 @@ CORS_ALLOWED_ORIGINS = [
 #     }
 # }
 
-# external Database
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'Wally09$chater_db',
-#         'USER': 'Wally09',
-#         'PASSWORD': '09102079Darius',
-#         'HOST': 'Wally09.mysql.pythonanywhere-services.com',
-#         'PORT': '3306',
-#     }
-# }
-
 
 DATABASES = {
     'default': {
@@ -172,6 +159,7 @@ TWILIO_AUTH_TOKEN = '898526264acded659f7bb8d25c13974f'
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'static')
 STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
+STATICFILES_DIRS = [BASE_DIR / "static",]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'Model.Utilisateur'
