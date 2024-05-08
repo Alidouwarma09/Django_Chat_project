@@ -1,7 +1,7 @@
+import asyncio
 import json
 import os
 import time
-from asyncio import sleep
 from threading import Lock
 
 from django.contrib import messages
@@ -281,7 +281,7 @@ lock = Lock()
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 @require_GET
 def comment_sse(request):
-    def event_stream():
+    async def event_stream():
         last_comment_id = None
         while True:
             with lock:
@@ -302,7 +302,7 @@ def comment_sse(request):
                         yield ':\n\n'
                 except Comment.DoesNotExist:
                     yield 'data: Test message\n\n'
-                    sleep(1)
+                    await asyncio.sleep(1)
 
     response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
     response['Cache-Control'] = 'no-cache'
@@ -397,7 +397,7 @@ def nombre_messages_non_lus(request):
 
 @require_GET
 def messages_non_lus_sse(request):
-    def event_stream():
+    async def event_stream():
         last_checked_time = None
         while True:
             with lock:
@@ -412,11 +412,11 @@ def messages_non_lus_sse(request):
                         'nombre_non_lus': new_messages
                     }
                     yield f"data: {json.dumps(data)}\n\n"
-                    sleep(5)
+                    await asyncio.sleep(5)
 
                 except Message.DoesNotExist:
                     yield 'data: Test message\n\n'
-                    sleep(1)
+                    await asyncio.sleep(1)
 
     response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
     response['Cache-Control'] = 'no-cache'
