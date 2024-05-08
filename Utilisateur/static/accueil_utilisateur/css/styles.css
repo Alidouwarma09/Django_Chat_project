@@ -10,6 +10,7 @@
 body {
     font-family: 'Inter', sans-serif;
     color: var(--slate-700);
+
 }
 .content-messages-list {
     list-style-type: none;
@@ -597,15 +598,7 @@ button {
     margin-bottom: 10px;
     display: none;
 }
-#photo-icon {
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    transition: opacity 0.3s ease;
-    font-size: 35px;
-}
+
 
 #photo-icon:hover {
     opacity: 0.7;
@@ -883,20 +876,7 @@ color: #999999;
 
 
 
-.navbar {
-    display: flex;
-    height: 70px;
-    padding: 0 8%;
-    box-shadow: var(--shadow);
-    position: fixed;
-    top: 2px;
-    cursor: pointer;
-    width: 100%;
-    transition: opacity 0.3s ease;
-    font-size: 35px;
-    left: 0;
-    right: 0;
-}
+
 
 .profile-dropdown {
     position: relative;

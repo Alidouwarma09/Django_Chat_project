@@ -1,28 +1,54 @@
 
 <style>
-        .navbar{
-    {% if request.user.theme_sombre %}
-        background-color:#020101;
-        color: white;
-    {% else %}
-        background-color: rgb(255, 255, 255);
-    {% endif %}
+    .navbar{
+        display: flex;
+        height: 70px;
+        padding: 0 8%;
+        box-shadow: var(--shadow);
+        position: fixed;
+        top: 0;
+        cursor: pointer;
+        width: 100%;
+        transition: opacity 0.3s ease;
+        left: 0;
+        right: 0;
+        font-size: 25px;
+        {% if request.user.theme_sombre %}
+            background-color:#020101;
+            color: white;
+        {% else %}
+            background-color: rgb(255, 255, 255);
+        {% endif %}
     }
     #publication-action-icon {
         cursor: pointer;
         width: 40px;
         height: 40px;
         transition: opacity 0.3s ease;
-        font-size: 40px;
     }
+#photo-icon {
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    transition: opacity 0.3s ease;
+}
+
+    #photo-icon:hover {
+        opacity: 0.7;
+    }
+.navbar i {
+    margin: 10px;
+}
 </style>
 
 
 
     <nav class="navbar">
-        <i style="color: #7906a5;" id="publication-action-icon" class="bi bi-fonts"></i>
-        <i style="color: #7906a5; margin-left: 10px" id="video-icon" class="bi bi-camera-video" ></i>
-        <i style="color: #7906a5; margin-left: 10px" id="photo-icon" class="bi bi-patch-plus" ></i>
+        <i  id="publication-action-icon" class="bi bi-fonts"></i>
+        <i  id="video-icon" class="bi bi-camera-video" ></i>
+        <i  id="photo-icon" class="bi bi-patch-plus" ></i>
 
 
         <div class="profile-dropdown" style="margin-left: auto;">
