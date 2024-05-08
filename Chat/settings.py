@@ -102,7 +102,7 @@ CLOUDINARY_STORAGE = {
     'API_KEY': '848777645924315',
     'API_SECRET': '5GiGXjplGFtQu5xIbaLwytbTyV0'
 }
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+DEFAULT_FILE_STORAGE = 'Chat.custom_storage.CustomCloudinaryStorage'
 
 WSGI_APPLICATION = 'Chat.wsgi.application'
 
