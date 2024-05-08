@@ -61,7 +61,17 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
 ]
-ALLOWED_HOSTS = ['.vercel.app', '.now.sh', '127.0.0.1']
+# settings.py
+
+# Ajoutez tous les domaines nécessaires à ALLOWED_HOSTS
+ALLOWED_HOSTS = [
+    'django-chat-project.onrender.com',  # Votre domaine Render
+    'localhost',  # Si vous développez localement
+    '.cloudinary.com',  # Domaine Cloudinary
+    '.onrender.com',  # Autres sous-domaines si nécessaire
+    '127.0.0.1'
+]
+
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
