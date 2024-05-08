@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+import cloudinary_storage
 from pathlib import Path
 
 import dj_database_url
@@ -41,6 +44,7 @@ INSTALLED_APPS = [
     'Model',
     'Utilisateur',
     'storages',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -88,6 +92,7 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': '5GiGXjplGFtQu5xIbaLwytbTyV0'
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+CLOUDINARY_VIDEO_STORAGE = 'cloudinary_storage.storage.VideoMediaCloudinaryStorage'
 
 WSGI_APPLICATION = 'Chat.wsgi.application'
 
