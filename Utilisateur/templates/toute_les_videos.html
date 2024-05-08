@@ -94,14 +94,7 @@
     {% endif %}
 
     }
-    .navbar{
-    {% if request.user.theme_sombre %}
-        background-color:#020101;
-        color: white;
-    {% else %}
-        background-color: rgb(255, 255, 255);
-    {% endif %}
-    }
+
 
     .publication-header {
         display: flex;
@@ -233,32 +226,7 @@
 </style>
 {% include 'bottom_bar.html' %}
 <div class="conversation active" id="Acceuil" style="margin-top: 60px; min-width: 100%; padding-bottom: 200px;">
-    <nav class="navbar">
-<a href="{% url 'Utilisateur:acceuil' %}" class="back-link"><i class="fas fa-arrow-left"></i></a>
-        <div class="profile-dropdown" style="margin-left: auto;">
-            <div onclick="toggle()" class="profile-dropdown-btn">
-                <div class="profile-img">
-                    <img class="profile-img" style="" src="{{ request.user.image.url }}">
-                </div>
-            </div>
-
-            <ul class="profile-dropdown-list">
-                <li class="profile-dropdown-list-item">
-                    <a href="{% url 'Utilisateur:parametre' %}">
-                        <i class="fa-solid fa-sliders"></i>
-                        Parametre
-                    </a>
-                </li>
-                <hr />
-                <li class="profile-dropdown-list-item">
-                    <a href="#" onclick="deconnexion();">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        Déconnexion
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+{% include 'nav_bar.html' %}
     {% if Toutes_les_videos  %}
         {% for videos in Toutes_les_videos %}
             <div class="publication"  data-post-id="{{ publication.id }}"  id="publicationIdPub">

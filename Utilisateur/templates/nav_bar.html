@@ -1,0 +1,51 @@
+
+<style>
+        .navbar{
+    {% if request.user.theme_sombre %}
+        background-color:#020101;
+        color: white;
+    {% else %}
+        background-color: rgb(255, 255, 255);
+    {% endif %}
+    }
+    #publication-action-icon {
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        transition: opacity 0.3s ease;
+        font-size: 40px;
+    }
+</style>
+
+
+
+    <nav class="navbar">
+        <i style="color: #7906a5;" id="publication-action-icon" class="bi bi-fonts"></i>
+        <i style="color: #7906a5; margin-left: 10px" id="video-icon" class="bi bi-camera-video" ></i>
+        <i style="color: #7906a5; margin-left: 10px" id="photo-icon" class="bi bi-patch-plus" ></i>
+
+
+        <div class="profile-dropdown" style="margin-left: auto;">
+            <div onclick="toggle()" class="profile-dropdown-btn">
+                <div class="profile-img">
+                    <img class="profile-img" style="" src="{{ request.user.image.url }}">
+                </div>
+            </div>
+
+            <ul class="profile-dropdown-list">
+                <li class="profile-dropdown-list-item">
+                    <a href="{% url 'Utilisateur:parametre' %}">
+                        <i class="fa-solid fa-sliders"></i>
+                        Parametre
+                    </a>
+                </li>
+                <hr />
+                <li class="profile-dropdown-list-item">
+                    <a href="#" onclick="deconnexion();">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        Déconnexion
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>

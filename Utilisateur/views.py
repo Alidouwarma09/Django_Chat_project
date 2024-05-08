@@ -1,7 +1,7 @@
-import asyncio
 import json
 import os
 import time
+from asyncio import sleep
 from threading import Lock
 
 from django.contrib import messages
@@ -281,7 +281,7 @@ lock = Lock()
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
 @require_GET
 def comment_sse(request):
-    async def event_stream():
+    def event_stream():
         last_comment_id = None
         while True:
             with lock:
@@ -302,7 +302,7 @@ def comment_sse(request):
                         yield ':\n\n'
                 except Comment.DoesNotExist:
                     yield 'data: Test message\n\n'
-                    await asyncio.sleep(1)
+                    sleep(1)
 
     response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
     response['Cache-Control'] = 'no-cache'
@@ -397,7 +397,7 @@ def nombre_messages_non_lus(request):
 
 @require_GET
 def messages_non_lus_sse(request):
-    async def event_stream():
+    def event_stream():
         last_checked_time = None
         while True:
             with lock:
@@ -412,11 +412,11 @@ def messages_non_lus_sse(request):
                         'nombre_non_lus': new_messages
                     }
                     yield f"data: {json.dumps(data)}\n\n"
-                    await asyncio.sleep(5)
+                    sleep(5)
 
                 except Message.DoesNotExist:
                     yield 'data: Test message\n\n'
-                    await asyncio.sleep(1)
+                    sleep(1)
 
     response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
     response['Cache-Control'] = 'no-cache'
@@ -429,14 +429,31 @@ def stream_messages(request, utilisateur_detail_id):
     def event_stream():
         last_id = request.GET.get("last_id", 0)
         while True:
-            new_messages = Message.objects.filter(id__gt=last_id).order_by('id')
+            new_messages = Message.objects.filter(
+                Q(envoi_id=request.user.id, recoi_id=utilisateur_detail_id) |
+                Q(recoi_id=request.user.id, envoi_id=utilisateur_detail_id),
+                id__gt=last_id
+            ).order_by('id')
+
             if new_messages.exists():
                 last_id = new_messages.last().id
+                for message in new_messages:
+                    # Vérifier si le message a été envoyé par vous à l'utilisateur détaillé
+                    if message.envoi_id == request.user.id and message.recoi_id == utilisateur_detail_id:
+                        # Code à exécuter si vous êtes l'expéditeur
+                        print("Le message a été envoyé par vous à l'utilisateur détaillé.")
+                    # Vérifier si le message a été envoyé par l'utilisateur détaillé à vous
+                    elif message.envoi_id == utilisateur_detail_id and message.recoi_id == request.user.id:
+                        # Code à exécuter si l'utilisateur détaillé est l'expéditeur
+                        print("Le message a été envoyé par l'utilisateur détaillé à vous.")
+
+                    # Autres traitements du message
+
                 messages_json = json.dumps(
                     list(new_messages.values(
                         'id', 'envoi_id', 'recoi_id', 'contenu_message',
                         'timestamp', 'vu', 'audio', 'images')),
-                    cls=DjangoJSONEncoder  # Utilisation de DjangoJSONEncoder
+                    cls=DjangoJSONEncoder
                 )
                 yield f"data: {messages_json}\n\n"
             time.sleep(1)
@@ -446,32 +463,32 @@ def stream_messages(request, utilisateur_detail_id):
     return response
 
 
-@login_required(login_url='Utilisateur:Connexion_utlisateur')
-def reception_message(request):
-    utilisateur = request.user
-    utilisateur_detail_id = request.GET.get('utilisateur_detail_id')
-    chats = Message.objects.filter(
-        (Q(envoi=utilisateur) & Q(recoi_id=utilisateur_detail_id)) |
-        (Q(recoi=utilisateur) & Q(envoi_id=utilisateur_detail_id))
-    ).select_related('envoi', 'recoi').order_by('timestamp')  # Ajout de select_related
-
-    arr = []
-    for chat in chats:
-        reco_image_url = chat.envoi.image.url if chat.recoi.image else None
-
-        message_dict = {
-            'id': chat.id,
-            'recoi_id': chat.recoi_id,
-            'envoi_id': chat.envoi_id,
-            'recoi_image': reco_image_url,
-            'contenu_message': chat.contenu_message,
-            'timestamp': chat.timestamp,
-            'images': chat.images.url if chat.images else None,
-            'audio': chat.audio.url if chat.audio else None
-        }
-        print(chat)
-        arr.append(message_dict)
-    return JsonResponse(arr, safe=False)
+# @login_required(login_url='Utilisateur:Connexion_utlisateur')
+# def reception_message(request):
+#     utilisateur = request.user
+#     utilisateur_detail_id = request.GET.get('utilisateur_detail_id')
+#     chats = Message.objects.filter(
+#         (Q(envoi=utilisateur) & Q(recoi_id=utilisateur_detail_id)) |
+#         (Q(recoi=utilisateur) & Q(envoi_id=utilisateur_detail_id))
+#     ).select_related('envoi', 'recoi').order_by('timestamp')  # Ajout de select_related
+#
+#     arr = []
+#     for chat in chats:
+#         reco_image_url = chat.envoi.image.url if chat.recoi.image else None
+#
+#         message_dict = {
+#             'id': chat.id,
+#             'recoi_id': chat.recoi_id,
+#             'envoi_id': chat.envoi_id,
+#             'recoi_image': reco_image_url,
+#             'contenu_message': chat.contenu_message,
+#             'timestamp': chat.timestamp,
+#             'images': chat.images.url if chat.images else None,
+#             'audio': chat.audio.url if chat.audio else None
+#         }
+#         print(chat)
+#         arr.append(message_dict)
+#     return JsonResponse(arr, safe=False)
 
 
 def start_video_call(request):

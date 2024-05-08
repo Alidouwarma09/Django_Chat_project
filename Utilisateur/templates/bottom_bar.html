@@ -6,6 +6,9 @@
     <a href="{% url 'Utilisateur:toute_les_videos' %}" class="nav-icon heart"><i class="fas fa-circle-play"></i></a>
     <a href="#" class="nav-icon user"><i class="fas fa-user"></i></a>
 </div>
+<div id="loader-container">
+    <div id="loader"></div>
+</div>
 <style>
     body, html {
         height: 100%;
@@ -26,7 +29,6 @@
     box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 
-/* Animation pour le badge */
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.1); }
@@ -60,8 +62,47 @@
         border-radius: 50%;
         padding: 10px 15px;
     }
-</style>
+#loader-container {
+    width: 100%;
+    height: 4px;
+    background-color: #f0f0f0;
+}
 
+#loader {
+    height: 100%;
+    background-color: #4caf50;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+</style>
+<script>
+const navLinks = document.querySelectorAll('.navigation-bar a');
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        startLoader();
+    });
+});
+
+function startLoader() {
+    var element = document.getElementById("loader");
+    var width = 0;
+    element.style.width = '0%';
+    document.getElementById("loader-container").style.display = 'block';
+    var id = setInterval(frame, 5);
+
+    function frame() {
+        if (width >= 100) {
+            clearInterval(id);
+        } else {
+            width++;
+            element.style.width = width + '%';
+        }
+    }
+}
+
+document.getElementById("loader-container").style.display = 'none';
+
+</script>
 
 <script>
     function createEventSource() {
@@ -75,7 +116,8 @@
                 elem.classList.add('animated');
                 elem.style.display = 'inline';
             } else {
-                elem.style.display = 'none';  // Cacher l'élément si le nombre de messages non lus est 0 ou moins.
+                elem.style.display = 'none';
+                console.log("success")
             }
             };
     eventSource.onerror = function(error) {
