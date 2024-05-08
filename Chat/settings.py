@@ -18,7 +18,6 @@ import cloudinary_storage
 from pathlib import Path
 
 import dj_database_url
-from cloudinary_storage.storage import VideoMediaCloudinaryStorage, MediaCloudinaryStorage
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # Application definition
 
@@ -62,7 +61,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
 ]
-ALLOWED_HOSTS = ['']
+ALLOWED_HOSTS = ['.vercel.app', '.now.sh', '127.0.0.1']
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
@@ -93,21 +92,7 @@ CLOUDINARY_STORAGE = {
     'API_KEY': '848777645924315',
     'API_SECRET': '5GiGXjplGFtQu5xIbaLwytbTyV0'
 }
-
-
-class CustomCloudinaryStorage:
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def __call__(self, name):
-        extension = name.split('.')[-1].lower()
-        if extension in ['mp4', 'mov', 'avi']:
-            return VideoMediaCloudinaryStorage()
-        else:
-            return MediaCloudinaryStorage()
-
-
-DEFAULT_FILE_STORAGE = CustomCloudinaryStorage()
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 WSGI_APPLICATION = 'Chat.wsgi.application'
 
