@@ -14,9 +14,11 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 import cloudinary_storage
+
 from pathlib import Path
 
 import dj_database_url
+from cloudinary_storage.storage import VideoMediaCloudinaryStorage, MediaCloudinaryStorage
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Application definition
 
@@ -60,7 +62,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
 ]
-ALLOWED_HOSTS = ['.vercel.app', '.now.sh', '127.0.0.1']
+ALLOWED_HOSTS = ['']
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
@@ -91,8 +93,21 @@ CLOUDINARY_STORAGE = {
     'API_KEY': '848777645924315',
     'API_SECRET': '5GiGXjplGFtQu5xIbaLwytbTyV0'
 }
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-CLOUDINARY_VIDEO_STORAGE = 'cloudinary_storage.storage.VideoMediaCloudinaryStorage'
+
+
+class CustomCloudinaryStorage:
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __call__(self, name):
+        extension = name.split('.')[-1].lower()
+        if extension in ['mp4', 'mov', 'avi']:
+            return VideoMediaCloudinaryStorage()
+        else:
+            return MediaCloudinaryStorage()
+
+
+DEFAULT_FILE_STORAGE = CustomCloudinaryStorage()
 
 WSGI_APPLICATION = 'Chat.wsgi.application'
 
@@ -164,7 +179,7 @@ TWILIO_AUTH_TOKEN = '898526264acded659f7bb8d25c13974f'
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'static')
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-STATICFILES_DIRS = [BASE_DIR / "static",]
+STATICFILES_DIRS = [BASE_DIR / "static", ]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'Model.Utilisateur'
