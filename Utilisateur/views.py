@@ -77,23 +77,22 @@ def connexion_utilisateur(request):
         return JsonResponse({'erreur': 'Nom d\'utilisateur ou mot de passe incorrect !'}, status=400)
 
 
-@login_required(login_url='Utilisateur:Connexion_utlisateur')
-def acceuil(request):
-    Publication_alls = Publication.objects.filter(video_file='').order_by('-date_publication')
-    liked_photos = [like.publication_id for like in Like.objects.filter(utilisateur=request.user)]
-    utilisateur_connecte = request.user if request.user.is_authenticated else None
-    publication_likes = {}
-    for photo in Publication_alls:
-        publication_likes[photo.id] = photo.count_likes()
-    context = {
-        'utilisateur_connecte': utilisateur_connecte,
-        'Publication_alls': Publication_alls,
-        'user': request.user,
-        'liked_photos': liked_photos,
-        'publication_likes': publication_likes,
-    }
-
-    return render(request, 'accueil_utilisateur.html', context)
+def get_publications(request):
+    try:
+        publications = Publication.objects.filter(video_file='').order_by('-date_publication')
+        data = [{'id': pub.id,
+                 'titre': pub.titre,
+                 'utilisateur_nom': pub.utilisateur.nom,
+                 'utilisateur_prenom': pub.utilisateur.prenom,
+                 'couleur_fond': pub.couleur_fond,
+                 'contenu': pub.contenu,
+                 'photo_file_url': request.build_absolute_uri(pub.photo_file.url)}
+                for pub in publications]
+        return JsonResponse(data, safe=False)
+    except ObjectDoesNotExist:
+        return JsonResponse({'error': 'Aucune publication trouvée'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')

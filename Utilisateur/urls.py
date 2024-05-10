@@ -3,7 +3,7 @@ from django.urls import path
 
 from Utilisateur import views
 from Utilisateur.views import Inscription, connexion_utilisateur, accueil_utilisateur, detail_utilisateur, publier_photo, \
-    acceuil, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, \
+    get_publications, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, \
     commenter_publication, get_comment_count, start_video_call, toute_les_videos, comment_sse, get_comments, \
     messages_non_lus_sse
 
@@ -12,13 +12,13 @@ app_name = 'Utilisateur'
 urlpatterns = [
     path('', Inscription, name='Inscription'),
     path('Connexion/', connexion_utilisateur, name='Connexion_utlisateur'),
-    path('apk/accueil_utilisateur/', accueil_utilisateur, name='accueil_utilisateur'),
+    path('accueil_utilisateur/', accueil_utilisateur, name='accueil_utilisateur'),
     path('detail_utilisateur/<int:utilisateur_detail_id>/', detail_utilisateur, name='detail_utilisateur'),
     path('apk/envoyer_message_images/', envoyer_message_images, name='envoyer_message_images'),
     path('apk/envoyer_message_text/', envoyer_message_text, name='envoyer_message_text'),
     path('apk/envoyer_message_audio/', envoyer_message_audio, name='envoyer_message_audio'),
     path('apk/publier_photo/', publier_photo, name='publier_photo'),
-    path('apk/acceuil/', acceuil, name='acceuil'),
+    path('api/get_publications/', get_publications, name='get_publications'),
 
     path('apk/liker_publication/', liker_publication, name='liker_publication'),
     path('apk/commenter_publication/', commenter_publication, name='commenter_publication'),

@@ -38,7 +38,7 @@ function App() {
     }
 
     return (
-        <div className="login-card-container">
+        <div className="login-card-container" style={{  background: "linear-gradient(to right, #333399, #ff00cc)" }}>
             <div className="login-card">
                 <div className="login-card-logo">
                     <img src="chater_logo.png" alt="chater_logo" style={{width:'150px'}} />
