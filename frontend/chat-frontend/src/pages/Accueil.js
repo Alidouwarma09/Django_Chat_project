@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import BottomTab from "./BottomTab";
 
 function Acceuil() {
   const [publications, setPublications] = useState([]);
@@ -29,16 +30,30 @@ function Acceuil() {
                 <p className="publication-time"><i className="bi bi-globe-americas"></i> Il y a photo.date_pub</p>
               </div>
             </div>
+            {!publication.contenu && (
+                <>
+                  <p>{publication.titre}</p>
+                </>
+              )}
+
             <div className="publication-content" style={{
               minHeight: 400,
               display: "flex",
               justifContent: "center",
               alignItems: "center",
-              backgroundImage: publication.couleur_fond
+              color: "white",
+              backgroundImage:
+              publication.couleur_fond
             }}>
-              <p>{publication.titre}</p>
-              {publication.contenu}
-              <img src={`${publication.photo_file_url}`} className="publication-image" alt="Publication"/>
+             {publication.contenu ? (
+                <>
+
+                </>
+              ) : (
+                 <>
+                   <img src={`${publication.photo_file_url}`} className="publication-image" alt="Publication"/>
+                 </>
+             )}
 
             </div>
             <div className="row publication-actions">
@@ -74,8 +89,8 @@ function Acceuil() {
 
           </div>
 
-
       ))}
+      <BottomTab />
     </div>
   );
 }
