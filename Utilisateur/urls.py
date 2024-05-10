@@ -2,7 +2,7 @@
 from django.urls import path
 
 from Utilisateur import views
-from Utilisateur.views import Inscription, Connexion_utlisateur, accueil_utilisateur, detail_utilisateur, publier_photo, \
+from Utilisateur.views import Inscription, connexion_utilisateur, accueil_utilisateur, detail_utilisateur, publier_photo, \
     acceuil, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, \
     commenter_publication, get_comment_count, start_video_call, toute_les_videos, comment_sse, get_comments, \
     messages_non_lus_sse
@@ -11,7 +11,7 @@ app_name = 'Utilisateur'
 
 urlpatterns = [
     path('', Inscription, name='Inscription'),
-    path('Connexion/', Connexion_utlisateur.as_view(), name='Connexion_utlisateur'),
+    path('Connexion/', connexion_utilisateur, name='Connexion_utlisateur'),
     path('apk/accueil_utilisateur/', accueil_utilisateur, name='accueil_utilisateur'),
     path('detail_utilisateur/<int:utilisateur_detail_id>/', detail_utilisateur, name='detail_utilisateur'),
     path('apk/envoyer_message_images/', envoyer_message_images, name='envoyer_message_images'),
@@ -38,5 +38,4 @@ urlpatterns = [
     path('apk/comment_sse/', comment_sse, name='comment_sse'),
     path('apk/messages_non_lus_sse/', messages_non_lus_sse, name='messages_non_lus_sse'),
     path('apk/stream_messages/<int:utilisateur_detail_id>/', views.stream_messages, name='stream_messages'),
-    # path('apk/reception_message/', reception_message, name='reception_message'),
 ]

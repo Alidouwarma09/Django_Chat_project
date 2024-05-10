@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import time
 from asyncio import sleep
@@ -24,6 +25,9 @@ from Chat import settings
 from Model.models import Utilisateur, Message, Like, Comment, Publication
 from Utilisateur.forms import InscriptionForm, ConnexionForm, MessageForm, MessageimagesForm, \
     MessageAudioForm, PhotoForm
+from django.shortcuts import render
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
 
 
 # Create your views here
@@ -41,24 +45,36 @@ def Inscription(request):
     return render(request, 'inscription_utilisateur.html', {'form': form})
 
 
-class Connexion_utlisateur(LoginView):
-    template_name = 'connexion_utilisateur.html'
-    form_class = ConnexionForm
+logger = logging.getLogger(__name__)
 
-    def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect('Utilisateur:acceuil')
-        return super().get(request, *args, **kwargs)
 
-    def form_invalid(self, form):
-        form.add_error('username', 'Nom d\'utilisateur incorrect')
-        form.add_error('password', 'Mot de passe incorrect')
-        return self.render_to_response(self.get_context_data(form=form))
+def connexion_utilisateur(request):
+    logger.info("Tentative de connexion d'un utilisateur...")
 
-    def get_success_url(self) -> str:
-        if hasattr(self.request.user, 'roles') and self.request.user.roles == 'utilisateur':
-            return reverse('Utilisateur:acceuil')
-        return super().get_success_url()
+    if request.method != 'POST':
+        logger.warning("Méthode HTTP non autorisée utilisée pour la connexion.")
+        return JsonResponse({'erreur': 'Méthode non autorisée'}, status=405)
+
+    data = json.loads(request.body.decode('utf-8'))
+    username = data.get('username')
+    password = data.get('password')
+    logger.debug(f"Reçu - Nom d'utilisateur: {username}, Mot de passe: {'*' * len(password) if password else 'N/A'}")
+
+    logger.debug(f"Tentative de connexion avec le nom d'utilisateur: {username}")
+
+    if not username or not password:
+        logger.error("Nom d'utilisateur ou mot de passe non fourni.")
+        return JsonResponse({'erreur': 'Nom d\'utilisateur ou mot de passe requis !'}, status=400)
+
+    user = authenticate(request, username=username, password=password)
+
+    if user is not None:
+        login(request, user)
+        logger.info(f"Utilisateur {username} connecté avec succès.")
+        return JsonResponse({'message': 'Connexion réussie !'})
+    else:
+        logger.error(f"Échec de la connexion pour l'utilisateur {username}.")
+        return JsonResponse({'erreur': 'Nom d\'utilisateur ou mot de passe incorrect !'}, status=400)
 
 
 @login_required(login_url='Utilisateur:Connexion_utlisateur')
@@ -461,34 +477,6 @@ def stream_messages(request, utilisateur_detail_id):
     response = StreamingHttpResponse(event_stream(), content_type="text/event-stream")
     response['Cache-Control'] = 'no-cache'
     return response
-
-
-# @login_required(login_url='Utilisateur:Connexion_utlisateur')
-# def reception_message(request):
-#     utilisateur = request.user
-#     utilisateur_detail_id = request.GET.get('utilisateur_detail_id')
-#     chats = Message.objects.filter(
-#         (Q(envoi=utilisateur) & Q(recoi_id=utilisateur_detail_id)) |
-#         (Q(recoi=utilisateur) & Q(envoi_id=utilisateur_detail_id))
-#     ).select_related('envoi', 'recoi').order_by('timestamp')  # Ajout de select_related
-#
-#     arr = []
-#     for chat in chats:
-#         reco_image_url = chat.envoi.image.url if chat.recoi.image else None
-#
-#         message_dict = {
-#             'id': chat.id,
-#             'recoi_id': chat.recoi_id,
-#             'envoi_id': chat.envoi_id,
-#             'recoi_image': reco_image_url,
-#             'contenu_message': chat.contenu_message,
-#             'timestamp': chat.timestamp,
-#             'images': chat.images.url if chat.images else None,
-#             'audio': chat.audio.url if chat.audio else None
-#         }
-#         print(chat)
-#         arr.append(message_dict)
-#     return JsonResponse(arr, safe=False)
 
 
 def start_video_call(request):
