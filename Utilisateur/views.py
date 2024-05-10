@@ -83,10 +83,12 @@ def get_publications(request):
         data = [{'id': pub.id,
                  'titre': pub.titre,
                  'utilisateur_nom': pub.utilisateur.nom,
+
                  'utilisateur_prenom': pub.utilisateur.prenom,
                  'couleur_fond': pub.couleur_fond,
                  'contenu': pub.contenu,
-                 'photo_file_url': request.build_absolute_uri(pub.photo_file.url)}
+                 'utilisateur_image': request.build_absolute_uri(pub.utilisateur.image.url) if pub.utilisateur.image else None,
+                 'photo_file_url': request.build_absolute_uri(pub.photo_file.url) if pub.photo_file else None}
                 for pub in publications]
         return JsonResponse(data, safe=False)
     except ObjectDoesNotExist:

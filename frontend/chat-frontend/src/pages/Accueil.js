@@ -23,7 +23,7 @@ function Acceuil() {
             {publication.photo_file && <img src={publication.photo_file} alt="Publication"/>}
 
             <div className="publication-header">
-              <img src="{{ photo.utilisateur.image.url }}" alt="Profil de l'utilisateur" className="user-profile"/>
+              <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur" className="user-profile"/>
               <div className="user-info">
                 <p className="user-name">{ publication.utilisateur_nom } { publication.utilisateur_prenom }</p>
                 <p className="publication-time"><i className="bi bi-globe-americas"></i> Il y a photo.date_pub</p>
