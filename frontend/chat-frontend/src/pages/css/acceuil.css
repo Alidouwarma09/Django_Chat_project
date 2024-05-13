@@ -969,7 +969,6 @@ button {
 /* Section des commentaires */
 .comments-section {
     align-items: center;
-    display: none;
     border-top: 1px solid #ccc;
     padding-top: 10px;
     position: relative;

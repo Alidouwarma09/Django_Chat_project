@@ -87,7 +87,8 @@ def get_publications(request):
                  'utilisateur_prenom': pub.utilisateur.prenom,
                  'couleur_fond': pub.couleur_fond,
                  'contenu': pub.contenu,
-                 'utilisateur_image': request.build_absolute_uri(pub.utilisateur.image.url) if pub.utilisateur.image else None,
+                 'utilisateur_image': request.build_absolute_uri(
+                     pub.utilisateur.image.url) if pub.utilisateur.image else None,
                  'photo_file_url': request.build_absolute_uri(pub.photo_file.url) if pub.photo_file else None}
                 for pub in publications]
         return JsonResponse(data, safe=False)
@@ -97,7 +98,6 @@ def get_publications(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
-@login_required(login_url='Utilisateur:Connexion_utlisateur')
 def accueil_utilisateur(request):
     connecte_id = request.user.id
     utilisateurs = Utilisateur.objects.exclude(id=connecte_id)
@@ -125,7 +125,6 @@ def accueil_utilisateur(request):
     return render(request, 'tout_les_utilisateurs.html', context)
 
 
-@login_required(login_url='Utilisateur:Connexion_utlisateur')
 def detail_utilisateur(request, utilisateur_detail_id):
     messages = Message.objects.filter(recoi=request.user, envoi_id=utilisateur_detail_id, vu=False)
     messages.update(vu=True)
@@ -236,7 +235,6 @@ def check_typing_status(request):
     return JsonResponse({'en_train_decrire': utilisateur.en_train_decrire})
 
 
-@login_required(login_url='Utilisateur:Connexion_utlisateur')
 def liker_publication(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -328,8 +326,8 @@ def comment_sse(request):
     response['X-Accel-Buffering'] = 'no'
     return response
 
+
 @csrf_exempt
-@login_required
 def get_comments(request, publication_id):
     comments = Comment.objects.filter(publication_id=publication_id).order_by('-date_comment')
     comments_data = [{

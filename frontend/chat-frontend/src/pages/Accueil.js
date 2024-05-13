@@ -2,15 +2,20 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import BottomTab from "./BottomTab";
 import './css/acceuil.css'
+
 function Acceuil() {
  const [publications, setPublications] = useState([]);
   const [comments, setComments] = useState({});
+ const [isCommentFormOpenList, setIsCommentFormOpenList] = useState([]);
 
   useEffect(() => {
     async function fetchPublications() {
       try {
+          const token = localStorage.getItem('token'); // Récupérer le token JWT du stockage local
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
         setPublications(response.data);
+         setIsCommentFormOpenList(new Array(response.data.length).fill(false));
       } catch (error) {
         console.error('Erreur lors du chargement des publications:', error);
       }
@@ -29,6 +34,9 @@ function Acceuil() {
 
   async function fetchComments(publicationId) {
     try {
+        const token = localStorage.getItem('token'); // Récupérer le token JWT du stockage local
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Ajouter le token aux en-têtes
+
       const response = await axios.get(`${process.env.REACT_APP_API_URL}Utilisateur/api/get_comments/${publicationId}`);
       setComments(prevComments => ({
         ...prevComments,
@@ -38,9 +46,16 @@ function Acceuil() {
       console.error('Erreur lors de la récupération des commentaires:', error);
     }
   }
+function toggleCommentForm(index) {
+    setIsCommentFormOpenList(prevState => {
+      const newState = [...prevState];
+      newState[index] = !newState[index];
+      return newState;
+    });
+  }
   return (
     <div className="conversation active">
-      {publications.map(publication => (
+      {publications.map((publication, index) => (
           <div key={publication.id} className="publication">
             {publication.photo_file && <img src={publication.photo_file} alt="Publication"/>}
 
@@ -60,7 +75,7 @@ function Acceuil() {
             <div className="publication-content" style={{
               minHeight: 400,
               display: "flex",
-              justifContent: "center",
+              justifyContent: "center",
               alignItems: "center",
               color: "white",
               backgroundImage:
@@ -68,7 +83,7 @@ function Acceuil() {
             }}>
              {publication.contenu ? (
                 <>
-
+{publication.contenu}
                 </>
               ) : (
                  <>
@@ -79,14 +94,14 @@ function Acceuil() {
             </div>
             <div className="row publication-actions">
               <div className="col-4 likes-container" style={{fontSize: 11, paddingLeft: 20}}>
-                <button className="action-button" id="like-button" data-publication-id=" photo.id">
+                <button className="action-button" id="like-button" >
                   <i className="bi bi-heart-fill"></i>
                 </button>
                 <span className="likes-count">
                                 </span> likes
               </div>
               <div className="col-4 comment-count-container" style={{ fontSize: 11, paddinRight: 20}}>
-                <button className="action-button" id="comment-button" data-publicationafficher-id=" photo.id "><i
+                <button className="action-button" id="comment-button"  onClick={() => toggleCommentForm(index)}><i
                     className="bi bi-chat"></i></button>
                 <span className="comment-count" id="comment-count- photo.id"></span> commentaires
               </div>
@@ -97,10 +112,10 @@ function Acceuil() {
             </div>
 
             <div className="comments-section" id="comments-section- photo.id "
-                 data-url="" style={{ overflowY: "auto",  overflowX: "hidden", maxHeight: 300 }} >
+                 data-url="" style={{ overflowY: "auto",  overflowX: "hidden", maxHeight: 300, display: isCommentFormOpenList[index] ? 'block' : 'none' }} >
               <div className="comments-container" id="comments-container- photo.id ">
-               {comments[publication.id] && comments[publication.id].map((comment, index) => (
-                        <div key={index} className="comment">
+               {comments[publication.id] && comments[publication.id].map((comment, commentIndex) => (
+                        <div key={commentIndex} className="comment">
                             <p className="comment-user">{comment.utilisateur_nom} {comment.utilisateur_prenom}</p>
                             <p className="comment-text">{comment.texte}</p>
                             <p className="comment-time">{comment.date_comment}</p>
