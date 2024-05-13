@@ -6,9 +6,7 @@ from asyncio import sleep
 from threading import Lock
 
 from django.contrib import messages
-from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
@@ -23,11 +21,13 @@ from twilio.rest import Client
 from django.utils import timezone
 from Chat import settings
 from Model.models import Utilisateur, Message, Like, Comment, Publication
-from Utilisateur.forms import InscriptionForm, ConnexionForm, MessageForm, MessageimagesForm, \
+from Utilisateur.forms import InscriptionForm, MessageForm, MessageimagesForm, \
     MessageAudioForm, PhotoForm
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here
@@ -295,7 +295,9 @@ def commenter_publication(request):
 lock = Lock()
 
 
-@login_required(login_url='Utilisateur:Connexion_utlisateur')
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+
 @require_GET
 def comment_sse(request):
     def event_stream():
@@ -326,7 +328,8 @@ def comment_sse(request):
     response['X-Accel-Buffering'] = 'no'
     return response
 
-
+@csrf_exempt
+@login_required
 def get_comments(request, publication_id):
     comments = Comment.objects.filter(publication_id=publication_id).order_by('-date_comment')
     comments_data = [{

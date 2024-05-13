@@ -2,6 +2,7 @@
 from django.urls import path
 
 from Utilisateur import views
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from Utilisateur.views import Inscription, connexion_utilisateur, accueil_utilisateur, detail_utilisateur, publier_photo, \
     get_publications, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, \
     commenter_publication, get_comment_count, start_video_call, toute_les_videos, comment_sse, get_comments, \
@@ -34,8 +35,10 @@ urlpatterns = [
     path('api/messages/non-lus/', views.nombre_messages_non_lus, name='nombre_messages_non_lus'),
     path('start-video-call/', start_video_call, name='start_video_call'),
     path('toute_les_videos/', toute_les_videos, name='toute_les_videos'),
-    path('get_comments/<int:publication_id>/', get_comments, name='get_comments'),
-    path('apk/comment_sse/', comment_sse, name='comment_sse'),
+    path('api/get_comments/<int:publication_id>/', get_comments, name='get_comments'),
+    path('api/comment_sse/', comment_sse, name='comment_sse'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('apk/messages_non_lus_sse/', messages_non_lus_sse, name='messages_non_lus_sse'),
     path('apk/stream_messages/<int:utilisateur_detail_id>/', views.stream_messages, name='stream_messages'),
 ]

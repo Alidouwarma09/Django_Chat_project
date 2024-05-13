@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import HomeIcon from './icons/home.png';
 import SearchIcon from './icons/home.png';
-import MessageIcon from './icons/home.png';
+import MessageIcon from './icons/message.png';
 import ProfileIcon from './icons/home.png';
 
 function BottomTab() {
@@ -19,22 +19,22 @@ function BottomTab() {
   return (
     <div className="bottom-tab">
       <button
-        className={activeTab === 'accueil' ? 'active' : ''}
-        onClick={() => handlePageChange('accueil')}
+        className={activeTab === 'acceuil' ? 'active' : ''}
+        onClick={() => handlePageChange('acceuil')}
       >
-        <img src={HomeIcon} alt="Home"/>
+        <img src={HomeIcon} alt="Acceuil"/>
       </button>
       <button
         className={activeTab === 'connexion' ? 'active' : ''}
         onClick={() => handlePageChange('connexion')}
       >
-        <img src={SearchIcon} alt="Search"/>
+        <img src={MessageIcon} alt="messages"/>
       </button>
       <button
         className={activeTab === 'messages' ? 'active' : ''}
         onClick={() => handlePageChange('messages')}
       >
-        <img src={MessageIcon} alt="Messages"/>
+        <img src={SearchIcon} alt="Search"/>
       </button>
       <button
         className={activeTab === 'profile' ? 'active' : ''}
