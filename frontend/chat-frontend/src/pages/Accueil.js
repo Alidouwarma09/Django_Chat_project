@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import BottomTab from "./BottomTab";
 import './css/acceuil.css'
+import likeSon from './son/likesSon.mp3'
 
 function Acceuil() {
  const [publications, setPublications] = useState([]);
@@ -110,8 +111,10 @@ const isPublicationLiked = (publicationId) => {
     return initialLikedPublications.hasOwnProperty(publicationId) && initialLikedPublications[publicationId];
 };
 
+const audio = new Audio(likeSon);
 // Fonction pour gérer les likes des publications
 const likePublication = async (publicationId) => {
+    audio.play();
     try {
         const token = localStorage.getItem('token');
         const response = await axios.post(
