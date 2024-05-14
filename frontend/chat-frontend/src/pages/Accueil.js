@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import BottomTab from "./BottomTab";
+import NavBar from "./NavBar";
 import './css/acceuil.css'
 import likeSon from './son/likesSon.mp3'
 
@@ -153,102 +154,113 @@ function toggleCommentForm(index) {
     });
   }
   return (
-    <div className="conversation active">
-      {publications.map((publication, index) => (
-          <div key={publication.id} className="publication">
-            {publication.photo_file && <img src={publication.photo_file} alt="Publication"/>}
 
-            <div className="publication-header">
-              <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur" className="user-profile"/>
-              <div className="user-info">
-                <p className="user-name">{ publication.utilisateur_nom } { publication.utilisateur_prenom }</p>
-                <p className="publication-time"><i className="bi bi-globe-americas"></i> Il y a photo.date_pub</p>
-              </div>
-            </div>
-            {!publication.contenu && (
-                <>
-                  <p>{publication.titre}</p>
-                </>
-              )}
+    <div>
+         <NavBar />
+        <div className="conversation active">
+            {publications.map((publication, index) => (
+                <div key={publication.id} className="publication">
+                    {publication.photo_file && <img src={publication.photo_file} alt="Publication"/>}
 
-            <div className="publication-content" style={{
-              minHeight: 400,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              color: "white",
-              backgroundImage:
-              publication.couleur_fond
-            }}>
-             {publication.contenu ? (
-                <>
-                {publication.contenu}
-                </>
-              ) : (
-                 <>
-                   <img src={`${publication.photo_file_url}`} className="publication-image" alt="Publication"/>
-                 </>
-             )}
+                    <div className="publication-header">
+                        <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur"
+                             className="user-profile"/>
+                        <div className="user-info">
+                            <p className="user-name">{publication.utilisateur_nom} {publication.utilisateur_prenom}</p>
+                            <p className="publication-time"><i className="bi bi-globe-americas"></i> Il y a
+                                photo.date_pub</p>
+                        </div>
+                    </div>
+                    {!publication.contenu && (
+                        <>
+                            <p>{publication.titre}</p>
+                        </>
+                    )}
 
-            </div>
-            <div className="row publication-actions">
-              <div className="col-4 likes-container" style={{fontSize: 11, paddingLeft: 20}}>
-                  <button className="action-button" id="like-button" onClick={() => likePublication(publication.id)}>
-                      <i className={`bi ${isPublicationLiked(publication.id) ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
-                  </button>
-                  <span className="likes-count">
+                    <div className="publication-content" style={{
+                        minHeight: 400,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        color: "white",
+                        backgroundImage:
+                        publication.couleur_fond
+                    }}>
+                        {publication.contenu ? (
+                            <>
+                                {publication.contenu}
+                            </>
+                        ) : (
+                            <>
+                                <img src={`${publication.photo_file_url}`} className="publication-image"
+                                     alt="Publication"/>
+                            </>
+                        )}
+
+                    </div>
+                    <div className="row publication-actions">
+                        <div className="col-4 likes-container" style={{fontSize: 11, paddingLeft: 20}}>
+                            <button className="action-button" id="like-button"
+                                    onClick={() => likePublication(publication.id)}>
+                                <i className={`bi ${isPublicationLiked(publication.id) ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
+                            </button>
+                            <span className="likes-count">
                      nombre de like
                 </span> likes
 
-              </div>
-                <div className="col-4 comment-count-container" style={{fontSize: 11, paddinRight: 20}}>
-                <button className="action-button" id="comment-button"  onClick={() => toggleCommentForm(index)}><i
-                    className="bi bi-chat"></i></button>
-                <span className="comment-count" id="comment-count- photo.id"></span> commentaires
-              </div>
-              <div className="col-4 comment-count-container"
-                   style={{ fontSize: 10,  paddinRight: 30, marginRight: 10 }}>
-                <span className="comment-count">15,42k</span> Vues
-              </div>
-            </div>
+                        </div>
+                        <div className="col-4 comment-count-container" style={{fontSize: 11, paddinRight: 20}}>
+                            <button className="action-button" id="comment-button"
+                                    onClick={() => toggleCommentForm(index)}><i
+                                className="bi bi-chat"></i></button>
+                            <span className="comment-count" id="comment-count- photo.id"></span> commentaires
+                        </div>
+                        <div className="col-4 comment-count-container"
+                             style={{fontSize: 10, paddinRight: 30, marginRight: 10}}>
+                            <span className="comment-count">15,42k</span> Vues
+                        </div>
+                    </div>
 
-              <div className="comments-section" id="comments-section- photo.id "
-                   data-url="" style={{
-                  overflowY: "auto",
-                  overflowX: "hidden",
-                  maxHeight: 300,
-                  display: isCommentFormOpenList[index] ? 'block' : 'none'
-              }}>
-                  <div className="comments-container" id="comments-container- photo.id ">
-                      {comments[publication.id] && comments[publication.id].map((comment, commentIndex) => (
-                          <div key={commentIndex} className="comment">
-                              <p className="comment-user">{comment.utilisateur_nom} {comment.utilisateur_prenom}</p>
-                              <p className="comment-text">{comment.texte}</p>
-                              <p className="comment-time">{comment.date_comment}</p>
-                          </div>
-                      ))}
-                  </div>
-                  <form className="commentaire-form" onSubmit={(e) => {
-                      e.preventDefault();
-                      submitComment(publication.id, commentTexts[publication.id]);
-                  }}>
-                      <input type="text" className="commentaire-input" name="texte"
-                             placeholder="Écrivez un commentaire..."
-                             value={commentTexts[publication.id] || ''}
-                             onChange={(e) => handleCommentChange(e.target.value, publication.id)}/>
+                    <div className="comments-section" id="comments-section- photo.id "
+                         data-url="" style={{
+                        overflowY: "auto",
+                        overflowX: "hidden",
+                        maxHeight: 300,
+                        display: isCommentFormOpenList[index] ? 'block' : 'none'
+                    }}>
+                        <div className="comments-container" id="comments-container- photo.id ">
+                            {comments[publication.id] && comments[publication.id].map((comment, commentIndex) => (
+                                <div key={commentIndex} className="comment">
+                                    <p className="comment-user">{comment.utilisateur_nom} {comment.utilisateur_prenom}</p>
+                                    <p className="comment-text">{comment.texte}</p>
+                                    <p className="comment-time">{comment.date_comment}</p>
+                                </div>
+                            ))}
+                        </div>
+                        <form className="commentaire-form" onSubmit={(e) => {
+                            e.preventDefault();
+                            submitComment(publication.id, commentTexts[publication.id]);
+                        }}>
+                            <input type="text" className="commentaire-input" name="texte"
+                                   placeholder="Écrivez un commentaire..."
+                                   value={commentTexts[publication.id] || ''}
+                                   onChange={(e) => handleCommentChange(e.target.value, publication.id)}/>
 
-                      <button type="submit">▶️</button>
-                  </form>
+                            <button type="submit">▶️</button>
+                        </form>
 
 
-              </div>
+                    </div>
 
-          </div>
+                </div>
 
-      ))}
-        <BottomTab/>
+            ))}
+            <BottomTab/>
+        </div>
     </div>
-  );
+
+)
+    ;
 }
 
 export default Acceuil;

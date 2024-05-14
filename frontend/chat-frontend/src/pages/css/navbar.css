@@ -1,0 +1,40 @@
+    .navbar{
+        display: flex;
+        height: 70px;
+        padding: 0 8%;
+        box-shadow: var(--shadow);
+        position: fixed;
+        top: 0;
+        cursor: pointer;
+        width: 100%;
+        transition: opacity 0.3s ease;
+        left: 0;
+        right: 0;
+        font-size: 25px;
+        background-color: white;
+    }
+    #publication-action-icon {
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        transition: opacity 0.3s ease;
+    }
+#photo-icon {
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    transition: opacity 0.3s ease;
+}
+
+    #photo-icon:hover {
+        opacity: 0.7;
+    }
+.navbar i {
+    margin: 10px;
+}
+.profile-dropdown-btn{
+    border: none;
+    margin-top: 10px;
+}

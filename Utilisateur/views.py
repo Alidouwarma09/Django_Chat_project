@@ -305,8 +305,7 @@ def post_comment(request, publication_id):
 
 lock = Lock()
 
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+
 
 last_comment_id_sent = 0
 

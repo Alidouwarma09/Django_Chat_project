@@ -6,5 +6,5 @@ from Model.views import Deconnexion
 app_name = 'Model'
 
 urlpatterns = [
-    path('Deconnexion/', Deconnexion.as_view(), name='Deconnexion'),
+    path('Deconnexion/', Deconnexion, name='Deconnexion'),
 ]
