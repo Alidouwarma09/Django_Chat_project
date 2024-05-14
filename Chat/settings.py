@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'Utilisateur',
     'storages',
     'cloudinary_storage',
+    'rest_framework.authtoken',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -58,19 +59,23 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
 # settings.py
 
 # Ajoutez tous les domaines nécessaires à ALLOWED_HOSTS
 ALLOWED_HOSTS = [
-    'django-chat-project.onrender.com',  # Votre domaine Render
-    'localhost',  # Si vous développez localement
-    '.cloudinary.com',  # Domaine Cloudinary
-    '.onrender.com',  # Autres sous-domaines si nécessaire
+    'localhost',
     '127.0.0.1'
 ]
 
+# settings.py
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 
+SESSION_COOKIE_SAMESITE = 'None'  # Nécessaire pour les environnements CORS
+SESSION_COOKIE_SECURE = True
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
@@ -106,9 +111,20 @@ WSGI_APPLICATION = 'Chat.wsgi.application'
 
 CORS_ALLOW_ALL_ORIGINS = True
 # CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
+#     "http://localhost:3000",  # Remplacez cela par l'URL de votre application React
 # ]
-
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'token',  # Ajoutez votre en-tête personnalisé ici
+]
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 # Internal Database
@@ -123,7 +139,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
 
 # DATABASES = {
 #     'default': {

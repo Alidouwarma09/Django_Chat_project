@@ -7,12 +7,14 @@ function Acceuil() {
  const [publications, setPublications] = useState([]);
   const [comments, setComments] = useState({});
  const [isCommentFormOpenList, setIsCommentFormOpenList] = useState([]);
+ const [commentTexts, setCommentTexts] = useState({});
+
 
   useEffect(() => {
     async function fetchPublications() {
       try {
-          const token = localStorage.getItem('token'); // Récupérer le token JWT du stockage local
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          const token = localStorage.getItem('token');
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
         setPublications(response.data);
          setIsCommentFormOpenList(new Array(response.data.length).fill(false));
@@ -46,6 +48,41 @@ function Acceuil() {
       console.error('Erreur lors de la récupération des commentaires:', error);
     }
   }
+
+
+// Dans votre composant React
+const submitComment = async (publicationId, texte) => {
+    try {
+
+const token = localStorage.getItem('token');
+console.log(token)
+const response = await axios.post(
+    `${process.env.REACT_APP_API_URL}/Utilisateur/api/post_comment/${publicationId}`,
+    JSON.stringify({ texte }),
+    {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`
+        }
+    }
+);
+
+        console.log(response.data.message);
+        // Mettez à jour l'état pour afficher le nouveau commentaire
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi du commentaire:', error);
+    }
+}
+
+
+
+
+
+function handleCommentChange(text, publicationId) {
+  setCommentTexts(prev => ({ ...prev, [publicationId]: text }));
+}
+
+
 function toggleCommentForm(index) {
     setIsCommentFormOpenList(prevState => {
       const newState = [...prevState];
@@ -83,7 +120,7 @@ function toggleCommentForm(index) {
             }}>
              {publication.contenu ? (
                 <>
-{publication.contenu}
+                {publication.contenu}
                 </>
               ) : (
                  <>
@@ -111,28 +148,41 @@ function toggleCommentForm(index) {
               </div>
             </div>
 
-            <div className="comments-section" id="comments-section- photo.id "
-                 data-url="" style={{ overflowY: "auto",  overflowX: "hidden", maxHeight: 300, display: isCommentFormOpenList[index] ? 'block' : 'none' }} >
-              <div className="comments-container" id="comments-container- photo.id ">
-               {comments[publication.id] && comments[publication.id].map((comment, commentIndex) => (
-                        <div key={commentIndex} className="comment">
-                            <p className="comment-user">{comment.utilisateur_nom} {comment.utilisateur_prenom}</p>
-                            <p className="comment-text">{comment.texte}</p>
-                            <p className="comment-time">{comment.date_comment}</p>
-                        </div>
-                    ))}
+              <div className="comments-section" id="comments-section- photo.id "
+                   data-url="" style={{
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                  maxHeight: 300,
+                  display: isCommentFormOpenList[index] ? 'block' : 'none'
+              }}>
+                  <div className="comments-container" id="comments-container- photo.id ">
+                      {comments[publication.id] && comments[publication.id].map((comment, commentIndex) => (
+                          <div key={commentIndex} className="comment">
+                              <p className="comment-user">{comment.utilisateur_nom} {comment.utilisateur_prenom}</p>
+                              <p className="comment-text">{comment.texte}</p>
+                              <p className="comment-time">{comment.date_comment}</p>
+                          </div>
+                      ))}
+                  </div>
+                  <form className="commentaire-form" onSubmit={(e) => {
+                      e.preventDefault();
+                      submitComment(publication.id, commentTexts[publication.id]); // Passer le texte du commentaire à la fonction submitComment
+                  }}>
+                      <input type="text" className="commentaire-input" name="texte"
+                             placeholder="Écrivez un commentaire..."
+                             value={commentTexts[publication.id] || ''}
+                             onChange={(e) => handleCommentChange(e.target.value, publication.id)}/>
+
+                      <button type="submit">▶️</button>
+                  </form>
+
+
               </div>
-              <form className="commentaire-form" id="commentaire-form-photo.id ">
-                <input type="text" className="commentaire-input" id="commentaire-input-photo.id "
-                       placeholder="Écrivez un commentaire..."/>
-                <button type="submit" data-publications-id=" photo.id ">▶️</button>
-              </form>
-            </div>
 
           </div>
 
       ))}
-      <BottomTab />
+        <BottomTab/>
     </div>
   );
 }

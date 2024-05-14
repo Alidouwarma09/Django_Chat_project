@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 import os
@@ -5,18 +6,20 @@ import time
 from asyncio import sleep
 from threading import Lock
 
+from asgiref.sync import sync_to_async
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, JsonResponse, StreamingHttpResponse
+from django.shortcuts import redirect, get_object_or_404
+from django.http import StreamingHttpResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
+from rest_framework.authentication import TokenAuthentication
 from twilio.rest import Client
 from django.utils import timezone
 from Chat import settings
@@ -26,8 +29,7 @@ from Utilisateur.forms import InscriptionForm, MessageForm, MessageimagesForm, \
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
 
 
 # Create your views here
@@ -60,8 +62,6 @@ def connexion_utilisateur(request):
     password = data.get('password')
     logger.debug(f"Reçu - Nom d'utilisateur: {username}, Mot de passe: {'*' * len(password) if password else 'N/A'}")
 
-    logger.debug(f"Tentative de connexion avec le nom d'utilisateur: {username}")
-
     if not username or not password:
         logger.error("Nom d'utilisateur ou mot de passe non fourni.")
         return JsonResponse({'erreur': 'Nom d\'utilisateur ou mot de passe requis !'}, status=400)
@@ -71,7 +71,9 @@ def connexion_utilisateur(request):
     if user is not None:
         login(request, user)
         logger.info(f"Utilisateur {username} connecté avec succès.")
-        return JsonResponse({'message': 'Connexion réussie !'})
+        token, _ = Token.objects.get_or_create(user=user)
+        print("Token généré:", token.key)
+        return JsonResponse({'token': token.key})
     else:
         logger.error(f"Échec de la connexion pour l'utilisateur {username}.")
         return JsonResponse({'erreur': 'Nom d\'utilisateur ou mot de passe incorrect !'}, status=400)
@@ -259,35 +261,63 @@ def liker_publication(request):
         return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
 
-@login_required(login_url='Utilisateur:Connexion_utlisateur')
-def commenter_publication(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        publication_id = data.get('publication_id')
-        texte = data.get('texte')
-        if publication_id is None or texte is None:
-            return JsonResponse({'error': 'Données POST manquantes'}, status=400)
-        try:
-            publication_id = int(publication_id)
-        except ValueError:
-            return JsonResponse({'error': 'Format de données invalide'}, status=400)
-        utilisateur = request.user
+# @require_POST
+# def commenter_publication(request):
+#
+#     try:
+#         data = json.loads(request.body.decode('utf-8'))
+#         publication_id = data.get('publication_id')
+#         texte = data.get('texte')
+#
+#         try:
+#             publication = Publication.objects.get(id=publication_id)
+#         except Publication.DoesNotExist:
+#             logger.error(f"Publication {publication_id} introuvable.")
+#             return JsonResponse({'erreur': 'Publication introuvable'}, status=404)
+#
+#         utilisateur = request.user.id
+#         if not utilisateur or not utilisateur.is_authenticated:
+#             logger.error("Utilisateur non authentifié tentant de poster un commentaire.")
+#             return JsonResponse({'erreur': 'Authentification requise'}, status=401)
+#
+#         commentaire = Comment(utilisateur=1, publication=publication, texte=texte)
+#         commentaire.save()
+#         logger.info(f"Commentaire ajouté avec succès pour la publication {publication_id} par {utilisateur.username}.")
+#         return JsonResponse({
+#             'message': 'Commentaire publié avec succès !',
+#             'commentaire_id': commentaire.id
+#         })
+#
+#     except json.JSONDecodeError:
+#         logger.error("Erreur de décodage JSON.")
+#         return JsonResponse({'erreur': 'Données invalides'}, status=400)
+#     except Exception as e:
+#         logger.error(f"Erreur inattendue: {str(e)}")
+#         return JsonResponse({'erreur': 'Erreur du serveur'}, status=500)
 
-        try:
-            publication = Publication.objects.get(id=publication_id)
-        except Publication.DoesNotExist:
-            return JsonResponse({'error': 'Publication introuvable'}, status=404)
-        commentaire = Comment(utilisateur=utilisateur, publication=publication, texte=texte)
-        commentaire.save()
-        return JsonResponse({
-            'texte': texte,
-            'publication_id': publication_id,
-            'utilisateur_nom': utilisateur.nom,
-            'utilisateur_prenom': utilisateur.prenom,
-        })
-    else:
-        # Méthode non autorisée
-        return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+@csrf_exempt
+def post_comment(request, publication_id):
+    if request.method == 'POST':
+        auth_result = TokenAuthentication().authenticate(request)
+        print(auth_result)
+
+        if auth_result is not None:
+            user, _ = auth_result
+            data = json.loads(request.body)
+            texte = data.get("texte")
+
+            if not texte:
+                return JsonResponse({'error': 'Le texte du commentaire ne peut pas être vide'}, status=400)
+
+            comment = Comment(utilisateur=user, publication_id=publication_id, texte=texte)
+            comment.save()
+
+            # Imprimer le texte du commentaire dans la console
+            print("Commentaire enregistré :", texte)
+
+            return JsonResponse({'message': 'Commentaire ajouté avec succès'}, status=201)
+        else:
+            return JsonResponse({'error': 'Authentification invalide'}, status=401)
 
 
 lock = Lock()
@@ -297,13 +327,13 @@ lock = Lock()
 # @permission_classes([IsAuthenticated])
 
 @require_GET
-def comment_sse(request):
-    def event_stream():
+async def comment_sse(request):
+    async def event_stream():
         last_comment_id = None
         while True:
             with lock:
                 try:
-                    latest_comment = Comment.objects.latest('date_comment')
+                    latest_comment = await sync_to_async(Comment.objects.latest)('date_comment')
                     if latest_comment.id != last_comment_id:
                         last_comment_id = latest_comment.id
                         data = {
@@ -319,13 +349,12 @@ def comment_sse(request):
                         yield ':\n\n'
                 except Comment.DoesNotExist:
                     yield 'data: Test message\n\n'
-                    sleep(1)
+                    await asyncio.sleep(1)
 
     response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
     response['Cache-Control'] = 'no-cache'
     response['X-Accel-Buffering'] = 'no'
     return response
-
 
 @csrf_exempt
 def get_comments(request, publication_id):

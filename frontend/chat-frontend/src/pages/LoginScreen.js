@@ -25,6 +25,7 @@ function Connexion() {
             password: password
         })
         .then(response => {
+            console.log('Token reçu:', response.data.token); // Affiche le token dans la console
             localStorage.setItem('token', response.data.token);
             setFormErrors({});
             navigate('/acceuil');

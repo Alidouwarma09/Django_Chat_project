@@ -6,6 +6,8 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.timesince import timesince
 
+from Chat import settings
+
 
 # Create your models here.
 

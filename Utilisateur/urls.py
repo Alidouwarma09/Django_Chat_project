@@ -3,8 +3,7 @@ from django.urls import path
 
 from Utilisateur import views
 from Utilisateur.views import Inscription, connexion_utilisateur, accueil_utilisateur, detail_utilisateur, publier_photo, \
-    get_publications, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, \
-    commenter_publication, get_comment_count, start_video_call, toute_les_videos, comment_sse, get_comments, \
+    get_publications, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, get_comment_count, start_video_call, toute_les_videos, comment_sse, get_comments, \
     messages_non_lus_sse
 
 app_name = 'Utilisateur'
@@ -21,7 +20,7 @@ urlpatterns = [
     path('api/get_publications/', get_publications, name='get_publications'),
 
     path('apk/liker_publication/', liker_publication, name='liker_publication'),
-    path('apk/commenter_publication/', commenter_publication, name='commenter_publication'),
+    path('api/post_comment/<int:publication_id>', views.post_comment, name='post_comment'),
     path('apk/get_comment_count/', get_comment_count, name='get_comment_count'),
     path('creer/', views.creer_publication, name='creer_publication'),
     path('parametre/', views.parametre, name='parametre'),
