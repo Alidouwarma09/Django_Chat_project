@@ -86,6 +86,31 @@ const response = await axios.post(
 
 
 
+const getLikedPublicationsFromLocalStorage = () => {
+    const likedPublications = localStorage.getItem('likedPublications');
+    return likedPublications ? JSON.parse(likedPublications) : {};
+};
+
+// Fonction pour enregistrer les informations sur les likes dans le localStorage
+const saveLikedPublicationsToLocalStorage = (likedPublications) => {
+    localStorage.setItem('likedPublications', JSON.stringify(likedPublications));
+};
+
+// Initialisation de l'état des publications à partir du localStorage
+const initialLikedPublications = getLikedPublicationsFromLocalStorage();
+
+// Fonction pour mettre à jour l'état des likes et enregistrer dans le localStorage
+const updateLikedPublications = (publicationId, liked) => {
+    const updatedLikedPublications = { ...initialLikedPublications, [publicationId]: liked };
+    saveLikedPublicationsToLocalStorage(updatedLikedPublications);
+};
+
+// Fonction pour vérifier si une publication est aimée
+const isPublicationLiked = (publicationId) => {
+    return initialLikedPublications.hasOwnProperty(publicationId) && initialLikedPublications[publicationId];
+};
+
+// Fonction pour gérer les likes des publications
 const likePublication = async (publicationId) => {
     try {
         const token = localStorage.getItem('token');
@@ -99,6 +124,8 @@ const likePublication = async (publicationId) => {
                 }
             }
         );
+        // Mettre à jour l'état de la publication et enregistrer dans le localStorage
+        updateLikedPublications(publicationId, response.data.liked);
         setPublications(prevPublications =>
             prevPublications.map(publication =>
                 publication.id === publicationId ? { ...publication, liked: response.data.liked } : publication
@@ -163,15 +190,15 @@ function toggleCommentForm(index) {
             </div>
             <div className="row publication-actions">
               <div className="col-4 likes-container" style={{fontSize: 11, paddingLeft: 20}}>
-               <button className="action-button" id="like-button" onClick={() => likePublication(publication.id)}>
-                    <i className={`bi ${publication.liked ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
-                </button>
-                <span className="likes-count">
+                  <button className="action-button" id="like-button" onClick={() => likePublication(publication.id)}>
+                      <i className={`bi ${isPublicationLiked(publication.id) ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
+                  </button>
+                  <span className="likes-count">
                     {publication.likes}
                 </span> likes
 
               </div>
-              <div className="col-4 comment-count-container" style={{ fontSize: 11, paddinRight: 20}}>
+                <div className="col-4 comment-count-container" style={{fontSize: 11, paddinRight: 20}}>
                 <button className="action-button" id="comment-button"  onClick={() => toggleCommentForm(index)}><i
                     className="bi bi-chat"></i></button>
                 <span className="comment-count" id="comment-count- photo.id"></span> commentaires
