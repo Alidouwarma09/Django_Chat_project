@@ -103,6 +103,7 @@ const initialLikedPublications = getLikedPublicationsFromLocalStorage();
 // Fonction pour mettre à jour l'état des likes et enregistrer dans le localStorage
 const updateLikedPublications = (publicationId, liked) => {
     const updatedLikedPublications = { ...initialLikedPublications, [publicationId]: liked };
+    console.log( liked)
     saveLikedPublicationsToLocalStorage(updatedLikedPublications);
 };
 
@@ -112,7 +113,7 @@ const isPublicationLiked = (publicationId) => {
 };
 
 const audio = new Audio(likeSon);
-// Fonction pour gérer les likes des publications
+
 const likePublication = async (publicationId) => {
     audio.play();
     try {
@@ -127,7 +128,6 @@ const likePublication = async (publicationId) => {
                 }
             }
         );
-        // Mettre à jour l'état de la publication et enregistrer dans le localStorage
         updateLikedPublications(publicationId, response.data.liked);
         setPublications(prevPublications =>
             prevPublications.map(publication =>
@@ -197,7 +197,7 @@ function toggleCommentForm(index) {
                       <i className={`bi ${isPublicationLiked(publication.id) ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
                   </button>
                   <span className="likes-count">
-                    {publication.likes}
+                     nombre de like
                 </span> likes
 
               </div>

@@ -253,12 +253,30 @@ def liker_publication(request):
                 liked = False
             else:
                 liked = True
-            return JsonResponse({'liked': liked})
+
+            like_count = Like.objects.filter(publication=publication).count()
+            print(like_count)
+            return JsonResponse({'liked': liked, 'like_count': like_count})
 
         except Publication.DoesNotExist:
             return JsonResponse({'error': 'Publication non trouvée'}, status=404)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+
+
+def get_publications_count_likes(request):
+    if request.method == 'GET':
+        publications = Publication.objects.all()
+        data = []
+        for publication in publications:
+            likes_count = Like.objects.filter(publication=publication).count()  # Utilisez la publication actuelle pour filtrer les likes
+            data.append({
+                'id': publication.id,
+                'likes_count': likes_count,
+            })
+        return JsonResponse(data, safe=False)
     else:
         return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
@@ -328,7 +346,6 @@ def get_comments(request, publication_id):
     return JsonResponse(comments_data, safe=False)
 
 
-@login_required(login_url='Utilisateur:Connexion_utlisateur')
 def get_comment_count(request):
     publication_id = request.GET.get('publication_id')
     comment_count = Comment.objects.filter(publication_id=publication_id).count()
