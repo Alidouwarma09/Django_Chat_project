@@ -72,7 +72,6 @@ def connexion_utilisateur(request):
         login(request, user)
         logger.info(f"Utilisateur {username} connecté avec succès.")
         token, _ = Token.objects.get_or_create(user=user)
-        print("Token généré:", token.key)
         return JsonResponse({'token': token.key})
     else:
         logger.error(f"Échec de la connexion pour l'utilisateur {username}.")
@@ -243,8 +242,11 @@ def liker_publication(request):
         publication_id = data.get('publication_id')
         try:
             publication = Publication.objects.get(id=publication_id)
-            utilisateur = request.user
-            like, created = Like.objects.get_or_create(utilisateur=utilisateur, publication=publication)
+            auth_result = TokenAuthentication().authenticate(request)
+
+            if auth_result is not None:
+                user, _ = auth_result
+            like, created = Like.objects.get_or_create(utilisateur=user, publication=publication)
 
             if not created:
                 like.delete()
@@ -278,9 +280,6 @@ def post_comment(request, publication_id):
             comment = Comment(utilisateur=user, publication_id=publication_id, texte=texte)
             comment.save()
 
-            # Imprimer le texte du commentaire dans la console
-            print("Commentaire enregistré :", texte)
-
             return JsonResponse({'message': 'Commentaire ajouté avec succès'}, status=201)
         else:
             return JsonResponse({'error': 'Authentification invalide'}, status=401)
@@ -304,7 +303,6 @@ class CommentSSEView(View):
                     comments_data = [{'publication_id': comment.publication_id, 'texte': comment.texte,
                                       'date_comment': comment.date_comment.strftime('%Y-%m-%d %H:%M:%S')} for comment in
                                      comments]
-                    # Imprimer les publication_id avant la sérialisation
                     for comment in comments_data:
                         print(comment['publication_id'])
                     data = json.dumps({'comments': comments_data})
@@ -480,7 +478,6 @@ def start_video_call(request):
             to='+2250789817277',
             from_='+2250789817277'
         )
-        print("yessssss")
         return JsonResponse({'success': True, 'call_sid': call.sid})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})

@@ -86,6 +86,28 @@ const response = await axios.post(
 
 
 
+const likePublication = async (publicationId) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.post(
+            `${process.env.REACT_APP_API_URL}/Utilisateur/api/liker_publication/`,
+            JSON.stringify({ publication_id: publicationId }),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`
+                }
+            }
+        );
+        setPublications(prevPublications =>
+            prevPublications.map(publication =>
+                publication.id === publicationId ? { ...publication, liked: response.data.liked } : publication
+            )
+        );
+    } catch (error) {
+        console.error('Erreur lors du like de la publication:', error);
+    }
+};
 
 
 function handleCommentChange(text, publicationId) {
@@ -141,11 +163,13 @@ function toggleCommentForm(index) {
             </div>
             <div className="row publication-actions">
               <div className="col-4 likes-container" style={{fontSize: 11, paddingLeft: 20}}>
-                <button className="action-button" id="like-button" >
-                  <i className="bi bi-heart-fill"></i>
+               <button className="action-button" id="like-button" onClick={() => likePublication(publication.id)}>
+                    <i className={`bi ${publication.liked ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
                 </button>
                 <span className="likes-count">
-                                </span> likes
+                    {publication.likes}
+                </span> likes
+
               </div>
               <div className="col-4 comment-count-container" style={{ fontSize: 11, paddinRight: 20}}>
                 <button className="action-button" id="comment-button"  onClick={() => toggleCommentForm(index)}><i
@@ -176,7 +200,7 @@ function toggleCommentForm(index) {
                   </div>
                   <form className="commentaire-form" onSubmit={(e) => {
                       e.preventDefault();
-                      submitComment(publication.id, commentTexts[publication.id]); // Passer le texte du commentaire à la fonction submitComment
+                      submitComment(publication.id, commentTexts[publication.id]);
                   }}>
                       <input type="text" className="commentaire-input" name="texte"
                              placeholder="Écrivez un commentaire..."

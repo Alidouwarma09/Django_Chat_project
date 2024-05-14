@@ -20,8 +20,7 @@ urlpatterns = [
     path('apk/envoyer_message_audio/', envoyer_message_audio, name='envoyer_message_audio'),
     path('apk/publier_photo/', publier_photo, name='publier_photo'),
     path('api/get_publications/', get_publications, name='get_publications'),
-
-    path('apk/liker_publication/', liker_publication, name='liker_publication'),
+    path('api/liker_publication/', liker_publication, name='liker_publication'),
     path('api/post_comment/<int:publication_id>', views.post_comment, name='post_comment'),
     path('apk/get_comment_count/', get_comment_count, name='get_comment_count'),
     path('creer/', views.creer_publication, name='creer_publication'),
