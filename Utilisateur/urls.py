@@ -2,9 +2,11 @@
 from django.urls import path
 
 from Utilisateur import views
-from Utilisateur.views import Inscription, connexion_utilisateur, accueil_utilisateur, detail_utilisateur, publier_photo, \
-    get_publications, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, get_comment_count, start_video_call, toute_les_videos, comment_sse, get_comments, \
-    messages_non_lus_sse
+from Utilisateur.views import Inscription, connexion_utilisateur, accueil_utilisateur, detail_utilisateur, \
+    publier_photo, \
+    get_publications, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, \
+    get_comment_count, start_video_call, toute_les_videos, get_comments, \
+    messages_non_lus_sse, CommentSSEView
 
 app_name = 'Utilisateur'
 
@@ -34,7 +36,7 @@ urlpatterns = [
     path('start-video-call/', start_video_call, name='start_video_call'),
     path('toute_les_videos/', toute_les_videos, name='toute_les_videos'),
     path('api/get_comments/<int:publication_id>/', get_comments, name='get_comments'),
-    path('api/comment_sse/', comment_sse, name='comment_sse'),
+    path('api/comment_sse/', CommentSSEView.as_view(), name='comment_sse'),
     path('apk/messages_non_lus_sse/', messages_non_lus_sse, name='messages_non_lus_sse'),
     path('apk/stream_messages/<int:utilisateur_detail_id>/', views.stream_messages, name='stream_messages'),
 ]

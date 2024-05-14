@@ -261,39 +261,6 @@ def liker_publication(request):
         return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
 
-# @require_POST
-# def commenter_publication(request):
-#
-#     try:
-#         data = json.loads(request.body.decode('utf-8'))
-#         publication_id = data.get('publication_id')
-#         texte = data.get('texte')
-#
-#         try:
-#             publication = Publication.objects.get(id=publication_id)
-#         except Publication.DoesNotExist:
-#             logger.error(f"Publication {publication_id} introuvable.")
-#             return JsonResponse({'erreur': 'Publication introuvable'}, status=404)
-#
-#         utilisateur = request.user.id
-#         if not utilisateur or not utilisateur.is_authenticated:
-#             logger.error("Utilisateur non authentifié tentant de poster un commentaire.")
-#             return JsonResponse({'erreur': 'Authentification requise'}, status=401)
-#
-#         commentaire = Comment(utilisateur=1, publication=publication, texte=texte)
-#         commentaire.save()
-#         logger.info(f"Commentaire ajouté avec succès pour la publication {publication_id} par {utilisateur.username}.")
-#         return JsonResponse({
-#             'message': 'Commentaire publié avec succès !',
-#             'commentaire_id': commentaire.id
-#         })
-#
-#     except json.JSONDecodeError:
-#         logger.error("Erreur de décodage JSON.")
-#         return JsonResponse({'erreur': 'Données invalides'}, status=400)
-#     except Exception as e:
-#         logger.error(f"Erreur inattendue: {str(e)}")
-#         return JsonResponse({'erreur': 'Erreur du serveur'}, status=500)
 
 @csrf_exempt
 def post_comment(request, publication_id):
@@ -326,35 +293,24 @@ lock = Lock()
 # @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
 
-@require_GET
-async def comment_sse(request):
-    async def event_stream():
-        last_comment_id = None
-        while True:
-            with lock:
-                try:
-                    latest_comment = await sync_to_async(Comment.objects.latest)('date_comment')
-                    if latest_comment.id != last_comment_id:
-                        last_comment_id = latest_comment.id
-                        data = {
-                            'publication_id': latest_comment.publication.id,
-                            'last_comment_id': latest_comment.id,
-                            'texte': latest_comment.texte,
-                            'utilisateur_nom': latest_comment.utilisateur.nom,
-                            'utilisateur_prenom': latest_comment.utilisateur.prenom,
-                            'date_comment': latest_comment.date_comment.strftime('%Y-%m-%d %H:%M:%S'),
-                        }
-                        yield f"data: {json.dumps(data)}\n\n"
-                    else:
-                        yield ':\n\n'
-                except Comment.DoesNotExist:
-                    yield 'data: Test message\n\n'
-                    await asyncio.sleep(1)
+class CommentSSEView(View):
+    def get(self, request, *args, **kwargs):
+        def event_stream():
+            while True:
+                comments = Comment.objects.all().order_by('-date_comment')[:5]
+                comments_data = [{'publication_id': comment.publication_id, 'texte': comment.texte,
+                                  'date_comment': comment.date_comment.strftime('%Y-%m-%d %H:%M:%S')} for comment in comments]
+                # Imprimer les publication_id avant la sérialisation
+                for comment in comments_data:
+                    print(comment['publication_id'])
+                data = json.dumps({'comments': comments_data})
+                yield f"data: {data}\n\n"
+                time.sleep(1)
 
-    response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
-    response['Cache-Control'] = 'no-cache'
-    response['X-Accel-Buffering'] = 'no'
-    return response
+        response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+        response['Cache-Control'] = 'no-cache'
+        return response
+
 
 @csrf_exempt
 def get_comments(request, publication_id):

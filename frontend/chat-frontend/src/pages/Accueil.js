@@ -25,11 +25,16 @@ function Acceuil() {
 
     fetchPublications();
 
-    const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}Utilisateur/api/comment_sse/`);
-    eventSource.onmessage = async (event) => {
-      const { publication_id } = JSON.parse(event.data);
-      await fetchComments(publication_id);
-    };
+   const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}Utilisateur/api/comment_sse/`);
+eventSource.onmessage = async (event) => {
+  const data = JSON.parse(event.data);
+  if (data.comments && data.comments.length > 0) { // Vérifiez d'abord si des commentaires sont présents
+    const publicationId = data.comments[0].publication_id; // Accédez au premier commentaire pour obtenir publication_id
+    await fetchComments(publicationId);
+  } else {
+    console.error('Aucun commentaire reçu dans les données de l\'événement');
+  }
+};
 
     return () => eventSource.close();
   }, []);
