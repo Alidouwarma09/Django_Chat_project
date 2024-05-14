@@ -261,7 +261,6 @@ def liker_publication(request):
         return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
 
-
 @csrf_exempt
 def post_comment(request, publication_id):
     if request.method == 'POST':
@@ -289,22 +288,28 @@ def post_comment(request, publication_id):
 
 lock = Lock()
 
-
 # @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
+
+last_comment_id_sent = 0
+
 
 class CommentSSEView(View):
     def get(self, request, *args, **kwargs):
         def event_stream():
+            global last_comment_id_sent
             while True:
-                comments = Comment.objects.all().order_by('-date_comment')[:5]
-                comments_data = [{'publication_id': comment.publication_id, 'texte': comment.texte,
-                                  'date_comment': comment.date_comment.strftime('%Y-%m-%d %H:%M:%S')} for comment in comments]
-                # Imprimer les publication_id avant la sérialisation
-                for comment in comments_data:
-                    print(comment['publication_id'])
-                data = json.dumps({'comments': comments_data})
-                yield f"data: {data}\n\n"
+                comments = Comment.objects.filter(id__gt=last_comment_id_sent).order_by('-date_comment')[:5]
+                if comments:
+                    comments_data = [{'publication_id': comment.publication_id, 'texte': comment.texte,
+                                      'date_comment': comment.date_comment.strftime('%Y-%m-%d %H:%M:%S')} for comment in
+                                     comments]
+                    # Imprimer les publication_id avant la sérialisation
+                    for comment in comments_data:
+                        print(comment['publication_id'])
+                    data = json.dumps({'comments': comments_data})
+                    yield f"data: {data}\n\n"
+                    last_comment_id_sent = comments[0].id  # Mettre à jour le dernier ID de commentaire envoyé
                 time.sleep(1)
 
         response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')

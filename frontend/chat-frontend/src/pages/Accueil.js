@@ -18,6 +18,10 @@ function Acceuil() {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
         setPublications(response.data);
          setIsCommentFormOpenList(new Array(response.data.length).fill(false));
+         for (let publication of response.data) {
+        await fetchComments(publication.id);
+      }
+
       } catch (error) {
         console.error('Erreur lors du chargement des publications:', error);
       }
@@ -73,6 +77,7 @@ const response = await axios.post(
 );
 
         console.log(response.data.message);
+        await fetchComments(publicationId);
         // Mettez à jour l'état pour afficher le nouveau commentaire
     } catch (error) {
         console.error('Erreur lors de l\'envoi du commentaire:', error);
