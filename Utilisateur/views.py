@@ -10,6 +10,7 @@ from asgiref.sync import sync_to_async
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 from django.shortcuts import redirect, get_object_or_404
@@ -89,6 +90,8 @@ def get_publications(request):
                  'utilisateur_prenom': pub.utilisateur.prenom,
                  'couleur_fond': pub.couleur_fond,
                  'contenu': pub.contenu,
+                 'count_likes': pub.count_likes(),
+                 'date_publication': pub.date_pub(),
                  'utilisateur_image': request.build_absolute_uri(
                      pub.utilisateur.image.url) if pub.utilisateur.image else None,
                  'photo_file_url': request.build_absolute_uri(pub.photo_file.url) if pub.photo_file else None}
@@ -255,9 +258,9 @@ def liker_publication(request):
             else:
                 liked = True
 
-            like_count = Like.objects.filter(publication=publication).count()
-            print(like_count)
-            return JsonResponse({'liked': liked, 'like_count': like_count})
+            count_likes = Like.objects.filter(publication=publication).count()
+            print(count_likes)
+            return JsonResponse({'liked': liked, 'count_likes': count_likes})
 
         except Publication.DoesNotExist:
             return JsonResponse({'error': 'Publication non trouvée'}, status=404)
@@ -267,20 +270,6 @@ def liker_publication(request):
         return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
 
-def get_publications_count_likes(request):
-    if request.method == 'GET':
-        publications = Publication.objects.all()
-        data = []
-        for publication in publications:
-            likes_count = Like.objects.filter(
-                publication=publication).count()  # Utilisez la publication actuelle pour filtrer les likes
-            data.append({
-                'id': publication.id,
-                'likes_count': likes_count,
-            })
-        return JsonResponse(data, safe=False)
-    else:
-        return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
 
 
 @csrf_exempt
@@ -324,7 +313,7 @@ class CommentSSEView(View):
                         print(comment['publication_id'])
                     data = json.dumps({'comments': comments_data})
                     yield f"data: {data}\n\n"
-                    last_comment_id_sent = comments[0].id  # Mettre à jour le dernier ID de commentaire envoyé
+                    last_comment_id_sent = comments[0].id
                 time.sleep(1)
 
         response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
@@ -353,12 +342,19 @@ def get_comment_count(request):
 
 def creer_publication(request):
     if request.method == 'POST':
-        utilisateur_id = request.user.id
-        texte = request.POST.get('texte')
-        couleur_fond = request.POST.get('couleur_fond')
-        publication = Publication.objects.create(utilisateur_id=utilisateur_id, contenu=texte,
-                                                 couleur_fond=couleur_fond)
-        return redirect('Utilisateur:acceuil')
+        auth_result = TokenAuthentication().authenticate(request)
+        if auth_result is not None:
+            user, _ = auth_result
+            utilisateur_id = user.id
+            data = json.loads(request.body)
+            texte = data.get('texte')
+            couleur_fond = data.get('couleur_fond')
+            publication = Publication.objects.create(utilisateur_id=utilisateur_id, contenu=texte,
+                                                     couleur_fond=couleur_fond)
+            publication_data = serialize('json', [publication])
+            return JsonResponse({'publication': publication_data})
+        else:
+            return JsonResponse({'error': 'Unauthorized'}, status=401)
 
 
 def parametre(request):

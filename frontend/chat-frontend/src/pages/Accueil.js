@@ -12,6 +12,7 @@ function Acceuil() {
  const [commentTexts, setCommentTexts] = useState({});
 
 
+
   useEffect(() => {
     async function fetchPublications() {
       try {
@@ -34,8 +35,8 @@ function Acceuil() {
    const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/Utilisateur/api/comment_sse/`);
 eventSource.onmessage = async (event) => {
   const data = JSON.parse(event.data);
-  if (data.comments && data.comments.length > 0) { // Vérifiez d'abord si des commentaires sont présents
-    const publicationId = data.comments[0].publication_id; // Accédez au premier commentaire pour obtenir publication_id
+  if (data.comments && data.comments.length > 0) {
+    const publicationId = data.comments[0].publication_id;
     await fetchComments(publicationId);
   } else {
     console.error('Aucun commentaire reçu dans les données de l\'événement');
@@ -47,8 +48,8 @@ eventSource.onmessage = async (event) => {
 
   async function fetchComments(publicationId) {
     try {
-        const token = localStorage.getItem('token'); // Récupérer le token JWT du stockage local
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Ajouter le token aux en-têtes
+        const token = localStorage.getItem('token');
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_comments/${publicationId}`);
       setComments(prevComments => ({
@@ -60,8 +61,6 @@ eventSource.onmessage = async (event) => {
     }
   }
 
-
-// Dans votre composant React
 const submitComment = async (publicationId, texte) => {
     try {
 
@@ -77,22 +76,17 @@ const response = await axios.post(
         }
     }
 );
-
         console.log(response.data.message);
         await fetchComments(publicationId);
-        // Mettez à jour l'état pour afficher le nouveau commentaire
     } catch (error) {
         console.error('Erreur lors de l\'envoi du commentaire:', error);
     }
 }
 
-
-
 const getLikedPublicationsFromLocalStorage = () => {
     const likedPublications = localStorage.getItem('likedPublications');
     return likedPublications ? JSON.parse(likedPublications) : {};
 };
-
 const saveLikedPublicationsToLocalStorage = (likedPublications) => {
     localStorage.setItem('likedPublications', JSON.stringify(likedPublications));
 };
@@ -102,14 +96,10 @@ const updateLikedPublications = (publicationId, liked) => {
     console.log( liked)
     saveLikedPublicationsToLocalStorage(updatedLikedPublications);
 };
-
-// Fonction pour vérifier si une publication est aimée
 const isPublicationLiked = (publicationId) => {
     return initialLikedPublications.hasOwnProperty(publicationId) && initialLikedPublications[publicationId];
 };
-
 const audio = new Audio(likeSon);
-
 const likePublication = async (publicationId) => {
     audio.play();
     try {
@@ -127,20 +117,16 @@ const likePublication = async (publicationId) => {
         updateLikedPublications(publicationId, response.data.liked);
         setPublications(prevPublications =>
             prevPublications.map(publication =>
-                publication.id === publicationId ? { ...publication, liked: response.data.liked } : publication
+                publication.id === publicationId ? { ...publication, count_likes: response.data.count_likes, liked: response.data.liked } : publication
             )
         );
     } catch (error) {
         console.error('Erreur lors du like de la publication:', error);
     }
 };
-
-
 function handleCommentChange(text, publicationId) {
   setCommentTexts(prev => ({ ...prev, [publicationId]: text }));
 }
-
-
 function toggleCommentForm(index) {
     setIsCommentFormOpenList(prevState => {
       const newState = [...prevState];
@@ -149,7 +135,6 @@ function toggleCommentForm(index) {
     });
   }
   return (
-
     <div>
          <NavBar />
         <div className="conversation active">
@@ -162,8 +147,7 @@ function toggleCommentForm(index) {
                              className="user-profile"/>
                         <div className="user-info">
                             <p className="user-name">{publication.utilisateur_nom} {publication.utilisateur_prenom}</p>
-                            <p className="publication-time"><i className="bi bi-globe-americas"></i> Il y a
-                                photo.date_pub</p>
+                            <p className="publication-time"> Il y a {publication.date_publication} <i className="bi bi-globe-americas"></i></p>
                         </div>
                     </div>
                     {!publication.contenu && (
@@ -171,7 +155,6 @@ function toggleCommentForm(index) {
                             <p>{publication.titre}</p>
                         </>
                     )}
-
                     <div className="publication-content" style={{
                         minHeight: 400,
                         display: "flex",
@@ -191,7 +174,6 @@ function toggleCommentForm(index) {
                                      alt="Publication"/>
                             </>
                         )}
-
                     </div>
                     <div className="row publication-actions">
                         <div className="col-4 likes-container" style={{fontSize: 11, paddingLeft: 20}}>
@@ -200,9 +182,8 @@ function toggleCommentForm(index) {
                                 <i className={`bi ${isPublicationLiked(publication.id) ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
                             </button>
                             <span className="likes-count">
-                     nombre de like
+                     {publication.count_likes}
                 </span> likes
-
                         </div>
                         <div className="col-4 comment-count-container" style={{fontSize: 11, paddinRight: 20}}>
                             <button className="action-button" id="comment-button"
@@ -215,7 +196,6 @@ function toggleCommentForm(index) {
                             <span className="comment-count">15,42k</span> Vues
                         </div>
                     </div>
-
                     <div className="comments-section" id="comments-section- photo.id "
                          data-url="" style={{
                         overflowY: "auto",

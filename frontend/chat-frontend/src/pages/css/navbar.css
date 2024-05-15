@@ -38,3 +38,63 @@
     border: none;
     margin-top: 10px;
 }
+
+    #publicationSection {
+        position: fixed;
+        width: 100%;
+        background-color: #fff;
+        border: 1px solid #dddfe2;
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 16px;
+        z-index: 100;
+        overflow-x: auto;
+
+    }
+        #publicationForm {
+        margin-bottom: 16px;
+        overflow-y: auto;
+        max-height: 400px;
+    }
+         #texteInput {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #dddfe2;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        resize: none;
+    }
+
+    #preview {
+        border-top: 1px solid #dddfe2;
+        padding-top: 16px;
+    }
+
+    #textePreview {
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        min-height: 200px;
+        max-height: 200px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-x: hidden;
+        color: white;
+    }
+
+    #publicationButton {
+        background-color: #1877f2;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.3s ease;
+    }
+
+    #publicationButton:hover {
+        background-color: #166fe5;
+    }
