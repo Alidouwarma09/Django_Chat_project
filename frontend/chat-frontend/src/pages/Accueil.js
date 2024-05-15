@@ -17,7 +17,7 @@ function Acceuil() {
       try {
           const token = localStorage.getItem('token');
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/inscription/`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
         setPublications(response.data);
          setIsCommentFormOpenList(new Array(response.data.length).fill(false));
          for (let publication of response.data) {

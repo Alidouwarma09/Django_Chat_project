@@ -27,10 +27,9 @@ function Connexion() {
             password: password
         })
         .then(response => {
-            console.log('Token reçu:', response.data.token); // Affiche le token dans la console
+            console.log('Token reçu:', response.data.token);
             localStorage.setItem('token', response.data.token);
-            setFormErrors({});
-            navigate('/acceuil');
+            window.location.href = '/acceuil/';
         })
         .catch(error => {
             console.error('Erreur lors de la connexion:', error.response || error);
