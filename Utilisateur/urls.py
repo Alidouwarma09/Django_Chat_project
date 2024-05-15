@@ -11,7 +11,7 @@ from Utilisateur.views import Inscription, connexion_utilisateur, accueil_utilis
 app_name = 'Utilisateur'
 
 urlpatterns = [
-    path('', Inscription, name='Inscription'),
+    path('api/inscription/', Inscription, name='Inscription'),
     path('Connexion/', connexion_utilisateur, name='Connexion_utlisateur'),
     path('accueil_utilisateur/', accueil_utilisateur, name='accueil_utilisateur'),
     path('detail_utilisateur/<int:utilisateur_detail_id>/', detail_utilisateur, name='detail_utilisateur'),
