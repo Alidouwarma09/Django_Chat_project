@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import './css/insciption.css'
 import Chater_logo from "./icons/chater_logo.png";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from 'react-router-dom';
 import { TbCameraPlus } from "react-icons/tb";
 
 const Inscription = () => {
@@ -12,6 +12,7 @@ const Inscription = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [image, setImage] = useState(null);
+    const navigate = useNavigate();
 
 
     const handleSubmit = async (e) => {
@@ -32,7 +33,7 @@ const Inscription = () => {
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/Utilisateur/api/inscription/`, formData);
             if (response.data.success) {
-                alert('Inscription réussie');
+                navigate('/connexion')
             }
         } catch (error) {
             alert('Une erreur est survenue lors de l\'inscription.');
@@ -104,7 +105,7 @@ const [imagePreview, setImagePreview] = useState(null);
                             <button className="inscription-button" type="submit">S'inscrire</button>
                         </form>
                         <div className="login-card-footer">
-                            Je n'ai pas de compte <Link to="/connexion">S'inscrire ?</Link>
+                            J'ai deja un compte <Link to="/connexion">Se connecter ?</Link>
                         </div>
                     </div>
                 </div>

@@ -93,15 +93,10 @@ const getLikedPublicationsFromLocalStorage = () => {
     return likedPublications ? JSON.parse(likedPublications) : {};
 };
 
-// Fonction pour enregistrer les informations sur les likes dans le localStorage
 const saveLikedPublicationsToLocalStorage = (likedPublications) => {
     localStorage.setItem('likedPublications', JSON.stringify(likedPublications));
 };
-
-// Initialisation de l'état des publications à partir du localStorage
 const initialLikedPublications = getLikedPublicationsFromLocalStorage();
-
-// Fonction pour mettre à jour l'état des likes et enregistrer dans le localStorage
 const updateLikedPublications = (publicationId, liked) => {
     const updatedLikedPublications = { ...initialLikedPublications, [publicationId]: liked };
     console.log( liked)
