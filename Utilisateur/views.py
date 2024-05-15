@@ -34,17 +34,16 @@ from rest_framework.authtoken.models import Token
 
 # Create your views here
 
+
 def Inscription(request):
     if request.method == 'POST':
         form = InscriptionForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Inscription reussi.')
-            return redirect('Utilisateur:Connexion_utlisateur')
-    else:
-        form = InscriptionForm()
-
-    return render(request, 'inscription_utilisateur.html', {'form': form})
+            user = form.save()
+            return JsonResponse({'success': True, 'user_id': user.id})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
 
 logger = logging.getLogger(__name__)
