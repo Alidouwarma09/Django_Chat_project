@@ -10,7 +10,7 @@ const Parametres = () => {
 const handleDeconnexion = async () => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.post(`${process.env.REACT_APP_API_URL}Model/Deconnexion/`, {}, {
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/Model/Deconnexion/`, {}, {
       headers: {
         'Authorization': `Token ${token}`
       }
