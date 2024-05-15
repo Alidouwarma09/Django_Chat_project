@@ -5,7 +5,7 @@ import NavBar from "./NavBar";
 import './css/acceuil.css'
 import likeSon from './son/likesSon.mp3'
 
-function Acceuil() {
+function Videos() {
  const [publications, setPublications] = useState([]);
   const [comments, setComments] = useState({});
  const [isCommentFormOpenList, setIsCommentFormOpenList] = useState([]);
@@ -18,11 +18,11 @@ function Acceuil() {
       try {
           const token = localStorage.getItem('token');
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications_video/`);
         setPublications(response.data);
          setIsCommentFormOpenList(new Array(response.data.length).fill(false));
          for (let publication of response.data) {
-        await fetchComments(publication.id);
+        await fetchComments2(publication.id);
       }
 
       } catch (error) {
@@ -37,7 +37,7 @@ eventSource.onmessage = async (event) => {
   const data = JSON.parse(event.data);
   if (data.comments && data.comments.length > 0) {
     const publicationId = data.comments[0].publication_id;
-    await fetchComments(publicationId);
+    await fetchComments2(publicationId);
   } else {
     console.error('Aucun commentaire reçu dans les données de l\'événement');
   }
@@ -46,7 +46,7 @@ eventSource.onmessage = async (event) => {
     return () => eventSource.close();
   }, []);
 
-  async function fetchComments(publicationId) {
+  async function fetchComments2(publicationId) {
     try {
         const token = localStorage.getItem('token');
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -77,21 +77,21 @@ const response = await axios.post(
     }
 );
         console.log(response.data.message);
-        await fetchComments(publicationId);
+        await fetchComments2(publicationId);
     } catch (error) {
         console.error('Erreur lors de l\'envoi du commentaire:', error);
     }
 }
 
-const getLikedPublicationsFromLocalStorage = () => {
+const getLikedPublicationsFromLocalStorage2 = () => {
     const likedPublications = localStorage.getItem('likedPublications');
     return likedPublications ? JSON.parse(likedPublications) : {};
 };
 const saveLikedPublicationsToLocalStorage = (likedPublications) => {
     localStorage.setItem('likedPublications', JSON.stringify(likedPublications));
 };
-const initialLikedPublications = getLikedPublicationsFromLocalStorage();
-const updateLikedPublications = (publicationId, liked) => {
+const initialLikedPublications = getLikedPublicationsFromLocalStorage2();
+const updateLikedPublications2 = (publicationId, liked) => {
     const updatedLikedPublications = { ...initialLikedPublications, [publicationId]: liked };
     console.log( liked)
     saveLikedPublicationsToLocalStorage(updatedLikedPublications);
@@ -114,7 +114,7 @@ const likePublication = async (publicationId) => {
                 }
             }
         );
-        updateLikedPublications(publicationId, response.data.liked);
+        updateLikedPublications2(publicationId, response.data.liked);
         setPublications(prevPublications =>
             prevPublications.map(publication =>
                 publication.id === publicationId ? { ...publication, count_likes: response.data.count_likes, liked: response.data.liked } : publication
@@ -140,8 +140,6 @@ function toggleCommentForm(index) {
         <div className="conversation active">
             {publications.map((publication, index) => (
                 <div key={publication.id} className="publication">
-                    {publication.photo_file && <img src={publication.photo_file} alt="Publication"/>}
-
                     <div className="publication-header">
                         <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur"
                              className="user-profile"/>
@@ -150,30 +148,18 @@ function toggleCommentForm(index) {
                             <p className="publication-time"> Il y a {publication.date_publication} <i className="bi bi-globe-americas"></i></p>
                         </div>
                     </div>
-                    {!publication.contenu && (
-                        <>
                             <p>{publication.titre}</p>
-                        </>
-                    )}
                     <div className="publication-content" style={{
                         minHeight: 400,
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
                         color: "white",
-                        backgroundImage:
-                        publication.couleur_fond
                     }}>
-                        {publication.contenu ? (
-                            <>
-                                {publication.contenu}
-                            </>
-                        ) : (
-                            <>
-                                <img src={`${publication.photo_file_url}`} className="publication-image"
-                                     alt="Publication"/>
-                            </>
-                        )}
+                                <video controls preload="none">
+                                    <source src={`${publication.videos}`} type="video/mp4"/>
+                                    Votre navigateur ne supporte pas la vidéo.
+                                </video>
                     </div>
                     <div className="row publication-actions">
                         <div className="col-4 likes-container" style={{fontSize: 11, paddingLeft: 20}}>
@@ -238,4 +224,4 @@ function toggleCommentForm(index) {
     ;
 }
 
-export default Acceuil;
+export default Videos;
