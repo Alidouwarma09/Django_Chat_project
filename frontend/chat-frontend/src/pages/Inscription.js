@@ -30,7 +30,7 @@ const Inscription = () => {
             formData.append('image', image);
         }
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}Utilisateur/api/inscription/`, formData);
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/Utilisateur/api/inscription/`, formData);
             if (response.data.success) {
                 alert('Inscription réussie');
             }

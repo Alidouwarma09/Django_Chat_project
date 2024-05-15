@@ -10,6 +10,7 @@ function Connexion() {
     const [password, setPassword] = useState('');
     const [formErrors, setFormErrors] = useState({ username: '', password: '' });
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -22,6 +23,7 @@ function Connexion() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setLoading(true);
         axios.post(`${process.env.REACT_APP_API_URL}/Utilisateur/Connexion/`, {
             username: username,
             password: password
@@ -31,6 +33,7 @@ function Connexion() {
             navigate('/acceuil')
         })
         .catch(error => {
+            setLoading(false);
             console.error('Erreur lors de la connexion:', error.response || error);
             if (error.response && error.response.data) {
                 setFormErrors(error.response.data);
@@ -65,7 +68,9 @@ function Connexion() {
                         {(formErrors.username || formErrors.password) &&
                             <span id="errorMessage" style={{fontSize: '12px', color: 'red'}}>Numéro ou mot de passe incorrect !</span>
                         }
-                        <button className="login-button" type="submit" id="submitButton">Se connecter</button>
+                        <button className="login-button" type="submit" id="submitButton" disabled={loading}>
+                            {loading ? 'Chargement...' : 'Se connecter'}
+                        </button>
                     </form>
                     <div className="login-card-footer">
                         Je n'ai pas de compte <Link to="/inscription">S'inscrire ?</Link>
