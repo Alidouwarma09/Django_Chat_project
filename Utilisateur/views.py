@@ -40,10 +40,12 @@ def Inscription(request):
         form = InscriptionForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
+            logger.info('Inscription réussie pour l\'utilisateur avec l\'ID : %s', user.id)
             return JsonResponse({'success': True, 'user_id': user.id})
         else:
+            logger.error('Erreurs lors de l\'inscription : %s', form.errors)
             return JsonResponse({'success': False, 'errors': form.errors})
-    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+    return JsonResponse({'success': False, 'error': 'Requête invalide'}, status=400)
 
 
 logger = logging.getLogger(__name__)
@@ -270,7 +272,8 @@ def get_publications_count_likes(request):
         publications = Publication.objects.all()
         data = []
         for publication in publications:
-            likes_count = Like.objects.filter(publication=publication).count()  # Utilisez la publication actuelle pour filtrer les likes
+            likes_count = Like.objects.filter(
+                publication=publication).count()  # Utilisez la publication actuelle pour filtrer les likes
             data.append({
                 'id': publication.id,
                 'likes_count': likes_count,
@@ -303,8 +306,6 @@ def post_comment(request, publication_id):
 
 
 lock = Lock()
-
-
 
 last_comment_id_sent = 0
 
