@@ -65,7 +65,7 @@ MIDDLEWARE = [
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1'
-    'django-chat-project-alidouwarma09s-projects.vercel.app',
+    '.vercel.app',
 ]
 
 # settings.py
