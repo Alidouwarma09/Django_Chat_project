@@ -62,11 +62,7 @@ MIDDLEWARE = [
 # settings.py
 
 # Ajoutez tous les domaines nécessaires à ALLOWED_HOSTS
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1'
-    '.vercel.app',
-]
+ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
 
 # settings.py
 REST_FRAMEWORK = {
