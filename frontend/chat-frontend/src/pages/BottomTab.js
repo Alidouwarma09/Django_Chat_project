@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import './css/BottomTab.css';
 import { useNavigate } from 'react-router-dom';
+import { MdOutlineSlowMotionVideo } from "react-icons/md";
 
 import HomeIcon from './icons/home.png';
-import SearchIcon from './icons/home.png';
 import MessageIcon from './icons/message.png';
 import ProfileIcon from './icons/home.png';
 
@@ -30,14 +30,16 @@ function BottomTab() {
       >
         <img src={MessageIcon} alt="messages"/>
       </button>
-      <button
-        className={activeTab === 'messages' ? 'active' : ''}
-        onClick={() => handlePageChange('messages')}
-      >
-        <img src={SearchIcon} alt="Search"/>
-      </button>
-      <button
-        className={activeTab === 'profile' ? 'active' : ''}
+        <button
+            className={activeTab === 'messages' ? 'active' : ''}
+            onClick={() => handlePageChange('video')}
+        >
+          <span style={{fontSize: 30}}>
+             <MdOutlineSlowMotionVideo/>
+          </span>
+        </button>
+        <button
+            className={activeTab === 'profile' ? 'active' : ''}
         onClick={() => handlePageChange('profile')}
       >
         <img src={ProfileIcon} alt="Profile"/>
