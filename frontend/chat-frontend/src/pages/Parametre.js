@@ -20,7 +20,7 @@ const handleDeconnexion = async () => {
       window.location.href = '/connexion/';
     }
   } catch (error) {
-    console.error('Erreur lors de la tentative de déconnexion:', error);
+    console.error('Erreur lors de la tentatidsdsve de déconnexion:', error);
   }
 };
 
