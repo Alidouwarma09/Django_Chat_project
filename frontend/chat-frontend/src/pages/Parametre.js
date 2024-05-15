@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './css/parametre.css'
+import { useNavigate } from 'react-router-dom';
 
 const Parametres = () => {
   const [themeSombre, setThemeSombre] = useState(false);
+      const navigate = useNavigate();
 
   useEffect(() => {
   }, []);
@@ -17,7 +19,7 @@ const handleDeconnexion = async () => {
     });
     if (response.status === 200) {
       localStorage.removeItem('token');
-      window.location.href = '/connexion/';
+      navigate('/connexion')
     }
   } catch (error) {
     console.error('Erreur lors de la tentatidsdsve de déconnexion:', error);

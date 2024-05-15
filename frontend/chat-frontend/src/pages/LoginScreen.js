@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import {Link, Navigate, useNavigate} from 'react-router-dom';
 import Chater_logo from './icons/chater_logo.png'
 
 import './css/connexion.css'
@@ -27,9 +27,8 @@ function Connexion() {
             password: password
         })
         .then(response => {
-            console.log('Token reçu:', response.data.token);
             localStorage.setItem('token', response.data.token);
-            window.location.href = '/acceuil/';
+            navigate('/acceuil')
         })
         .catch(error => {
             console.error('Erreur lors de la connexion:', error.response || error);

@@ -3,6 +3,7 @@ import Acceuil from './pages/Accueil';
 import Connexion from "./pages/LoginScreen";
 import Parametre from "./pages/Parametre";
 import Inscription from "./pages/Inscription";
+import './App.css'
 
 const isAuthenticated = () => {
     return localStorage.getItem('token') !== null;

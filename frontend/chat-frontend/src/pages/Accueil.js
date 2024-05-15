@@ -50,7 +50,7 @@ eventSource.onmessage = async (event) => {
         const token = localStorage.getItem('token'); // Récupérer le token JWT du stockage local
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Ajouter le token aux en-têtes
 
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}Utilisateur/api/get_comments/${publicationId}`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_comments/${publicationId}`);
       setComments(prevComments => ({
         ...prevComments,
         [publicationId]: response.data
