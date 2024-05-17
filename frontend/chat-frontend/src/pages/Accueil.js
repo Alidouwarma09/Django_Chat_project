@@ -33,11 +33,11 @@ useEffect(() => {
     try {
       const token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      let cachedPublications = getPublicationsFromLocalStorage(); // Récupérer les publications du localStorage
-      if (cachedPublications.length === 0) { // Si aucun dans le cache, alors faire la requête à l'API
+      let cachedPublications = getPublicationsFromLocalStorage();
+      if (cachedPublications.length === 0) {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
         setPublications(response.data);
-        localStorage.setItem('publications', JSON.stringify(response.data)); // Mettre à jour le localStorage
+        localStorage.setItem('publications', JSON.stringify(response.data));
       } else {
         setPublications(cachedPublications);
       }

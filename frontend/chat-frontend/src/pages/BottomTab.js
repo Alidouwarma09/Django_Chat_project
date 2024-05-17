@@ -32,7 +32,7 @@ function BottomTab() {
       </button>
         <button
             className={activeTab === 'messages' ? 'active' : ''}
-            onClick={() => handlePageChange('video')}
+            onClick={() => handlePageChange('videos')}
         >
           <span style={{fontSize: 30}}>
              <MdOutlineSlowMotionVideo/>
