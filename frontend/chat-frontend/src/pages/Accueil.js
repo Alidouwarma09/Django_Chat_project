@@ -15,6 +15,18 @@ const getPublicationsFromLocalStorage = () => {
   const publications = localStorage.getItem('publications');
   return publications ? JSON.parse(publications) : [];
 };
+const fetchNewPublications = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
+      localStorage.setItem('publications', JSON.stringify(response.data));
+      setPublications(response.data);
+    } catch (error) {
+      console.error('Erreur lors du chargement des nouvelles publications:', error);
+    }
+  };
+useEffect(() => {
+    fetchNewPublications();
+  }, []);
 
 useEffect(() => {
   async function fetchPublications() {
@@ -27,12 +39,13 @@ useEffect(() => {
         setPublications(response.data);
         localStorage.setItem('publications', JSON.stringify(response.data)); // Mettre à jour le localStorage
       } else {
-        setPublications(cachedPublications); // Utiliser les publications du localStorage
+        setPublications(cachedPublications);
       }
-      setIsCommentFormOpenList(new Array(cachedPublications.length).fill(false)); // Utiliser la longueur des publications dans le cache
+      setIsCommentFormOpenList(new Array(cachedPublications.length).fill(false));
       for (let publication of cachedPublications) {
         await fetchComments(publication.id);
       }
+      fetchNewPublications();
     } catch (error) {
       console.error('Erreur lors du chargement des publications:', error);
     }
@@ -51,8 +64,13 @@ useEffect(() => {
     }
   };
 
-  return () => eventSource.close();
+
+
+  return () => {
+    eventSource.close();
+  };
 }, []);
+
 
   async function fetchComments(publicationId) {
     try {

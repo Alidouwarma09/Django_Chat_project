@@ -44,6 +44,7 @@ const handlePublication = () => {
         })
         .then(response => {
             if (response.ok) {
+
                setTimeout(() => {
             setIsPublishing(false);
             setProgressPercent(100);
@@ -51,6 +52,7 @@ const handlePublication = () => {
             setTextPreview('');
             setSelectedBackground('');
             setPublicationSectionVisible(false);
+
         }, 3000);
             }
         })
