@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './css/navbar.css';
 import { CiMenuBurger } from "react-icons/ci";
 import {useState} from "react";
-import { Progress } from 'antd';
-import { notification } from 'antd';
+import { Progress, notification } from 'antd';
 
 function Navbar() {
     const [publicationSectionVisible, setPublicationSectionVisible] = useState(false);
@@ -12,8 +11,7 @@ function Navbar() {
   const [selectedBackground, setSelectedBackground] = useState('');
   const [textPreview, setTextPreview] = useState('');
   const [isPublishing, setIsPublishing] = useState(false);
-    const [publishSuccess, setPublishSuccess] = useState(false);
-    const [progressPercent, setProgressPercent] = useState(0);
+const [progressPercent, setProgressPercent] = useState(0);
 
   const handleMenuClick = () => {
     navigate('/parametre/');
@@ -29,6 +27,15 @@ function Navbar() {
     };
 const handlePublication = () => {
     setIsPublishing(true); // Commencer la publication
+    const interval = setInterval(() => {
+        setProgressPercent(prevPercent => {
+            const newPercent = prevPercent + 10; // Par exemple, augmentez de 10% à chaque itération
+            if (newPercent >= 100) {
+                clearInterval(interval); // Arrêtez l'incrémentation une fois que la progression atteint 100%
+            }
+            return newPercent;
+        });
+    }, 1000);
      const token = localStorage.getItem('token');
         fetch(`${process.env.REACT_APP_API_URL}/Utilisateur/api/creer_publication/`, {
             method: 'POST',
@@ -133,10 +140,30 @@ const handlePublication = () => {
                   <div id="preview" style={{background: selectedBackground}}>
                       <div id="textePreview">{textPreview}</div>
                   </div>
-                  <button id="publicationButton" type="button" onClick={handlePublication}>Publier</button>
+                  <button id="publicationButton" type="button" onClick={() => {
+                      handlePublication();
+                      setPublicationSectionVisible(false);
+                  }}>Publier
+                  </button>
+
               </form>
           </div>
-          {isPublishing && <Progress percent={50} status="active" />} {/* Barre de progression */}
+          {isPublishing && (
+              <Progress
+                  percent={progressPercent}
+                  style={{
+                      position: 'absolute',
+                      top: 0,
+            left: 0,
+            width: '100%',
+            zIndex: 9999,
+            fontSize: '106px',
+            strokeColor:"red"
+        }}
+        status="active"
+    />
+)}
+
           <nav className="navbar">
               <i id="publication-action-icon" className="bi bi-fonts" onClick={handlePublicationClick}></i>
               <i id="video-icon" className="bi bi-camera-video"></i>
