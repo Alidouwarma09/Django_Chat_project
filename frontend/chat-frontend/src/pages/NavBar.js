@@ -7,6 +7,7 @@ import { Progress, notification } from 'antd';
 
 function Navbar() {
     const [publicationSectionVisible, setPublicationSectionVisible] = useState(false);
+    const [VideoSectionVisible, setVideoSectionVisible] = useState(false);
   const navigate = useNavigate();
   const [selectedBackground, setSelectedBackground] = useState('');
   const [textPreview, setTextPreview] = useState('');
@@ -19,6 +20,9 @@ const [progressPercent, setProgressPercent] = useState(0);
  const handlePublicationClick = () => {
         setPublicationSectionVisible(true);
     };
+ const handleVideoClick = () => {
+        setVideoSectionVisible(true);
+    };
  const handleBackgroundClick = (background) => {
         setSelectedBackground(background);
     };
@@ -26,12 +30,12 @@ const [progressPercent, setProgressPercent] = useState(0);
         setTextPreview(event.target.value);
     };
 const handlePublication = () => {
-    setIsPublishing(true); // Commencer la publication
+    setIsPublishing(true);
     const interval = setInterval(() => {
         setProgressPercent(prevPercent => {
-            const newPercent = prevPercent + 10; // Par exemple, augmentez de 10% à chaque itération
+            const newPercent = prevPercent + 10;
             if (newPercent >= 100) {
-                clearInterval(interval); // Arrêtez l'incrémentation une fois que la progression atteint 100%
+                clearInterval(interval);
             }
             return newPercent;
         });
@@ -72,9 +76,60 @@ const handlePublication = () => {
         .catch(error => {
             console.error('Erreur:', error);
         });
+
+    };
+const handleVideo = () => {
+    setIsPublishing(true);
+    const interval = setInterval(() => {
+        setProgressPercent(prevPercent => {
+            const newPercent = prevPercent + 10;
+            if (newPercent >= 100) {
+                clearInterval(interval);
+            }
+            return newPercent;
+        });
+    }, 1000);
+     const token = localStorage.getItem('token');
+
+        fetch(`${process.env.REACT_APP_API_URL}/Utilisateur/api/creer_publication_video/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify({
+                texte: textPreview,
+                couleur_fond: selectedBackground
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                setTimeout(() => {
+            setIsPublishing(false);
+            setProgressPercent(100);
+            notification.success({ message: 'Votre contenu a été publié avec succès' });
+            setVideoSectionVisible(false);
+
+        }, 3000);
+            }
+        })
+        .then(data => {
+            console.log(data);
+            setTextPreview('');
+            setSelectedBackground('');
+            setVideoSectionVisible(false);
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+        });
+
     };
   const handlePublishSectionClose = () => {
       setPublicationSectionVisible(false)
+    };
+  const handleVidishSectionClose = () => {
+      setVideoSectionVisible(false)
     };
   return (
       <div>
@@ -148,25 +203,42 @@ const handlePublication = () => {
 
               </form>
           </div>
+          <div id="publicationSection" style={{display: VideoSectionVisible ? 'block' : 'none'}}>
+              <i onClick={handleVidishSectionClose} style={{fontSize: 30}} className="bi bi-x-circle-fill"></i>
+              <form className="publier_text_form" id="videoForm" method="post">
+                  <textarea id="texteInput" name="titre" placeholder="Écrivez votre publication ici"
+                            onChange={handleTextChange}></textarea>
+                  <input type="hidden" id="VideoFileHidden" name="video_file" value=""/>
+                  <h3>Aperçu</h3>
+                  <div id="preview" >
+                      <div id="textePreview">{textPreview}</div>
+                  </div>
+                  <button id="publicationButton" type="button" onClick={() => {
+                      handleVideo();
+                      setPublicationSectionVisible(false);
+                  }}>Publier
+                  </button>
+
+              </form>
+          </div>
           {isPublishing && (
               <Progress
                   percent={progressPercent}
                   style={{
-                      position: 'absolute',
+                      position: 'fixed',
                       top: 0,
-            left: 0,
-            width: '100%',
-            zIndex: 9999,
-            fontSize: '106px',
-            strokeColor:"red"
-        }}
-        status="active"
-    />
-)}
+                      left: 0,
+                      width: '100%',
+                      zIndex: 9999,
+                      fontSize: '40px',
+                      strokeColor: "red",
+
+                  }}
+                  status="active"/>)}
 
           <nav className="navbar">
               <i id="publication-action-icon" className="bi bi-fonts" onClick={handlePublicationClick}></i>
-              <i id="video-icon" className="bi bi-camera-video"></i>
+              <i id="video-icon" className="bi bi-camera-video" onClick={handleVideoClick}></i>
               <i id="photo-icon" className="bi bi-patch-plus"></i>
 
               <div className="profile-dropdown" style={{marginLeft: 'auto'}}>

@@ -168,10 +168,10 @@ function toggleCommentForm(index) {
   }
 const togglePlayPause = (id) => {
     if (activeVideo === id) {
-      setActiveVideo(null); // Si la vidéo en cours de lecture est cliquée, arrêtez-la
+      setActiveVideo(null);
          setPlaying(playing===true);
     } else {
-      setActiveVideo(id); // Sinon, démarrez la vidéo cliquée
+      setActiveVideo(id);
         setPlaying(playing===false);
     }
   };

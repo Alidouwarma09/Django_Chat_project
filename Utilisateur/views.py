@@ -378,6 +378,23 @@ def creer_publication(request):
             return JsonResponse({'error': 'Unauthorized'}, status=401)
 
 
+def creer_publication_video(request):
+    if request.method == 'POST':
+        auth_result = TokenAuthentication().authenticate(request)
+        if auth_result is not None:
+            user, _ = auth_result
+            utilisateur_id = user.id
+            data = json.loads(request.body)
+            titre = data.get('titre')
+            video_file = data.get('video_file')
+            publication = Publication.objects.create(utilisateur_id=utilisateur_id, titre=titre,
+                                                     video_file=video_file)
+            publication_data = serialize('json', [publication])
+            return JsonResponse({'publication': publication_data})
+        else:
+            return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+
 def parametre(request):
     return render(request, 'parametre.html')
 
