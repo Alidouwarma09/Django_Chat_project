@@ -11,40 +11,48 @@ function Acceuil() {
  const [isCommentFormOpenList, setIsCommentFormOpenList] = useState([]);
  const [commentTexts, setCommentTexts] = useState({});
 
-
-
-  useEffect(() => {
-    async function fetchPublications() {
-      try {
-          const token = localStorage.getItem('token');
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
-        setPublications(response.data);
-         setIsCommentFormOpenList(new Array(response.data.length).fill(false));
-         for (let publication of response.data) {
-        await fetchComments(publication.id);
-      }
-
-      } catch (error) {
-        console.error('Erreur lors du chargement des publications:', error);
-      }
-    }
-
-    fetchPublications();
-
-   const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/Utilisateur/api/comment_sse/`);
-eventSource.onmessage = async (event) => {
-  const data = JSON.parse(event.data);
-  if (data.comments && data.comments.length > 0) {
-    const publicationId = data.comments[0].publication_id;
-    await fetchComments(publicationId);
-  } else {
-    console.error('Aucun commentaire reçu dans les données de l\'événement');
-  }
+const getPublicationsFromLocalStorage = () => {
+  const publications = localStorage.getItem('publications');
+  return publications ? JSON.parse(publications) : [];
 };
 
-    return () => eventSource.close();
-  }, []);
+useEffect(() => {
+  async function fetchPublications() {
+    try {
+      const token = localStorage.getItem('token');
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      let cachedPublications = getPublicationsFromLocalStorage(); // Récupérer les publications du localStorage
+      if (cachedPublications.length === 0) { // Si aucun dans le cache, alors faire la requête à l'API
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
+        setPublications(response.data);
+        localStorage.setItem('publications', JSON.stringify(response.data)); // Mettre à jour le localStorage
+      } else {
+        setPublications(cachedPublications); // Utiliser les publications du localStorage
+      }
+      setIsCommentFormOpenList(new Array(cachedPublications.length).fill(false)); // Utiliser la longueur des publications dans le cache
+      for (let publication of cachedPublications) {
+        await fetchComments(publication.id);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des publications:', error);
+    }
+  }
+
+  fetchPublications();
+
+  const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/Utilisateur/api/comment_sse/`);
+  eventSource.onmessage = async (event) => {
+    const data = JSON.parse(event.data);
+    if (data.comments && data.comments.length > 0) {
+      const publicationId = data.comments[0].publication_id;
+      await fetchComments(publicationId);
+    } else {
+      console.error('Aucun commentaire reçu dans les données de l\'événement');
+    }
+  };
+
+  return () => eventSource.close();
+}, []);
 
   async function fetchComments(publicationId) {
     try {
