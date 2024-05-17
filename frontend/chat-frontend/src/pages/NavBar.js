@@ -53,7 +53,6 @@ const handlePublication = () => {
             setPublicationSectionVisible(false);
         }, 3000);
             }
-            throw new Error('Erreur lors de la création de la publication');
         })
         .then(data => {
             console.log(data);
