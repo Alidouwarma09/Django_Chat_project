@@ -4,12 +4,18 @@ import BottomTab from "./BottomTab";
 import NavBar from "./NavBar";
 import './css/acceuil.css'
 import likeSon from './son/likesSon.mp3'
+import ReactPlayer from "react-player";
+import {IoIosPlayCircle} from "react-icons/io";
+import {CiPause1} from "react-icons/ci";
 
-function Videos() {
+function Videos(id) {
  const [videos, setVideo] = useState([]);
   const [comments, setComments] = useState({});
  const [isCommentFormOpenList, setIsCommentFormOpenList] = useState([]);
  const [commentTexts, setCommentTexts] = useState({});
+const [activeVideo, setActiveVideo] = useState(null);
+  const [playing, setPlaying] = useState(false);
+
 
 const getVideoFromLocalStorage = () => {
   const videos = localStorage.getItem('videos');
@@ -160,6 +166,15 @@ function toggleCommentForm(index) {
       return newState;
     });
   }
+const togglePlayPause = (id) => {
+    if (activeVideo === id) {
+      setActiveVideo(null); // Si la vidéo en cours de lecture est cliquée, arrêtez-la
+         setPlaying(playing===true);
+    } else {
+      setActiveVideo(id); // Sinon, démarrez la vidéo cliquée
+        setPlaying(playing===false);
+    }
+  };
   return (
     <div>
          <NavBar />
@@ -184,10 +199,34 @@ function toggleCommentForm(index) {
             alignItems: "center",
             color: "white",
         }}>
-            <video  controls preload="none">
-                <source src={`${videos.videos_file}`} type="video/mp4"/>
-                Votre navigateur ne supporte pas la vidéo.
-            </video>
+            <div onClick={() => togglePlayPause(videos.id)} style={{
+                minHeight: 400,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                color: "white",
+                cursor: 'pointer'
+            }}>
+                <ReactPlayer
+                    key={videos.id}
+                    url={`${videos.videos_file}`}
+                    id={videos.id}
+                    width="100%"
+                    height="100%"
+                    playing={activeVideo === videos.id}
+                />
+                <div className="play-pause-icon" style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    fontSize: '3em',
+                    color: '#fff',
+                    zIndex: 1
+                }}>
+                    {!playing ? <IoIosPlayCircle style={{fontSize: 65}} /> : ''}
+                </div>
+            </div>
         </div>
         <div className="row publication-actions">
             <div className="col-4 likes-container" style={{fontSize: 11, paddingLeft: 20}}>
