@@ -79,6 +79,7 @@ const handlePublication = () => {
 
     };
 const handleVideo = () => {
+
     setIsPublishing(true);
     const interval = setInterval(() => {
         setProgressPercent(prevPercent => {

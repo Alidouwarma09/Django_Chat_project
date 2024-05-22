@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Application definition
 
@@ -62,7 +62,9 @@ MIDDLEWARE = [
 # settings.py
 
 # Ajoutez tous les domaines nécessaires à ALLOWED_HOSTS
-ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
+# ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app',  'literate-partially-leopard.ngrok-free.app']
+ALLOWED_HOSTS = ['*']
+
 
 # settings.py
 REST_FRAMEWORK = {
@@ -139,7 +141,7 @@ CORS_ALLOW_HEADERS = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': config('DATABASE_NAME'),
         'USER': config('DATABASE_USER'),
         'PASSWORD': config('DATABASE_PASSWORD'),
