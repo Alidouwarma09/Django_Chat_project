@@ -379,20 +379,33 @@ def creer_publication(request):
 
 
 def creer_publication_video(request):
-    if request.method == 'POST':
-        auth_result = TokenAuthentication().authenticate(request)
-        if auth_result is not None:
-            user, _ = auth_result
-            utilisateur_id = user.id
-            data = json.loads(request.body)
-            titre = data.get('titre')
-            video_file = data.get('video_file')
-            publication = Publication.objects.create(utilisateur_id=utilisateur_id, titre=titre,
-                                                     video_file=video_file)
-            publication_data = serialize('json', [publication])
-            return JsonResponse({'publication': publication_data})
-        else:
-            return JsonResponse({'error': 'Unauthorized'}, status=401)
+    try:
+        if request.method == 'POST':
+            auth_result = TokenAuthentication().authenticate(request)
+            if auth_result is not None:
+                user, _ = auth_result
+                utilisateur_id = user.id
+                print(utilisateur_id)
+
+                titre = request.POST.get('titre')
+                video_file = request.FILES.get('video_file')
+
+                if titre and video_file:
+                    publication = Publication.objects.create(utilisateur_id=utilisateur_id, titre=titre, video_file=video_file)
+                    publication_data = serialize('json', [publication])
+                    return JsonResponse({'publication': publication_data, 'publication_id': publication.id})
+                else:
+                    errors = {}
+                    if not titre:
+                        errors['titre'] = 'Le titre est manquant'
+                    if not video_file:
+                        errors['video_file'] = 'Le fichier vidéo est manquant'
+                    return JsonResponse({'error': 'Données manquantes', 'errors': errors}, status=400)
+            else:
+                return JsonResponse({'error': 'Unauthorized'}, status=401)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
 
 
 def parametre(request):

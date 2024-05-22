@@ -64,6 +64,14 @@
         margin-bottom: 12px;
         resize: none;
     }
+    #texteInput1 {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #dddfe2;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        resize: none;
+    }
 
     #preview {
         border-top: 1px solid #dddfe2;
@@ -71,6 +79,19 @@
     }
 
     #textePreview {
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        min-height: 200px;
+        max-height: 200px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-x: hidden;
+        color: white;
+    }
+        #videoPreview {
         padding: 12px;
         border-radius: 8px;
         margin-bottom: 12px;

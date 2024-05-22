@@ -11,6 +11,7 @@ function Navbar() {
   const navigate = useNavigate();
   const [selectedBackground, setSelectedBackground] = useState('');
   const [textPreview, setTextPreview] = useState('');
+  const [videoPreview, setVideoPreview] = useState('');
   const [isPublishing, setIsPublishing] = useState(false);
 const [progressPercent, setProgressPercent] = useState(0);
 
@@ -22,6 +23,7 @@ const [progressPercent, setProgressPercent] = useState(0);
     };
  const handleVideoClick = () => {
         setVideoSectionVisible(true);
+        document.getElementById('videoFileInput').click();
     };
  const handleBackgroundClick = (background) => {
         setSelectedBackground(background);
@@ -29,6 +31,15 @@ const [progressPercent, setProgressPercent] = useState(0);
  const handleTextChange = (event) => {
         setTextPreview(event.target.value);
     };
+
+ const handleVideoChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      const videoURL = URL.createObjectURL(selectedFile);
+      setVideoPreview(videoURL);
+    }
+  };
+
 const handlePublication = () => {
     setIsPublishing(true);
     const interval = setInterval(() => {
@@ -79,7 +90,6 @@ const handlePublication = () => {
 
     };
 const handleVideo = () => {
-
     setIsPublishing(true);
     const interval = setInterval(() => {
         setProgressPercent(prevPercent => {
@@ -90,42 +100,46 @@ const handleVideo = () => {
             return newPercent;
         });
     }, 1000);
-     const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    const titre = document.getElementById('texteInput1').value;
 
-        fetch(`${process.env.REACT_APP_API_URL}/Utilisateur/api/creer_publication_video/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}',
-                'Authorization': `Token ${token}`
-            },
-            body: JSON.stringify({
-                texte: textPreview,
-                couleur_fond: selectedBackground
-            })
-        })
-        .then(response => {
-            if (response.ok) {
-                setTimeout(() => {
-            setIsPublishing(false);
-            setProgressPercent(100);
-            notification.success({ message: 'Votre contenu a été publié avec succès' });
-            setVideoSectionVisible(false);
+    const formData = new FormData();
+    formData.append('titre', titre);
+    formData.append('video_file', document.getElementById('videoFileInput').files[0]);
 
-        }, 3000);
-            }
-        })
-        .then(data => {
-            console.log(data);
-            setTextPreview('');
-            setSelectedBackground('');
-            setVideoSectionVisible(false);
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-        });
+    fetch(`${process.env.REACT_APP_API_URL}/Utilisateur/api/creer_publication_video/`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Token ${token}`,
+            'X-CSRFToken': '{{ csrf_token }}',
+        },
+        body: formData, // Utilisation de FormData
+    })
+    .then(response => {
+        console.log('Response status:', response.status); // Vérifiez le statut de la réponse
+        return response.json();
+    })
+    .then(data => {
+        console.log('Data:', data); // Vérifiez les données renvoyées
+        if (data) {
+            setTimeout(() => {
+                setIsPublishing(false);
+                setProgressPercent(100);
+                notification.success({ message: 'Votre contenu a été publié avec succès' });
+                setVideoSectionVisible(false);
+            }, 3000);
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error); // Vérifiez s'il y a des erreurs
+    });
+};
 
-    };
+
+
+
+
+
   const handlePublishSectionClose = () => {
       setPublicationSectionVisible(false)
     };
@@ -207,12 +221,17 @@ const handleVideo = () => {
           <div id="publicationSection" style={{display: VideoSectionVisible ? 'block' : 'none'}}>
               <i onClick={handleVidishSectionClose} style={{fontSize: 30}} className="bi bi-x-circle-fill"></i>
               <form className="publier_text_form" id="videoForm" method="post">
-                  <textarea id="texteInput" name="titre" placeholder="Écrivez votre publication ici"
-                            onChange={handleTextChange}></textarea>
-                  <input type="hidden" id="VideoFileHidden" name="video_file" value=""/>
+                  <textarea id="texteInput1" name="titre" placeholder="Éntrer un titre"></textarea>
+                  <input id="videoFileInput" type="file" name="video_file" accept="video/*" style={{display: 'none'}}
+                         onChange={handleVideoChange}/>
                   <h3>Aperçu</h3>
-                  <div id="preview" >
-                      <div id="textePreview">{textPreview}</div>
+                  <div id="preview">
+                      {videoPreview && (
+                              <video id="videoPreview" controls>
+                                  <source src={videoPreview} type="video/mp4"/>
+                                  Votre navigateur ne supporte pas la lecture de vidéos HTML5.
+                              </video>
+                          )}
                   </div>
                   <button id="publicationButton" type="button" onClick={() => {
                       handleVideo();
