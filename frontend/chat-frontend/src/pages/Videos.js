@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import BottomTab from "./BottomTab";
-import NavBar from "./NavBar";
-import './css/acceuil.css'
+import './css/videos.css'
 import likeSon from './son/likesSon.mp3'
 import ReactPlayer from "react-player";
 import {IoIosPlayCircle} from "react-icons/io";
+import {GoArrowLeft} from "react-icons/go";
+import {IoSendOutline} from "react-icons/io5";
+import {RiShareForwardFill} from "react-icons/ri";
 function Videos(id) {
  const [videos, setVideo] = useState([]);
   const [comments, setComments] = useState({});
@@ -175,121 +176,138 @@ const togglePlayPause = (id) => {
         setPlaying(playing===false);
     }
   };
+const handleGoBack = () => {
+  window.history.back();
+};
   return (
     <div>
-         <NavBar />
+        <div>
+            <nav className="navbar" style={{backgroundColor: "black", zIndex: 100}}>
+                <GoArrowLeft onClick={handleGoBack} style={{width: 34, height: 34, color: "white"}} />
+            </nav>
+        </div>
         <div className="conversation active">
-{videos.map((videos, index) => (
-    <div key={videos.id} className="publication">
-        {videos.photo_file && <img src={videos.photo_file} alt="Publication"/>}
+            {videos.map((videos, index) => (
+                <div key={videos.id} className="publication">
+                    {videos.photo_file && <img src={videos.photo_file} alt="Publication"/>}
 
-        <div className="publication-header">
-            <img src={`${videos.utilisateur_image}`} alt="Profil de l'utilisateur"
-                 className="user-profile"/>
-            <div className="user-info">
-                <p className="user-name">{videos.utilisateur_nom} {videos.utilisateur_prenom}</p>
-                <p className="publication-time"> Il y a {videos.date_publication} <i className="bi bi-globe-americas"></i></p>
-            </div>
-        </div>
-                <p>{videos.titre}</p>
-        <div className="publication-content" style={{
-            minHeight: 400,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "white",
-        }}>
-            <div onClick={() => togglePlayPause(videos.id)} style={{
-                minHeight: 400,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                color: "white",
-                cursor: 'pointer'
-            }}>
-                <ReactPlayer
-                    key={videos.id}
-                    url={`${videos.videos_file}`}
-                    id={videos.id}
-                    width="100%"
-                    height="100%"
-                    playing={activeVideo === videos.id}
-                />
-                {/*<video width="600" controls autoPlay={true}>*/}
-                {/*    <source src={videos.videos_file} type="video/mp4"/>*/}
-                {/*    Votre navigateur ne supporte pas la balise vidéo.*/}
-                {/*</video>*/}
-                <div className="play-pause-icon" style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    fontSize: '3em',
-                    color: '#fff',
-                    zIndex: 1
-                }}>
-                    {!playing ? <IoIosPlayCircle style={{fontSize: 65}}/> : ''}
-                </div>
-            </div>
-        </div>
-        <div className="row publication-actions">
-            <div className="col-4 likes-container" style={{fontSize: 11, paddingLeft: 20}}>
-                <button className="action-button" id="like-button"
-                        onClick={() => likePublication(videos.id)}>
-                    <i className={`bi ${isPublicationLiked(videos.id) ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
-                </button>
-                <span className="likes-count">
+                    <div className="publication-header">
+                        <img src={`${videos.utilisateur_image}`} alt="Profil de l'utilisateur"
+                             className="user-profile"/>
+
+                        <div className="user-info">
+                            <p className="user-name">{videos.utilisateur_nom} {videos.utilisateur_prenom}</p>
+                            <p className="publication-time"> Il y a {videos.date_publication} <i
+                                className="bi bi-globe-americas"></i></p>
+                        </div>
+                    </div>
+                    <p>{videos.titre}</p>
+                    <div className="publication-content" style={{
+                        minHeight: 400,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        color: "white",
+                    }}>
+                        <div onClick={() => togglePlayPause(videos.id)} style={{
+                            minHeight: 400,
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            color: "white",
+                            cursor: 'pointer'
+                        }}>
+                            <ReactPlayer
+                                key={videos.id}
+                                url={`${videos.videos_file}`}
+                                id={videos.id}
+                                width="100%"
+                                height="100%"
+                                playing={activeVideo === videos.id}
+                            />
+                            <div className="play-pause-icon" style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                fontSize: '3em',
+                                color: '#fff',
+                                zIndex: 1
+                            }}>
+                                {!playing ? <IoIosPlayCircle style={{fontSize: 65}}/> : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row publication-actions">
+                        <div className="col-4 likes-container" style={{fontSize: 11, paddingLeft: 20}}>
+                            <button className="action-button" id="like-button"
+                                    onClick={() => likePublication(videos.id)}>
+                                <i className={`bi ${isPublicationLiked(videos.id) ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
+                            </button>
+                            <span className="likes-count">
                     {videos.count_likes}
                 </span> likes
-            </div>
-            <div className="col-4 comment-count-container" style={{fontSize: 11, paddinRight: 20}}>
-                <button className="action-button" id="comment-button"
-                        onClick={() => toggleCommentForm(index)}><i
-                    className="bi bi-chat"></i></button>
-                <span className="comment-count" id="comment-count- photo.id"></span> commentaires
-            </div>
-            <div className="col-4 comment-count-container"
-                 style={{fontSize: 10, paddinRight: 30, marginRight: 10}}>
-                <span className="comment-count">15,42k</span> Vues
-            </div>
-        </div>
-        <div className="comments-section" id={`comments-section-${videos.id}`} data-url="" style={{
-            overflowY: "auto",
-            overflowX: "hidden",
-            maxHeight: 300,
-            display: isCommentFormOpenList[index] ? 'block' : 'none'
-        }}>
-            <div className="comments-container" id={`comments-container-${videos.id}`}>
-                {comments[videos.id] && comments[videos.id].map((comment, commentIndex) => (
-                    <div key={commentIndex} className="comment">
-                        <p className="comment-user">{comment.utilisateur_nom} {comment.utilisateur_prenom}</p>
-                        <p className="comment-text">{comment.texte}</p>
-                        <p className="comment-time">{comment.date_comment}</p>
+                        </div>
+                        <div className="col-4 comment-count-container" style={{fontSize: 11, paddinRight: 20}}>
+                            <button className="action-button" id="comment-button"
+                                    onClick={() => toggleCommentForm(index)}><i
+                                className="bi bi-chat"></i></button>
+                            <span className="comment-count" id="comment-count- photo.id"></span> commentaires
+                        </div>
+                        <div className="col-4 comment-count-container"
+                             style={{fontSize: 10, paddinRight: 30, marginRight: 10}}>
+                            <RiShareForwardFill style={{fontSize: 25}} />
+                            <span className="comment-count">15,42k</span>
+                        </div>
                     </div>
-                ))}
-            </div>
-            <form className="commentaire-form" onSubmit={(e) => {
-                e.preventDefault();
-                submitComment(videos.id, commentTexts[videos.id]);
-            }}>
-                <input type="text" className="commentaire-input" name="texte"
-                       placeholder="Écrivez un commentaire..."
-                       value={commentTexts[videos.id] || ''}
-                       onChange={(e) => handleCommentChange(e.target.value, videos.id)}/>
+                    <div className="comments-section" id={`comments-section-${videos.id}`} data-url="" style={{
+                        overflowY: "auto",
+                        overflowX: "hidden",
+                        maxHeight: 300,
+                        display: isCommentFormOpenList[index] ? 'block' : 'none'
+                    }}>
+                        <div className="comments-container" id={`comments-container-${videos.id}`}>
+                            {comments[videos.id] && comments[videos.id].length > 0 ? (
+                                comments[videos.id].map((comment, commentIndex) => (
+                                    <div key={commentIndex} className="comment" style={{ borderBottom: "5px solid #111111" }}>
+                                        <div className="comment-user-info">
+                                            {comment.utilisateur_image_com && (
+                                                <img src={comment.utilisateur_image_com} alt="Profil de l'utilisateur"
+                                                     className="user-profile"/>
+                                            )}
+                                            <span style={{marginLeft: 10, color: "blue"}}>Suivre</span>
+                                            <p className="comment-user">{comment.utilisateur_nom} {comment.utilisateur_prenom}</p>
 
-                <button type="submit">▶️</button>
-            </form>
+                                        </div>
+                                        <p className="comment-text">{comment.texte}</p>
+                                        <p className="comment-time">{comment.date_comment}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>Soyez le premier à commenter.</p>
+                            )}
+                        </div>
+
+
+                        <form className="commentaire-form" onSubmit={(e) => {
+                            e.preventDefault();
+                            submitComment(videos.id, commentTexts[videos.id]);
+                        }}>
+                            <input type="text" className="commentaire-input" name="texte"
+                                   placeholder="Écrivez un commentaire..."
+                                   value={commentTexts[videos.id] || ''}
+                                   onChange={(e) => handleCommentChange(e.target.value, videos.id)}/>
+
+                            <button type="submit"><IoSendOutline/></button>
+                        </form>
+                    </div>
+                </div>
+            ))}
         </div>
     </div>
-))}
 
-
-            <BottomTab/>
-        </div>
-    </div>
-
-)
-    ;
+  )
+      ;
 }
 
 export default Videos;

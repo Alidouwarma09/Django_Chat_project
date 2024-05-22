@@ -114,3 +114,6 @@ class Comment(models.Model):
     publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
     texte = models.TextField()
     date_comment = models.DateTimeField(auto_now_add=True)
+
+    def date_commentaire(self):
+        return timesince(self.date_comment) if self.date_comment else ""

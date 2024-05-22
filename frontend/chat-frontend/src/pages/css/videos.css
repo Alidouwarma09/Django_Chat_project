@@ -1,7 +1,5 @@
 
 
-/*Acceuil*/
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 *, ::before, ::after {
@@ -16,79 +14,11 @@ body {
     color: var(--slate-700);
 
 }
-.content-messages-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-.content-messages-list li:hover {
-    background-color: #e9e9e9;
-}
-.content-messages-list li {
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    transition: background-color 0.3s;
-    border-radius: 10px
-}
-.content-messages-list > * > a {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: var(--slate-700);
-    padding: 6px 16px;
-
-}
-.content-messages-list > * > a:hover {
-    background-color: var(--slate-50);
-}
-.content-messages-list > .active > a {
-    background-color: var(--slate-100);
-}
-.content-message-image {
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-    width: 40px; /* Largeur de l'image de profil */
-    height: 40px; /* Hauteur de l'image de profil */
-    margin-right: 10px; /* Espace entre l'image et les détails */
-}
-.content-message-info {
-    display: grid;
-    margin-right: 12px;
-    width: 100%;
-    flex-grow: 1; /* Prend tout l'espace disponible */
-}
-.content-message-name {
-    font-size: 14px;
-    font-weight: bold; /* Texte en gras */
-    display: block; /* Rend le texte sur une ligne distincte */
-    margin-bottom: 4px; /* Espacement en dessous */
-}
-.content-message-text {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    font-size: 12px; /* Taille de la police plus petite */
-    color: #8a8787; /* Couleur de texte plus claire */
-}
-.content-message-more {
-    text-align: right;
-}
-.content-message-unread {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--white);
-    background-color: var(--emerald-500);
-    padding: 2px 4px;
-    border-radius: 4px;
-}
-
 
 .conversation {
     display: none;
     width: 100%;
-    margin-top: 60px;
+    margin-top: 90px;
     overflow: hidden;
     padding: 10px;
 
@@ -98,306 +28,6 @@ body {
     display: flex;
     flex-direction: column;
 }
-.conversation-back {
-    background-color: transparent;
-    border: none;
-    outline: none;
-    text-decoration: none;
-    width: 32px;
-    height: 32px;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
-    cursor: pointer;
-    color: var(--slate-400);
-    margin-right: 12px;
-    display: none;
-}
-.conversation-back:hover {
-    background-color: var(--slate-100);
-    border-radius: 50%;
-    color: var(--slate-600);
-}
-.conversation-back:active {
-    background-color: var(--slate-200);
-}
-.conversation-user {
-    display: flex;
-    align-items: center;
-}
-.conversation-user-name {
-    font-weight: 500;
-    font-size: 17px;
-}
-.conversation-user-status {
-    color: var(--slate-400);
-    font-size: 13px;
-}
-.conversation-user-statu-point {
-    width: 10px;
-    height: 10px;
-    background-color: #0d943c;
-    vertical-align: middle;
-    display: inline-block;
-    margin-right: 4px;
-    border-radius: 50%;
-
-}
-.conversation-buttons {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-}
-.conversation-buttons > * {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    font-size: 20px;
-    background-color: transparent;
-    border: none;
-    outline: transparent;
-    cursor: pointer;
-    color: var(--slate-600);
-    margin-left: 4px;
-}
-.conversation-buttons > :hover {
-    background-color: #887d7d;
-    color: var(--slate-700);
-}
-.conversation-buttons > :active {
-    background-color: var(--slate-200);
-}
-.conversation-wrapper {
-    list-style-type: none;
-    margin-bottom: 200px;
-    margin-top: 100px;
-}
-.conversation-item {
-    display: flex;
-    align-items: flex-end;
-    flex-direction: row-reverse;
-    margin-bottom: 16px;
-}
-.conversation-item.recoi {
-    flex-direction: row;
-}
-.conversation-item-side {
-    margin-right: 8px;
-}
-.conversation-item.recoi .conversation-item-side {
-    margin-left: 8px;
-}
-.conversation-item-content {
-    width: 100%;
-}
-.conversation-item-wrapper:not(:last-child) {
-    margin-bottom: 8px;
-}
-.conversation-item-box {
-    max-width: 720px;
-    position: relative;
-    margin-left: auto;
-}
-.conversation-item.recoi .conversation-item-box {
-    margin-left: unset;
-}
-.conversation-item-text {
-    padding: 12px 16px 8px;
-    background-color: #012e3d;
-    box-shadow: 0 2px 12px -2px rgba(0, 0, 0, .1);
-    font-size: 14px;
-    border-radius: 6px;
-    line-height: 1.5;
-    margin-left: 32px;
-    color: white;
-}
-.conversation-item.recoi .conversation-item-text {
-    margin-left: unset;
-    margin-right: 32px;
-}
-.conversation-item.recoi .conversation-item-text {
-    background-color: #fff;
-    box-shadow: 0 2px 12px -2px var(--emerald-500);
-    color: gray;
-}
-.conversation-item-time {
-    font-size: 10px;
-    color: white;
-    display: block;
-    text-align: right;
-    margin-top: 4px;
-    line-height: 1;
-}
-.conversation-item.recoi .conversation-item-time {
-    color: white;
-}
-.conversation-item-dropdown {
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    visibility: hidden;
-    transition: all .15s ease-in-out;
-}
-.conversation-item.recoi .conversation-item-dropdown {
-    left: unset;
-    right: 0;
-}
-.conversation-item-wrapper:hover .conversation-item-dropdown {
-    opacity: 1;
-    visibility: visible;
-}
-.conversation-item-dropdown-toggle {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    background-color: var(--white);
-    outline: transparent;
-    border: 1px solid var(--slate-200);
-    cursor: pointer;
-    transition: all .15s ease-in-out;
-}
-.conversation-item-dropdown-toggle:hover {
-    background-color: var(--emerald-500);
-    color: var(--white);
-    box-shadow: 0 2px 12px -2px var(--emerald-500);
-}
-.conversation-item-dropdown-toggle:active {
-    background-color: var(--emerald-600);
-}
-.conversation-item.recoi .conversation-item-dropdown-list {
-    left: unset;
-    right: 0;
-}
-.conversation-item-dropdown.active .conversation-item-dropdown-list {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1);
-}
-
-.conversation-form {
-    padding: 8px 16px;
-    background-color: var(--white);
-    display: flex;
-    align-items: flex-end;
-    position: fixed;
-    bottom: 0;
-    width: 100%; /* Assure que le formulaire s'étend sur toute la largeur de la fenêtre */
-    z-index: 1000;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Ajoute une ombre au formulaire pour le démarquer */
-}
-.conversation-form-group {
-    width: 100%;
-    position: relative;
-    margin-left: 16px;
-    margin-right: 16px;
-}
-.conversation-form-input {
-    background-color: var(--slate-100);
-    border: 1px solid var(--slate-300);
-    border-radius: 50px;
-    outline: transparent;
-    padding: 10px 32px 10px 16px;
-    font: inherit;
-    font-size: 14px;
-    resize: none;
-    width: 100%;
-    display: block;
-    line-height: 1.5;
-    max-height: calc(20px + ((14px * 2) * 6));
-
-}
-.conversation-form-input:focus {
-    border-color: var(--slate-400);
-}
-.conversation-form-record {
-    position: absolute;
-    bottom: 0;
-    right: 5px;
-    display: flex; /* Utilisez flexbox pour centrer le contenu */
-    justify-content: center; /* Centre horizontalement */
-    align-items: center; /* Centre verticalement */
-    font-size: 25px;
-    color: var(--slate-400);
-    background-color: transparent;
-    border: none;
-    outline: transparent;
-    cursor: pointer;
-    height: 40px;
-}
-.image_input{
-    bottom: 0;
-    right: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 25px;
-    background-color: transparent;
-    border: none;
-    outline: transparent;
-    cursor: pointer;
-    height: 40px;
-    width:30px;
-    position: absolute;
-    opacity: 0;
-    z-index: 2;
-}
-.conversation-form-button {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    border: none;
-    background-color: transparent;
-    outline: transparent;
-    font-size: 20px;
-    color: var(--slate-400);
-    cursor: pointer;
-    flex-shrink: 0;
-}
-.conversation-form-button:hover {
-    background-color: var(--slate-100);
-    color: var(--slate-600);
-}
-.conversation-form-button:active {
-    background-color: var(--slate-200);
-    color: var(--slate-600);
-}
-.conversation-form-submit {
-    background-color: #141c1b;
-    box-shadow: 0 2px 8px -2px var(--emerald-500);
-    color: var(--white);
-}
-.conversation-form-submit:hover {
-    background-color: var(--emerald-600);
-    color: var(--white);
-}
-.conversation-form-submit:active {
-    background-color: var(--emerald-700);
-    color: var(--white);
-}
-.conversation-default {
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    padding-left: calc(256px + 16px);
-    color: var(--slate-400);
-}
-.conversation-default i {
-    font-size: 32px;
-}
-.conversation-default p {
-    margin-top: 16px;
-}
-
 
 .video-container {
     width: 100%;
@@ -416,7 +46,7 @@ body {
 
 .full-screen-video {
     width: 100%;
-    height: 100vh; /* La vidéo occupe toute la hauteur de la fenêtre */
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -426,253 +56,6 @@ body {
 .full-screen-video video {
     max-width: 100%;
     max-height: 100%;
-}
-.preview-container {
-    margin-top: auto;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    min-height: 200px;
-    max-height: 500px;
-    overflow-y: auto;
-}
-.preview-container .preview-item {
-    position: relative;
-}
-.preview-container img.preview-image {
-    min-width: 550px;
-    max-width: 550px;
-    height: auto;
-    object-fit: cover;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-.preview-container .remove-btn {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    background: red;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 12px;
-}
-#audioPreviewContainer {
-    display: flex;
-    align-items: center;
-    padding: 8px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background-color: #f0f0f0;
-}
-#audioControls {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-left: 10px;
-}
-
-button {
-    background-color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    color: #007bff;
-}
-#removeAudioButton {
-    background-color: transparent;
-    border: none;
-    color: #ff5c5c;
-    cursor: pointer;
-    margin-left: auto;
-}
-
-/* Barre de progression */
-#progressBar {
-    width: 150px;
-    height: 4px;
-    background-color: #e0e0e0;
-    border-radius: 2px;
-    appearance: none;
-}
-
-#progressBar::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 8px;
-    height: 8px;
-    background-color: #007bff;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.message-image_afficher{
-    max-width: 400px;
-    min-width: 300px;
-    height: auto;
-}
-#recordingDuration {
-    font-size: 16px; /* Taille de police */
-    color: #653737; /* Couleur du texte */
-    text-align: center; /* Centrage du texte */
-    margin-bottom: 10px; /* Marge inférieure */
-}
-/* Styles pour la section de publication de vidéos */
-#video-upload-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    width: 100%; /* Utilise 100% de la largeur disponible */
-}
-
-/* Styles pour le bouton de téléchargement */
-#upload-button {
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 1.5rem;
-    cursor: pointer;
-    margin-bottom: 10px;
-    transition: background-color 0.3s;
-}
-
-#upload-button:hover {
-    background-color: #0056b3;
-}
-
-/* Styles pour les boutons d'envoi et d'annulation */
-#form-controls {
-    display: flex;
-    justify-content: space-between;
-    width: 100%; /* Prend toute la largeur disponible */
-    margin-bottom: 10px; /* Ajoute de l'espace en bas */
-}
-
-#cancel-button, #send-button {
-    background-color: #f44336; /* Rouge pour le bouton annuler */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#send-button {
-    width: 100px;
-    background-color: #28a745; /* Vert pour le bouton envoyer */
-}
-
-#cancel-button:hover {
-    background-color: #d32f2f;
-    width: 100px;
-}
-
-#send-button:hover {
-    background-color: #218838;
-}
-
-/* Styles pour la prévisualisation de la vidéo */
-#video-preview {
-    width: 100%; /* Utilise 100% de la largeur disponible */
-    height: auto; /* Maintient l'aspect ratio de la vidéo */
-    max-height: 600px; /* Limite la hauteur à 600px (ajustez selon vos besoins) */
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
-    display: none;
-}
-
-
-#photo-icon:hover {
-    opacity: 0.7;
-}
-
-/* Formulaire de publication */
-#publish-form {
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 450px;
-    margin: 20px auto;
-    height: 100vh;
-    position: absolute;
-}
-
-#publish-form label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-}
-
-#publish-form input[type="text"],
-#publish-form input[type="file"] {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-#publish-form button {
-    width: 100%;
-    padding: 10px;
-    background-color: #28a745;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#publish-form button:hover {
-    background-color: #218838;
-}
-#image-editor {
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    overflow: hidden;
-    width: 100%;
-    height: 300px;
-}
-
-#image-editor img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.content-messages {
-    margin: 20px auto;
-    width: 100%;
-    overflow-y: auto;
-    height: 100%;
-    margin-top: 16px;
-}
-.publication-container {
-    margin: auto;
 }
 .publication-header {
     display: flex;
@@ -730,7 +113,6 @@ button {
     background-color: #e9ebee;
 }
 
-/* Section des commentaires */
 .comments-section {
     align-items: center;
     border-top: 1px solid #ccc;
@@ -744,8 +126,8 @@ button {
     display: flex;
     justify-content: space-between;
     position: sticky;
-    bottom: 0; /* Positionne le formulaire au bsdsdsdas */
-    padding: 10px; /* Espacement interne */
+    bottom: 0;
+    padding: 10px;
     background-color: #f9f9f9; /* Fond clair */
     border-top: 1px solid #cccccc;
     z-index: 1;
@@ -918,4 +300,39 @@ color: #999999;
 
 .controlButton:hover {
   cursor: pointer;
+}
+.comment {
+  margin-bottom: 20px;
+    border-bottom: 5px solid #111111;
+  padding-bottom: 15px; /* Espace entre les commentaires */
+}
+.comment:last-child {
+  border-bottom: none; /* Supprime la ligne de séparation pour le dernier commentaire */
+}
+
+.comment-user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.comment-user-info img {
+  width: 40px; /* Ajustez la taille de l'image selon vos préférences */
+  height: 40px; /* Ajustez la taille de l'image selon vos préférences */
+  border-radius: 50%; /* Pour créer une forme circulaire */
+  margin-right: 10px; /* Espacement entre l'image et le nom de l'utilisateur */
+}
+
+.comment-user {
+  font-weight: bold;
+  margin: 0;
+}
+
+.comment-text {
+  margin-bottom: 5px;
+}
+
+.comment-time {
+  font-size: 12px;
+  color: #888;
 }

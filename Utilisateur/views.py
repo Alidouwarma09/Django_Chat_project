@@ -352,7 +352,9 @@ def get_comments(request, publication_id):
         'texte': comment.texte,
         'utilisateur_nom': comment.utilisateur.nom,
         'utilisateur_prenom': comment.utilisateur.prenom,
-        'date_comment': comment.date_comment.strftime('%Y-%m-%d %H:%M:%S'),
+        'date_comment': comment.date_commentaire(),
+        'utilisateur_image_com': request.build_absolute_uri(
+            comment.utilisateur.image.url) if comment.utilisateur.image else None,
     } for comment in comments]
     return JsonResponse(comments_data, safe=False)
 
