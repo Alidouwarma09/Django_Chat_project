@@ -40,10 +40,12 @@ function Navbar() {
 
     const handlePublicationClick = () => {
         setPublicationSectionVisible(true);
+        setNavbarBublicationVisible(false);
     };
 
     const handleVideoClick = () => {
         setVideoSectionVisible(true);
+        setNavbarBublicationVisible(false);
         document.getElementById('videoFileInput').click();
     };
 
@@ -65,6 +67,7 @@ function Navbar() {
 
     const handlePublication = () => {
         setIsPublishing(true);
+        setNavbarBublicationVisible(false);
         const interval = setInterval(() => {
             setProgressPercent(prevPercent => {
                 const newPercent = prevPercent + 10;
@@ -111,6 +114,7 @@ function Navbar() {
     };
 
     const handleVideo = () => {
+        setNavbarBublicationVisible(false);
         setIsPublishing(true);
         const interval = setInterval(() => {
             setProgressPercent(prevPercent => {
@@ -170,6 +174,7 @@ function Navbar() {
 
     return (
         <div>
+            {navbarBublicationVisible && <div className="dark-overlay"></div>}
             <div id="publicationSection" style={{ display: publicationSectionVisible ? 'block' : 'none' }}>
                 <i onClick={handlePublishSectionClose} style={{ fontSize: 30 }} className="bi bi-x-circle-fill"></i>
                 <form className="publier_text_form" id="publicationForm" method="post">
@@ -287,7 +292,7 @@ function Navbar() {
             {navbarBublicationVisible && (
                 <nav className="navbarBublication" ref={navbarBublicationRef}>
                     <p onClick={handlePublicationClick}><i id="publication-action-icon" className="bi bi-fonts"></i> Publication</p>
-                    <p onClick={handleVideoClick}><i id="video-icon" className="bi bi-camera-video"></i>Mettre en ligne une video </p>
+                    <p onClick={handleVideoClick}><i id="video-icon" className="bi bi-camera-video"></i> Mettre en ligne une video </p>
                     <p><i id="photo-icon" className="bi bi-patch-plus"></i> Partager une image</p>
                 </nav>
             )}
