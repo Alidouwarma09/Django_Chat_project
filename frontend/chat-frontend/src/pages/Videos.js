@@ -215,6 +215,10 @@ const togglePlayPause = (id) => {
                     height="100%"
                     playing={activeVideo === videos.id}
                 />
+                {/*<video width="600" controls autoPlay={true}>*/}
+                {/*    <source src={videos.videos_file} type="video/mp4"/>*/}
+                {/*    Votre navigateur ne supporte pas la balise vidéo.*/}
+                {/*</video>*/}
                 <div className="play-pause-icon" style={{
                     position: 'absolute',
                     top: '50%',
@@ -224,7 +228,7 @@ const togglePlayPause = (id) => {
                     color: '#fff',
                     zIndex: 1
                 }}>
-                    {!playing ? <IoIosPlayCircle style={{fontSize: 65}} /> : ''}
+                    {!playing ? <IoIosPlayCircle style={{fontSize: 65}}/> : ''}
                 </div>
             </div>
         </div>
