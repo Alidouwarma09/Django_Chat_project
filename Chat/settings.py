@@ -99,12 +99,12 @@ TEMPLATES = [
     },
 ]
 
-# CLOUDINARY_STORAGE = {
-#     'CLOUD_NAME': 'dp7nell7v',
-#     'API_KEY': '848777645924315',
-#     'API_SECRET': '5GiGXjplGFtQu5xIbaLwytbTyV0'
-# }
-# DEFAULT_FILE_STORAGE = 'Chat.custom_storage.CustomCloudinaryStorage'
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dp7nell7v',
+    'API_KEY': '848777645924315',
+    'API_SECRET': '5GiGXjplGFtQu5xIbaLwytbTyV0'
+}
+DEFAULT_FILE_STORAGE = 'Chat.custom_storage.CustomCloudinaryStorage'
 
 WSGI_APPLICATION = 'Chat.wsgi.application'
 
