@@ -107,7 +107,7 @@ def get_publications(request):
 
 def get_publications_video(request):
     try:
-        publications = Publication.objects.filter(video_file__isnull=False).order_by('-date_publication')
+        publications = Publication.objects.exclude(video_file='').order_by('-date_publication')
 
         data = [{'id': pub.id,
                  'titre': pub.titre,
@@ -118,7 +118,9 @@ def get_publications_video(request):
                  'videos_file': request.build_absolute_uri(pub.video_file.url) if pub.video_file else None,
                  'utilisateur_image': request.build_absolute_uri(
                      pub.utilisateur.image.url) if pub.utilisateur.image else None}
-                for pub in publications]
+                for pub in publications
+                ]
+
         return JsonResponse(data, safe=False)
     except ObjectDoesNotExist:
         return JsonResponse({'error': 'Aucune publication trouvée'}, status=404)
@@ -385,13 +387,13 @@ def creer_publication_video(request):
             if auth_result is not None:
                 user, _ = auth_result
                 utilisateur_id = user.id
-                print(utilisateur_id)
 
                 titre = request.POST.get('titre')
                 video_file = request.FILES.get('video_file')
 
                 if titre and video_file:
-                    publication = Publication.objects.create(utilisateur_id=utilisateur_id, titre=titre, video_file=video_file)
+                    publication = Publication.objects.create(utilisateur_id=utilisateur_id, titre=titre,
+                                                             video_file=video_file)
                     publication_data = serialize('json', [publication])
                     return JsonResponse({'publication': publication_data, 'publication_id': publication.id})
                 else:
@@ -405,7 +407,6 @@ def creer_publication_video(request):
                 return JsonResponse({'error': 'Unauthorized'}, status=401)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-
 
 
 def parametre(request):

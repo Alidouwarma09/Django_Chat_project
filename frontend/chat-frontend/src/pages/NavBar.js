@@ -20,6 +20,7 @@ const [progressPercent, setProgressPercent] = useState(0);
   };
  const handlePublicationClick = () => {
         setPublicationSectionVisible(true);
+
     };
  const handleVideoClick = () => {
         setVideoSectionVisible(true);

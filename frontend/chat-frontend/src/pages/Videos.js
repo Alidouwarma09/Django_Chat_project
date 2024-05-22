@@ -6,8 +6,6 @@ import './css/acceuil.css'
 import likeSon from './son/likesSon.mp3'
 import ReactPlayer from "react-player";
 import {IoIosPlayCircle} from "react-icons/io";
-import {CiPause1} from "react-icons/ci";
-
 function Videos(id) {
  const [videos, setVideo] = useState([]);
   const [comments, setComments] = useState({});
@@ -42,14 +40,16 @@ useEffect(() => {
       let cachedVideo = getVideoFromLocalStorage();
       if (cachedVideo.length !== 0) {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications_video/`);
+        localStorage.removeItem('videos');
+
         setVideo(response.data);
         localStorage.setItem('videos', JSON.stringify(response.data));
       } else {
         setVideo(cachedVideo);
       }
       setIsCommentFormOpenList(new Array(cachedVideo.length).fill(false));
-      for (let video of cachedVideo) {
-        await fetchCommentsVideo(video.id);
+      for (let videos of cachedVideo) {
+        await fetchCommentsVideo(videos.id);
       }
       await fetchNewVideo();
     } catch (error) {
