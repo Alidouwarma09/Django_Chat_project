@@ -232,8 +232,8 @@ function toggleCommentForm(index) {
                             <button className="action-button" id="comment-button"
                                     onClick={() => likePublication(publication.id)}>
                                 <i className={`bi ${isPublicationLiked(publication.id) ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
-                                <span className="likes-count">
-                                    {publication.count_likes}
+                                 <span className="likes-count" style={{fontSize:15}}>
+                                     {publication.count_likes}
                                 </span>
                             </button>
 
@@ -242,7 +242,7 @@ function toggleCommentForm(index) {
                             <button className="action-button" id="comment-button"
                                     onClick={() => toggleCommentForm(index)}><i
                                 className="bi bi-chat"></i>
-                                <span className="comment-count" id="comment-count- photo.id"></span>1
+                                <span className="comment-count" id="comment-count- photo.id" style={{fontSize:15}} >1</span>
                             </button>
 
                         </div>

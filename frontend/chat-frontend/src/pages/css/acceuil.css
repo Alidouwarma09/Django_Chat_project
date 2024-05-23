@@ -490,6 +490,9 @@ body {
     background-color: #6b6666;
     color: #521919;
 }
+.action-button i {
+    font-size: 20px;
+}
 #removeAudioButton {
     background-color: transparent;
     border: none;
