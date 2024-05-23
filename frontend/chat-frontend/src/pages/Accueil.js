@@ -187,11 +187,12 @@ function toggleCommentForm(index) {
          <NavBar />
         <div className="conversation active" onContextMenu={handleClick} onLongPress={handleLongPress}>
             <div className="stories-container" style={{ borderTop: '4px solid gray', width: '100%' }}>
-                <div className="story" style={{objectFit: "cover"}}>
-                    <MdLibraryAdd style={{objectFit: "cover", width:"100%", height:"100%"}} />
+                <div className="story" style={{objectFit: "cover", backgroundColor: "gray", height: 150 }}>
+                    <MdLibraryAdd style={{objectFit: "cover", width: "60%", height: "100%"}}/>
+                    <div className="author" style={{fontSize: 10}}>Ajouter une story</div>
                 </div>
                 <div className="story">
-                    <img src="" alt="Willow Grace"/>
+                <img src="" alt="Willow Grace"/>
                     <div className="author">Willow Grace</div>
                 </div>
             </div>

@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import './css/BottomTab.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MdOutlineSlowMotionVideo } from "react-icons/md";
 import { GoHomeFill } from "react-icons/go";
@@ -9,17 +8,14 @@ function BottomTab() {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('acceuil');
-
   useEffect(() => {
     const currentPath = location.pathname.substring(1);
     setActiveTab(currentPath || 'acceuil');
   }, [location]);
-
   const handlePageChange = (tab) => {
     setActiveTab(tab);
     navigate(`/${tab}`);
   };
-
   return (
     <div className="bottom-tab">
       <button

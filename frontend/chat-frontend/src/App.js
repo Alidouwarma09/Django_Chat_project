@@ -5,6 +5,7 @@ import Parametre from "./pages/Parametre";
 import Inscription from "./pages/Inscription";
 import './App.css'
 import Videos from "./pages/Videos";
+import Messages from "./pages/Message"
 
 const isAuthenticated = () => {
     return localStorage.getItem('token') !== null;
@@ -18,6 +19,7 @@ function App() {
                 <Route path="/inscription" element={<Inscription />} />
                 <Route path="/parametre" element={<Parametre />} />
                 <Route path="/videos" element={<Videos />} />
+                <Route path="/messages" element={<Messages />} />
                 <Route
                     path="/acceuil"
                     element={isAuthenticated() ? <Acceuil /> : <Navigate to="/connexion" />}
