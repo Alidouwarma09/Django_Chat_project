@@ -91,7 +91,7 @@ def get_publications(request):
                  'couleur_fond': pub.couleur_fond,
                  'contenu': pub.contenu,
                  'count_likes': pub.count_likes(),
-                 'date_publication': pub.date_pub(),
+                 'date_publication': pub.date_publication,
                  'videos': request.build_absolute_uri(
                      pub.utilisateur.image.url) if pub.utilisateur.image else None,
                  'utilisateur_image': request.build_absolute_uri(

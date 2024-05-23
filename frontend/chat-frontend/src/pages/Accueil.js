@@ -5,6 +5,9 @@ import NavBar from "./NavBar";
 import './css/acceuil.css'
 import likeSon from './son/likesSon.mp3'
 import {MdLibraryAdd} from "react-icons/md";
+import moment from "moment";
+import "moment/locale/fr";
+
 
 function Acceuil() {
  const [publications, setPublications] = useState([]);
@@ -31,6 +34,7 @@ useEffect(() => {
 
 useEffect(() => {
   async function fetchPublications() {
+       moment.locale('fr');
     try {
       const token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -184,8 +188,14 @@ function toggleCommentForm(index) {
                              className="user-profile"/>
                         <div className="user-info">
                             <p className="user-name">{publication.utilisateur_nom} {publication.utilisateur_prenom}</p>
-                            <p className="publication-time"> Il y a {publication.date_publication} <i
-                                className="bi bi-globe-americas"></i></p>
+                            <p className="publication-time">
+                                {moment(publication.date_publication).diff(moment(), 'days') < -7
+                                    ? moment(publication.date_publication).format('DD/MM/YYYY')
+                                    : moment(publication.date_publication).fromNow(true)
+                                        .replace('minutes', 'min')
+                                        .replace('heures', 'h')}{" "}
+                                <i className="bi bi-globe-americas"></i>
+                            </p>
                         </div>
                     </div>
                     {!publication.contenu && (
