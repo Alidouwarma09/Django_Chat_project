@@ -9,7 +9,13 @@ import moment from "moment";
 import "moment/locale/fr";
 import {IoEyeSharp} from "react-icons/io5";
 
+function handleClick(event) {
+  event.preventDefault();
+}
 
+function handleLongPress(event) {
+  event.preventDefault();
+}
 function Acceuil() {
  const [publications, setPublications] = useState([]);
   const [comments, setComments] = useState({});
@@ -134,6 +140,11 @@ const isPublicationLiked = (publicationId) => {
 const audio = new Audio(likeSon);
 const likePublication = async (publicationId) => {
     audio.play();
+    setPublications(prevPublications =>
+    prevPublications.map(publication =>
+      publication.id === publicationId ? { ...publication, count_likes: publication.count_likes + 1, liked: true } : publication
+    )
+  );
     try {
         const token = localStorage.getItem('token');
         const response = await axios.post(
@@ -154,6 +165,11 @@ const likePublication = async (publicationId) => {
         );
     } catch (error) {
         console.error('Erreur lors du like de la publication:', error);
+        setPublications(prevPublications =>
+      prevPublications.map(publication =>
+        publication.id === publicationId ? { ...publication, count_likes: publication.count_likes - 1, liked: false } : publication
+      )
+    );
     }
 };
 function handleCommentChange(text, publicationId) {
@@ -169,8 +185,8 @@ function toggleCommentForm(index) {
   return (
     <div>
          <NavBar />
-        <div className="conversation active">
-            <div className="stories-container">
+        <div className="conversation active" onContextMenu={handleClick} onLongPress={handleLongPress}>
+            <div className="stories-container" style={{ borderTop: '4px solid gray', width: '100%' }}>
                 <div className="story" style={{objectFit: "cover"}}>
                     <MdLibraryAdd style={{objectFit: "cover", width:"100%", height:"100%"}} />
                 </div>
@@ -179,11 +195,9 @@ function toggleCommentForm(index) {
                     <div className="author">Willow Grace</div>
                 </div>
             </div>
-
             {publications.map((publication, index) => (
-                <div key={publication.id} className="publication">
+                <div key={publication.id} className="publication" style={{ borderTop: '2px solid gray' }}>
                     {publication.photo_file && <img src={publication.photo_file} alt="Publication"/>}
-
                     <div className="publication-header">
                         <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur"
                              className="user-profile"/>
@@ -198,7 +212,6 @@ function toggleCommentForm(index) {
                                             .replace('heures', 'h')}{" "}
                                    <i className="bi bi-globe-americas"></i>
                                </span>
-
                             </p>
                         </div>
                     </div>
