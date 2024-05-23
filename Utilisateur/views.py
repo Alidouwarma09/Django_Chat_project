@@ -10,6 +10,8 @@ from asgiref.sync import sync_to_async
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
@@ -24,7 +26,7 @@ from rest_framework.authentication import TokenAuthentication
 from twilio.rest import Client
 from django.utils import timezone
 from Chat import settings
-from Model.models import Utilisateur, Message, Like, Comment, Publication
+from Model.models import Utilisateur, Message, Like, Comment, Publication, Story
 from Utilisateur.forms import InscriptionForm, MessageForm, MessageimagesForm, \
     MessageAudioForm, PhotoForm
 from django.shortcuts import render
@@ -564,3 +566,41 @@ def toute_les_videos(request):
         'publication_likes': publication_likes,
     }
     return render(request, 'toute_les_videos.html', context=context)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class StoryView(View):
+    def get(self, request):
+        now = timezone.now()
+        stories = Story.objects.filter(expires_at__gt=now).order_by('-created_at')
+        data = [
+            {
+                "id": story.id,
+                "user": story.utilisateur.username,
+                "media": story.media.url,
+                "created_at": story.created_at,
+            }
+            for story in stories
+        ]
+        return JsonResponse(data, safe=False)
+
+    def post(self, request):
+        auth_result = TokenAuthentication().authenticate(request)
+        if auth_result is None:
+            return JsonResponse({"error": "Authentication failed"}, status=403)
+
+        user, _ = auth_result
+
+        if 'file' in request.FILES:
+            file = request.FILES['file']
+            media = default_storage.save(f'stories/{file.name}', ContentFile(file.read()))
+
+            story = Story.objects.create(utilisateur=user, media=media)
+            return JsonResponse({
+                "id": story.id,
+                "utilisateur_nom": story.utilisateur.username,
+                "media": story.media.url,
+                "created_at": story.created_at,
+            })
+        else:
+            return JsonResponse({"error": "No file uploaded"}, status=400)

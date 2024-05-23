@@ -1,7 +1,8 @@
 import uuid
-from datetime import timezone
+from datetime import timezone, timedelta
 
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.timesince import timesince
@@ -117,3 +118,18 @@ class Comment(models.Model):
 
     def date_commentaire(self):
         return timesince(self.date_comment) if self.date_comment else ""
+
+
+class Story(models.Model):
+    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
+    media = models.FileField(upload_to='stories/')
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        if not self.expires_at:
+            self.expires_at = self.created_at + timedelta(hours=24)  # Stories expire after 24 hours
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.created_at}"

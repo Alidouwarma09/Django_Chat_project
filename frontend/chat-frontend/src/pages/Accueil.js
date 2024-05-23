@@ -8,6 +8,7 @@ import {MdLibraryAdd} from "react-icons/md";
 import moment from "moment";
 import "moment/locale/fr";
 import {IoEyeSharp} from "react-icons/io5";
+import Stories from "../compoment/Stories";
 
 function handleClick(event) {
   event.preventDefault();
@@ -186,16 +187,7 @@ function toggleCommentForm(index) {
     <div>
          <NavBar />
         <div className="conversation active" onContextMenu={handleClick} onLongPress={handleLongPress}>
-            <div className="stories-container" style={{ borderTop: '4px solid gray', width: '100%' }}>
-                <div className="story" style={{objectFit: "cover", backgroundColor: "gray", height: 150 }}>
-                    <MdLibraryAdd style={{objectFit: "cover", width: "60%", height: "100%"}}/>
-                    <div className="author" style={{fontSize: 10}}>Ajouter une story</div>
-                </div>
-                <div className="story">
-                <img src="" alt="Willow Grace"/>
-                    <div className="author">Willow Grace</div>
-                </div>
-            </div>
+            <Stories />
             {publications.map((publication, index) => (
                 <div key={publication.id} className="publication" style={{ borderTop: '2px solid gray' }}>
                     {publication.photo_file && <img src={publication.photo_file} alt="Publication"/>}
@@ -250,7 +242,6 @@ function toggleCommentForm(index) {
                                      {publication.count_likes}
                                 </span>
                             </button>
-
                         </div>
                         <div className="col-4 comment-count-container" style={{fontSize: 11}}>
                             <button className="action-button" id="comment-button"
