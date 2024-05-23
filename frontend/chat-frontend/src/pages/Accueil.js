@@ -7,6 +7,7 @@ import likeSon from './son/likesSon.mp3'
 import {MdLibraryAdd} from "react-icons/md";
 import moment from "moment";
 import "moment/locale/fr";
+import {IoEyeSharp} from "react-icons/io5";
 
 
 function Acceuil() {
@@ -189,12 +190,15 @@ function toggleCommentForm(index) {
                         <div className="user-info">
                             <p className="user-name">{publication.utilisateur_nom} {publication.utilisateur_prenom}</p>
                             <p className="publication-time">
-                                {moment(publication.date_publication).diff(moment(), 'days') < -7
-                                    ? moment(publication.date_publication).format('DD/MM/YYYY')
-                                    : moment(publication.date_publication).fromNow(true)
-                                        .replace('minutes', 'min')
-                                        .replace('heures', 'h')}{" "}
-                                <i className="bi bi-globe-americas"></i>
+                               <span style={{fontSize: 10}}>
+                                    {moment(publication.date_publication).diff(moment(), 'days') < -7
+                                        ? moment(publication.date_publication).format('DD/MM/YYYY')
+                                        : moment(publication.date_publication).fromNow(true)
+                                            .replace('minutes', 'min')
+                                            .replace('heures', 'h')}{" "}
+                                   <i className="bi bi-globe-americas"></i>
+                               </span>
+
                             </p>
                         </div>
                     </div>
@@ -224,24 +228,27 @@ function toggleCommentForm(index) {
                         )}
                     </div>
                     <div className="row publication-actions">
-                        <div className="col-4 likes-container" style={{fontSize: 11, paddingLeft: 20}}>
-                            <button className="action-button" id="like-button"
+                        <div className="col-4 comment-count-container" style={{fontSize: 11}}>
+                            <button className="action-button" id="comment-button"
                                     onClick={() => likePublication(publication.id)}>
                                 <i className={`bi ${isPublicationLiked(publication.id) ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
+                                <span className="likes-count">
+                                    {publication.count_likes}
+                                </span>
                             </button>
-                            <span className="likes-count">
-                     {publication.count_likes}
-                </span> likes
+
                         </div>
-                        <div className="col-4 comment-count-container" style={{fontSize: 11, paddinRight: 20}}>
+                        <div className="col-4 comment-count-container" style={{fontSize: 11}}>
                             <button className="action-button" id="comment-button"
                                     onClick={() => toggleCommentForm(index)}><i
-                                className="bi bi-chat"></i></button>
-                            <span className="comment-count" id="comment-count- photo.id"></span> commentaires
+                                className="bi bi-chat"></i>
+                                <span className="comment-count" id="comment-count- photo.id"></span>1
+                            </button>
+
                         </div>
                         <div className="col-4 comment-count-container"
-                             style={{fontSize: 10, paddinRight: 30, marginRight: 10}}>
-                            <span className="comment-count">15,42k</span> Vues
+                             style={{fontSize: 10}}>
+                            <span className="comment-count">15,42k</span> <IoEyeSharp />
                         </div>
                     </div>
                     <div className="comments-section" id="comments-section- photo.id "
