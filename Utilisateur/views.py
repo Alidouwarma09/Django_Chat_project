@@ -301,7 +301,6 @@ def liker_publication(request):
 def post_comment(request, publication_id):
     if request.method == 'POST':
         auth_result = TokenAuthentication().authenticate(request)
-        print(auth_result)
 
         if auth_result is not None:
             user, _ = auth_result
@@ -514,9 +513,7 @@ def stream_messages(request, utilisateur_detail_id):
                 for message in new_messages:
                     # Vérifier si le message a été envoyé par vous à l'utilisateur détaillé
                     if message.envoi_id == request.user.id and message.recoi_id == utilisateur_detail_id:
-                        # Code à exécuter si vous êtes l'expéditeur
                         print("Le message a été envoyé par vous à l'utilisateur détaillé.")
-                    # Vérifier si le message a été envoyé par l'utilisateur détaillé à vous
                     elif message.envoi_id == utilisateur_detail_id and message.recoi_id == request.user.id:
                         # Code à exécuter si l'utilisateur détaillé est l'expéditeur
                         print("Le message a été envoyé par l'utilisateur détaillé à vous.")
@@ -570,19 +567,6 @@ def toute_les_videos(request):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class StoryView(View):
-    def get(self, request):
-        now = timezone.now()
-        stories = Story.objects.filter(expires_at__gt=now).order_by('-created_at')
-        data = [
-            {
-                "id": story.id,
-                "user": story.utilisateur.username,
-                "media": story.media.url,
-                "created_at": story.created_at,
-            }
-            for story in stories
-        ]
-        return JsonResponse(data, safe=False)
 
     def post(self, request):
         auth_result = TokenAuthentication().authenticate(request)
@@ -596,11 +580,22 @@ class StoryView(View):
             media = default_storage.save(f'stories/{file.name}', ContentFile(file.read()))
 
             story = Story.objects.create(utilisateur=user, media=media)
-            return JsonResponse({
-                "id": story.id,
-                "utilisateur_nom": story.utilisateur.username,
-                "media": story.media.url,
-                "created_at": story.created_at,
-            })
         else:
             return JsonResponse({"error": "No file uploaded"}, status=400)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class StoryGetView(View):
+    def get(self, request):
+        now = timezone.now()
+        stories = Story.objects.filter(expires_at__gt=now).order_by('-created_at')
+        data = [
+            {
+                "id": story.id,
+                "nom_utilisateur": story.utilisateur.nom,
+                "media": story.media.url,
+                "created_at": story.created_at,
+            }
+            for story in stories
+        ]
+        return JsonResponse(data, safe=False)

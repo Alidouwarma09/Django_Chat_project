@@ -1,13 +1,11 @@
 import uuid
-from datetime import timezone, timedelta
 
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
-from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
+from datetime import timedelta, timezone
 from django.utils.timesince import timesince
-
-from Chat import settings
+from django.utils import timezone
 
 
 # Create your models here.
@@ -128,8 +126,8 @@ class Story(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.expires_at:
-            self.expires_at = self.created_at + timedelta(hours=24)  # Stories expire after 24 hours
+            self.expires_at = timezone.now() + timedelta(hours=24)  # Stories expire after 24 hours
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.user.username} - {self.created_at}"
+        return f"{self.utilisateur.username} - {self.created_at}"

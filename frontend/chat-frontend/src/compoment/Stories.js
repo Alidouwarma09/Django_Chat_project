@@ -12,14 +12,19 @@ function Stories() {
         fetchStories();
     }, []);
 
-    const fetchStories = async () => {
-        try {
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/stories/`);
-            setStories(response.data);
-        } catch (error) {
-            console.error('Erreur lors du chargement des stories:', error);
-        }
-    };
+const fetchStories = async () => {
+    try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/getstories/`);
+        const absoluteData = response.data.map(story => ({
+            ...story,
+            media: `${process.env.REACT_APP_API_URL}${story.media}`
+        }));
+        setStories(absoluteData);
+    } catch (error) {
+        console.error('Erreur lors du chargement des stories :', error);
+    }
+};
+
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
@@ -65,13 +70,13 @@ function Stories() {
                     </label>
                 </div>
                 {stories.map(story => (
-                    <div key={story.id} className="story">
+                    <div key={story.id} className="story" style={{ backgroundColor: "gray" }}>
                         {story.media.endsWith('.mp4') ? (
                             <video src={story.media} controls />
                         ) : (
-                            <img src={story.media} alt="Story" />
+                            <img src={`${story.media}`} alt="Story" />
                         )}
-                        <div className="author">{story.user}</div>
+                        <div className="author">{story.nom_utilisateur}</div>
                     </div>
                 ))}
             </div>
