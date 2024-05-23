@@ -22,7 +22,6 @@
     height: 150px;
     object-fit: cover;
     border-radius: 10px;
-    filter: brightness(0.3);
 
 }
 
@@ -157,9 +156,9 @@
   position: fixed;
   inset: 0;
   z-index: 5;
-  background: rgba(0, 0, 0, 0.5);
   place-items: center;
       display: grid;
+        background-color: #020c08;
 }
 .stories-full-view .close-btn {
   position: absolute;

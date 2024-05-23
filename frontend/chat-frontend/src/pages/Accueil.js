@@ -4,7 +4,6 @@ import BottomTab from "./BottomTab";
 import NavBar from "./NavBar";
 import './css/acceuil.css'
 import likeSon from './son/likesSon.mp3'
-import {MdLibraryAdd} from "react-icons/md";
 import moment from "moment";
 import "moment/locale/fr";
 import {IoEyeSharp} from "react-icons/io5";
@@ -188,7 +187,7 @@ function toggleCommentForm(index) {
         setIsStorySelected(isSelected);
     };
   return (
-    <div>
+    <div  className={isStorySelected ? 'no-background' : ''}>
         {!isStorySelected && <NavBar />}
         <div className="conversation active" onContextMenu={handleClick} onLongPress={handleLongPress}>
             <Stories onStorySelect={handleStorySelect} />

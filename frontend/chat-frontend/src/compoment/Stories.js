@@ -3,7 +3,7 @@ import axios from 'axios';
 import { MdLibraryAdd } from 'react-icons/md';
 import './css/stories.css';
 
-function Stories({onStorySelect }) {
+function Stories({ onStorySelect }) {
     const [stories, setStories] = useState([]);
     const [file, setFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
@@ -63,7 +63,7 @@ function Stories({onStorySelect }) {
     const handleStoryClick = (index) => {
         setSelectedStory(stories[index]);
         setSelectedIndex(index);
-         onStorySelect(true);
+        onStorySelect(true);
     };
 
     const handlePreviousStory = () => {
@@ -71,6 +71,7 @@ function Stories({onStorySelect }) {
         if (newIndex >= 0) {
             setSelectedStory(stories[newIndex]);
             setSelectedIndex(newIndex);
+            setDisplayDuration(0)
         }
     };
 
@@ -84,7 +85,7 @@ function Stories({onStorySelect }) {
 
     const handleCloseStory = () => {
         setSelectedStory(null);
-         onStorySelect(false);
+        onStorySelect(false);
     };
 
     useEffect(() => {
@@ -97,7 +98,7 @@ function Stories({onStorySelect }) {
 
     useEffect(() => {
         let timer;
-        if (displayDuration) {
+        if (selectedStory && displayDuration) {
             timer = setTimeout(() => {
                 handleNextStory();
             }, displayDuration);
@@ -120,7 +121,7 @@ function Stories({onStorySelect }) {
     };
 
     return (
-        <div style={{zIndex:9000}}>
+        <div style={{ zIndex: 9000 }}>
             <div className="stories-container">
                 <div className="story" style={{ backgroundColor: "gray", height: 150 }}>
                     <input type="file" onChange={handleFileChange} style={{ display: 'none' }} id="upload-story" />
@@ -132,10 +133,10 @@ function Stories({onStorySelect }) {
                 {stories.map((story, index) => (
                     <div key={story.id} className="story" onClick={() => handleStoryClick(index)}>
                         {story.media && story.media.endsWith && story.media.endsWith('.mp4') ? (
-                            <video src={story.media} style={{width: '100%', height: '100%', borderRadius: '10px'}}/>
+                            <video src={story.media} style={{ width: '100%', height: '100%', borderRadius: '10px' }} />
                         ) : (
                             <img src={`${story.media}`} alt="Story"
-                                 style={{width: '100%', height: '100%', borderRadius: '10px'}}/>
+                                 style={{ width: '100%', height: '100%', borderRadius: '10px' }} />
                         )}
 
                         <div className="author">{story.nom_utilisateur}</div>
@@ -145,7 +146,7 @@ function Stories({onStorySelect }) {
             {previewUrl && (
                 <div className="preview-container">
                     <div className="preview-media">
-                    {file.type.startsWith('video/') ? (
+                        {file.type.startsWith('video/') ? (
                             <video src={previewUrl} controls style={{ width: '200px', height: '200px', borderRadius: '10px', marginBottom: '10px' }} />
                         ) : (
                             <img src={previewUrl} alt="Preview" style={{ width: '200px', height: '200px', borderRadius: '10px', marginBottom: '10px' }} />
@@ -171,16 +172,14 @@ function Stories({onStorySelect }) {
                         <div className="story">
                             {selectedStory.media && selectedStory.media.endsWith('.mp4') ? (
                                 <video src={selectedStory.media}
-                                       style={{width: '100%', height: '100%', borderRadius: '16px'}}/>
+                                       style={{ width: '100%', height: '100%', borderRadius: '16px' }} />
                             ) : (
-                                <>
-                                    <img src={selectedStory.media} alt="Story"
-                                         style={{width: '100%', height: '100%', borderRadius: '16px'}}/>
-                                </>
+                                <img src={selectedStory.media} alt="Story"
+                                     style={{ width: '100%', height: '100%', borderRadius: '16px' }} />
                             )}
                             <div className="author">{selectedStory.nom_utilisateur}</div>
                             <div className="progress-bar">
-                                <div className="progress" style={{width: `${progress}%`}}></div>
+                                <div className="progress" style={{ width: `${progress}%` }}></div>
                             </div>
                         </div>
                         <div className="previous-btn" onClick={handlePreviousStory}>

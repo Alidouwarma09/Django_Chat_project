@@ -208,3 +208,6 @@ color: #999999;
     font-family: "Poppins", sans-serif;
 }
 
+.no-background {
+  background: none;
+}
