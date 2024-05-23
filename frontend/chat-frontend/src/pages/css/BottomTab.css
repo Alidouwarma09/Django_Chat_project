@@ -8,8 +8,8 @@
   width: 100%;
   height: 60px; /* Adjust as needed */
   background-color: #fff;
-  box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
-  border-radius: 12px 12px 0 0; /* Rounded corners at the top */
+  box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+  border-top: 2px solid gray;
   z-index: 20;
 }
 
@@ -21,27 +21,8 @@
   justify-content: center;
   background: none;
   border: none;
-  color: #777; /* Default color */
-  padding: 10px;
 }
 
 .bottom-tab button.active {
-  color: #007bff; /* Active color */
-}
-
-.bottom-tab button.active .icon {
-  fill: #007bff; /* Active color for SVG icon */
-}
-
-/* Style for the SVG icons */
-.bottom-tab .icon {
-  width: 24px; /* Adjust as needed */
-  height: 24px; /* Adjust as needed */
-  fill: #777; /* Default color */
-  margin-bottom: 4px;
-}
-.bottom-tab button img {
-  width: 24px; /* Adjust as needed */
-  height: 24px; /* Adjust as needed */
-  margin-bottom: 4px;
+  color: #007bff;
 }

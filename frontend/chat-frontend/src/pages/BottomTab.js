@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import './css/BottomTab.css';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineSlowMotionVideo } from "react-icons/md";
-
-import HomeIcon from './icons/home.png';
-import MessageIcon from './icons/message.png';
-import ProfileIcon from './icons/home.png';
+import {GoHomeFill} from "react-icons/go";
+import {BiMessageRoundedDots} from "react-icons/bi";
 
 function BottomTab() {
   const [activeTab, setActiveTab] = useState('home');
@@ -22,28 +20,22 @@ function BottomTab() {
         className={activeTab === 'acceuil' ? 'active' : ''}
         onClick={() => handlePageChange('acceuil')}
       >
-        <img src={HomeIcon} alt="Acceuil"/>
+        <GoHomeFill style={{height:25, width: 25}} />
       </button>
       <button
         className={activeTab === 'connexion' ? 'active' : ''}
         onClick={() => handlePageChange('connexion')}
       >
-        <img src={MessageIcon} alt="messages"/>
+        <BiMessageRoundedDots style={{height:25, width: 25}} />
       </button>
         <button
-            className={activeTab === 'messages' ? 'active' : ''}
+            className={activeTab === 'videos' ? 'active' : ''}
             onClick={() => handlePageChange('videos')}
         >
-          <span style={{fontSize: 30}}>
+          <span style={{fontSize: 25}}>
              <MdOutlineSlowMotionVideo/>
           </span>
         </button>
-        <button
-            className={activeTab === 'profile' ? 'active' : ''}
-        onClick={() => handlePageChange('profile')}
-      >
-        <img src={ProfileIcon} alt="Profile"/>
-      </button>
     </div>
   );
 }

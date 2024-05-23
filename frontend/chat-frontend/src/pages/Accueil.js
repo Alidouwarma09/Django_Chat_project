@@ -4,6 +4,7 @@ import BottomTab from "./BottomTab";
 import NavBar from "./NavBar";
 import './css/acceuil.css'
 import likeSon from './son/likesSon.mp3'
+import {MdLibraryAdd} from "react-icons/md";
 
 function Acceuil() {
  const [publications, setPublications] = useState([]);
@@ -164,6 +165,16 @@ function toggleCommentForm(index) {
     <div>
          <NavBar />
         <div className="conversation active">
+            <div className="stories-container">
+                <div className="story" style={{objectFit: "cover"}}>
+                    <MdLibraryAdd style={{objectFit: "cover", width:"100%", height:"100%"}} />
+                </div>
+                <div className="story">
+                    <img src="" alt="Willow Grace"/>
+                    <div className="author">Willow Grace</div>
+                </div>
+            </div>
+
             {publications.map((publication, index) => (
                 <div key={publication.id} className="publication">
                     {publication.photo_file && <img src={publication.photo_file} alt="Publication"/>}
@@ -173,7 +184,8 @@ function toggleCommentForm(index) {
                              className="user-profile"/>
                         <div className="user-info">
                             <p className="user-name">{publication.utilisateur_nom} {publication.utilisateur_prenom}</p>
-                            <p className="publication-time"> Il y a {publication.date_publication} <i className="bi bi-globe-americas"></i></p>
+                            <p className="publication-time"> Il y a {publication.date_publication} <i
+                                className="bi bi-globe-americas"></i></p>
                         </div>
                     </div>
                     {!publication.contenu && (
@@ -260,8 +272,8 @@ function toggleCommentForm(index) {
         </div>
     </div>
 
-)
-    ;
+  )
+      ;
 }
 
 export default Acceuil;
