@@ -22,6 +22,7 @@ function Acceuil() {
   const [comments, setComments] = useState({});
  const [isCommentFormOpenList, setIsCommentFormOpenList] = useState([]);
  const [commentTexts, setCommentTexts] = useState({});
+  const [isStorySelected, setIsStorySelected] = useState(false);
 
 const getPublicationsFromLocalStorage = () => {
   const publications = localStorage.getItem('publications');
@@ -183,11 +184,14 @@ function toggleCommentForm(index) {
       return newState;
     });
   }
+  const handleStorySelect = (isSelected) => {
+        setIsStorySelected(isSelected);
+    };
   return (
     <div>
-         <NavBar />
+        {!isStorySelected && <NavBar />}
         <div className="conversation active" onContextMenu={handleClick} onLongPress={handleLongPress}>
-            <Stories />
+            <Stories onStorySelect={handleStorySelect} />
             {publications.map((publication, index) => (
                 <div key={publication.id} className="publication" style={{ borderTop: '2px solid gray' }}>
                     {publication.photo_file && <img src={publication.photo_file} alt="Publication"/>}
@@ -290,7 +294,7 @@ function toggleCommentForm(index) {
                 </div>
 
             ))}
-            <BottomTab/>
+            {!isStorySelected && <BottomTab />}
         </div>
     </div>
 

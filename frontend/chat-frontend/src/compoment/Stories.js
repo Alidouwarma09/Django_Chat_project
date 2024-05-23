@@ -3,11 +3,14 @@ import axios from 'axios';
 import { MdLibraryAdd } from 'react-icons/md';
 import './css/stories.css';
 
-function Stories() {
+function Stories({onStorySelect }) {
     const [stories, setStories] = useState([]);
     const [file, setFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [selectedStory, setSelectedStory] = useState(null);
+    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [displayDuration, setDisplayDuration] = useState(null);
+    const [progress, setProgress] = useState(0);
 
     useEffect(() => {
         fetchStories();
@@ -43,7 +46,7 @@ function Stories() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/Utilisateur/api/stories/`, formData, {
+            await axios.post(`${process.env.REACT_APP_API_URL}/Utilisateur/api/stories/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Token ${token}`
@@ -51,20 +54,73 @@ function Stories() {
             });
             setFile(null);
             setPreviewUrl(null);
+            fetchStories();
         } catch (error) {
+            console.error('Erreur lors de l\'upload de la story :', error);
         }
     };
 
-    const handleStoryClick = (story) => {
-        setSelectedStory(story);
+    const handleStoryClick = (index) => {
+        setSelectedStory(stories[index]);
+        setSelectedIndex(index);
+         onStorySelect(true);
+    };
+
+    const handlePreviousStory = () => {
+        const newIndex = selectedIndex - 1;
+        if (newIndex >= 0) {
+            setSelectedStory(stories[newIndex]);
+            setSelectedIndex(newIndex);
+        }
+    };
+
+    const handleNextStory = () => {
+        const newIndex = selectedIndex + 1;
+        if (newIndex < stories.length) {
+            setSelectedStory(stories[newIndex]);
+            setSelectedIndex(newIndex);
+        }
     };
 
     const handleCloseStory = () => {
         setSelectedStory(null);
+         onStorySelect(false);
+    };
+
+    useEffect(() => {
+        if (selectedStory && selectedStory.media) {
+            const duration = selectedStory.media.endsWith('.mp4') ? getVideoDuration(selectedStory.media) : 5000;
+            setDisplayDuration(duration);
+            setProgress(0);
+        }
+    }, [selectedStory]);
+
+    useEffect(() => {
+        let timer;
+        if (displayDuration) {
+            timer = setTimeout(() => {
+                handleNextStory();
+            }, displayDuration);
+
+            if (!selectedStory.media.endsWith('.mp4')) {
+                const interval = setInterval(() => {
+                    setProgress((prev) => prev + 100 / (displayDuration / 100));
+                }, 100);
+                return () => clearInterval(interval);
+            }
+        }
+
+        return () => clearTimeout(timer);
+    }, [selectedStory, displayDuration]);
+
+    const getVideoDuration = (videoUrl) => {
+        // Implémentez la logique pour obtenir la durée de la vidéo
+        // Pour cet exemple, supposons que la durée de la vidéo soit de 10 secondes
+        return 10000; // Durée en millisecondes
     };
 
     return (
-        <div>
+        <div style={{zIndex:9000}}>
             <div className="stories-container">
                 <div className="story" style={{ backgroundColor: "gray", height: 150 }}>
                     <input type="file" onChange={handleFileChange} style={{ display: 'none' }} id="upload-story" />
@@ -73,22 +129,23 @@ function Stories() {
                         <div className="author" style={{ fontSize: 10 }}>Ajouter une story</div>
                     </label>
                 </div>
-                {stories.map(story => (
-    <div key={story.id} className="story"  onClick={() => handleStoryClick(story)}>
-        {story.media && story.media.endsWith && story.media.endsWith('.mp4') ? (
-            <video src={story.media} style={{ width: '100%', height: '100%', borderRadius: '10px' }} />
-        ) : (
-            <img src={`${story.media}`} alt="Story" style={{ width: '100%', height: '100%', borderRadius: '10px' }} />
-        )}
-        <div className="author">{story.nom_utilisateur}</div>
-    </div>
-))}
+                {stories.map((story, index) => (
+                    <div key={story.id} className="story" onClick={() => handleStoryClick(index)}>
+                        {story.media && story.media.endsWith && story.media.endsWith('.mp4') ? (
+                            <video src={story.media} style={{width: '100%', height: '100%', borderRadius: '10px'}}/>
+                        ) : (
+                            <img src={`${story.media}`} alt="Story"
+                                 style={{width: '100%', height: '100%', borderRadius: '10px'}}/>
+                        )}
 
+                        <div className="author">{story.nom_utilisateur}</div>
+                    </div>
+                ))}
             </div>
             {previewUrl && (
                 <div className="preview-container">
                     <div className="preview-media">
-                        {file.type.startsWith('video/') ? (
+                    {file.type.startsWith('video/') ? (
                             <video src={previewUrl} controls style={{ width: '200px', height: '200px', borderRadius: '10px', marginBottom: '10px' }} />
                         ) : (
                             <img src={previewUrl} alt="Preview" style={{ width: '200px', height: '200px', borderRadius: '10px', marginBottom: '10px' }} />
@@ -98,15 +155,56 @@ function Stories() {
                 </div>
             )}
             {selectedStory && (
-                <div className="stories-container" onClick={handleCloseStory}>
-                    <div className="close-btn">X</div>
+                <div className="stories-full-view">
+                    <div className="close-btn" onClick={handleCloseStory}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            className="w-6 h-6"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </div>
                     <div className="content">
-                        {selectedStory.media.endsWith('.mp4') ? (
-                            <video src={selectedStory.media} controls style={{ width: '100%', height: '90vh', objectFit: 'contain', borderRadius: '16px' }} />
-                        ) : (
-                            <img src={selectedStory.media} alt="Story" style={{ height: '100%', aspectRatio: '10/16', objectFit: 'cover', borderRadius: '16px' }} />
-                        )}
-                        <div className="author">{selectedStory.nom_utilisateur}</div>
+                        <div className="story">
+                            {selectedStory.media && selectedStory.media.endsWith('.mp4') ? (
+                                <video src={selectedStory.media}
+                                       style={{width: '100%', height: '100%', borderRadius: '16px'}}/>
+                            ) : (
+                                <>
+                                    <img src={selectedStory.media} alt="Story"
+                                         style={{width: '100%', height: '100%', borderRadius: '16px'}}/>
+                                </>
+                            )}
+                            <div className="author">{selectedStory.nom_utilisateur}</div>
+                            <div className="progress-bar">
+                                <div className="progress" style={{width: `${progress}%`}}></div>
+                            </div>
+                        </div>
+                        <div className="previous-btn" onClick={handlePreviousStory}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                className="w-6 h-6"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                            </svg>
+                        </div>
+                        <div className="next-btn" onClick={handleNextStory}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                className="w-6 h-6"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
             )}
