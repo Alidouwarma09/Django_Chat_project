@@ -49,11 +49,9 @@ function Stories() {
                     'Authorization': `Token ${token}`
                 }
             });
-            setStories([response.data, ...stories]);
             setFile(null);
             setPreviewUrl(null);
         } catch (error) {
-            console.error('Erreur lors de l\'ajout de la story:', error);
         }
     };
 
@@ -76,15 +74,16 @@ function Stories() {
                     </label>
                 </div>
                 {stories.map(story => (
-                    <div key={story.id} className="story"  onClick={() => handleStoryClick(story)}>
-                        {story.media.endsWith('.mp4') ? (
-                            <video src={story.media} style={{ width: '100%', height: '100%', borderRadius: '10px' }} />
-                        ) : (
-                            <img src={`${story.media}`} alt="Story" style={{ width: '100%', height: '100%', borderRadius: '10px' }} />
-                        )}
-                        <div className="author">{story.nom_utilisateur}</div>
-                    </div>
-                ))}
+    <div key={story.id} className="story"  onClick={() => handleStoryClick(story)}>
+        {story.media && story.media.endsWith && story.media.endsWith('.mp4') ? (
+            <video src={story.media} style={{ width: '100%', height: '100%', borderRadius: '10px' }} />
+        ) : (
+            <img src={`${story.media}`} alt="Story" style={{ width: '100%', height: '100%', borderRadius: '10px' }} />
+        )}
+        <div className="author">{story.nom_utilisateur}</div>
+    </div>
+))}
+
             </div>
             {previewUrl && (
                 <div className="preview-container">

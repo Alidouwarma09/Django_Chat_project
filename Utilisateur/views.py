@@ -580,6 +580,7 @@ class StoryView(View):
             media = default_storage.save(f'stories/{file.name}', ContentFile(file.read()))
 
             story = Story.objects.create(utilisateur=user, media=media)
+            return JsonResponse({"success": "Story uploaded successfully"})
         else:
             return JsonResponse({"error": "No file uploaded"}, status=400)
 
