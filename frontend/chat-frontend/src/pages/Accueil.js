@@ -232,7 +232,7 @@ function toggleCommentForm(index) {
                             <button className="action-button" id="comment-button"
                                     onClick={() => likePublication(publication.id)}>
                                 <i className={`bi ${isPublicationLiked(publication.id) ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
-                                 <span className="likes-count" style={{fontSize:15}}>
+                                <span className="likes-count" style={{fontSize:15}}>
                                      {publication.count_likes}
                                 </span>
                             </button>

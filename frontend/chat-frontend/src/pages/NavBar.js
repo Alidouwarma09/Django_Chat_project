@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import './css/navbar.css';
 import { CiMenuBurger } from "react-icons/ci";
-import { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Progress, notification } from 'antd';
 import { BsPlusSquareDotted } from "react-icons/bs";
+import {LuRefreshCcw} from "react-icons/lu";
 
 function Navbar() {
     const [publicationSectionVisible, setPublicationSectionVisible] = useState(false);
@@ -16,6 +17,7 @@ function Navbar() {
     const [progressPercent, setProgressPercent] = useState(0);
     const [navbarBublicationVisible, setNavbarBublicationVisible] = useState(false);
     const navbarBublicationRef = useRef(null);
+    const [isReloading, setIsReloading] = useState(false);
 
     const handleMenuClick = () => {
         navigate('/parametre/');
@@ -171,7 +173,12 @@ function Navbar() {
     const handleNavbarBublicationClick = () => {
         setNavbarBublicationVisible(!navbarBublicationVisible);
     };
-
+    const handleReload = () => {
+    // Active la rotation de l'icône
+    setIsReloading(true);
+    // Recharge la page
+    window.location.reload();
+  };
     return (
         <div>
             {navbarBublicationVisible && <div className="dark-overlay"></div>}
@@ -280,11 +287,12 @@ function Navbar() {
                     }}
                     status="active" />)}
             <nav className="navbar">
-                <BsPlusSquareDotted onClick={handleNavbarBublicationClick} />
-                <div className="profile-dropdown" style={{ marginLeft: 'auto' }}>
+                     <LuRefreshCcw style={{marginRight: 10}} onClick={handleReload} className={isReloading ? "refresh-icon rotating" : "refresh-icon"}/>
+                <BsPlusSquareDotted onClick={handleNavbarBublicationClick}/>
+                <div className="profile-dropdown" style={{marginLeft: 'auto'}}>
                     <div className="profile-dropdown-btn">
                         <div className="menu" onClick={handleMenuClick}>
-                            <CiMenuBurger />
+                            <CiMenuBurger/>
                         </div>
                     </div>
                 </div>
