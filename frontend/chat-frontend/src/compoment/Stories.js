@@ -16,18 +16,25 @@ function Stories({ onStorySelect }) {
         fetchStories();
     }, []);
 
-    const fetchStories = async () => {
-        try {
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/getstories/`);
-            const absoluteData = response.data.map(story => ({
-                ...story,
-                media: `${process.env.REACT_APP_API_URL}${story.media}`
-            }));
-            setStories(absoluteData);
-        } catch (error) {
-            console.error('Erreur lors du chargement des stories :', error);
-        }
-    };
+const fetchStories = async () => {
+    try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/getstories/`);
+        const modifiedData = response.data.map(story => {
+            if (!story.media.includes("storyImage")) {
+                // Si le nom du fichier ne contient pas "storyImage", retirer l'extension .url
+                return {
+                    ...story,
+                    media: story.media.split('.url')[0]
+                };
+            } else {
+                return story;
+            }
+        });
+        setStories(modifiedData);
+    } catch (error) {
+        console.error('Erreur lors du chargement des stories :', error);
+    }
+};
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
@@ -54,7 +61,7 @@ function Stories({ onStorySelect }) {
             });
             setFile(null);
             setPreviewUrl(null);
-            fetchStories();
+            await fetchStories();
         } catch (error) {
             console.error('Erreur lors de l\'upload de la story :', error);
         }
@@ -101,7 +108,6 @@ function Stories({ onStorySelect }) {
             setProgress(0);
 
             if (selectedStory.media.endsWith('.mp4')) {
-                // Ne pas utiliser l'intervalle pour les vidéos
                 timer = setTimeout(() => {
                     handleNextStory();
                 }, duration);
@@ -143,7 +149,11 @@ function Stories({ onStorySelect }) {
                 </div>
                 {stories.map((story, index) => (
                     <div key={story.id} className="story" onClick={() => handleStoryClick(index)}>
-                        {story.media && story.media.endsWith && story.media.endsWith('.mp4') ? (
+                        {story.media && !story.media.includes('storyImage') ? (
+                                <img src={`${story.media}`} alt="Story"
+                                     style={{width: '100%', height: '100%', borderRadius: '10px'}}/>
+
+                        ) : (
                             <div style={{position: 'relative', width: '100%', height: '100%', borderRadius: '10px'}}>
                                 <MdPlayCircle style={{
                                     position: 'absolute',
@@ -154,13 +164,9 @@ function Stories({ onStorySelect }) {
                                     fontSize: 40,
                                     color: "white"
                                 }}/>
-                                <video src={story.media}
+                                <video src={`${process.env.REACT_APP_CLOUDINARY_URL}${story.media}.mp4`}
                                        style={{width: '100%', height: '100%', borderRadius: '10px', zIndex: 0}}/>
                             </div>
-
-                        ) : (
-                            <img src={`${story.media}`} alt="Story"
-                                 style={{width: '100%', height: '100%', borderRadius: '10px'}}/>
                         )}
 
                         <div className="author">{story.nom_utilisateur}</div>
@@ -171,9 +177,15 @@ function Stories({ onStorySelect }) {
                 <div className="preview-container">
                     <div className="preview-media">
                         {file.type.startsWith('video/') ? (
-                            <video src={previewUrl} controls style={{ width: '200px', height: '200px', borderRadius: '10px', marginBottom: '10px' }} />
+                            <video src={previewUrl} controls style={{
+                                width: '200px',
+                                height: '200px',
+                                borderRadius: '10px',
+                                marginBottom: '10px'
+                            }}/>
                         ) : (
-                            <img src={previewUrl} alt="Preview" style={{ width: '200px', height: '200px', borderRadius: '10px', marginBottom: '10px' }} />
+                            <img src={previewUrl} alt="Preview"
+                                 style={{width: '200px', height: '200px', borderRadius: '10px', marginBottom: '10px'}}/>
                         )}
                         <button className="storie-submit-button" onClick={handleUpload}>Soumettre</button>
                     </div>
@@ -194,12 +206,16 @@ function Stories({ onStorySelect }) {
                     </div>
                     <div className="content">
                         <div className="story">
-                            {selectedStory.media && selectedStory.media.endsWith('.mp4') ? (
-                                <video src={selectedStory.media} autoPlay
-                                       style={{ width: '100%', height: '100%', borderRadius: '16px' }} />
+                            {selectedStory.media && selectedStory.media.includes('storyImage') ? (
+                                <img src={`${selectedStory.media}`} alt="Story"
+                                     style={{
+                                         width: '100%',
+                                         height: '100%', borderRadius: '16px'
+                                     }}/>
                             ) : (
-                                <img src={selectedStory.media} alt="Story"
-                                     style={{ width: '100%', height: '100%', borderRadius: '16px' }} />
+                                <video src={`${process.env.REACT_APP_CLOUDINARY_URL}${selectedStory.media}.mp4`} autoPlay
+                                       style={{width: '100%', height: '100%', borderRadius: '16px'}}/>
+
                             )}
                             <div className="author">{selectedStory.nom_utilisateur}</div>
                             <div className="progress-bar">

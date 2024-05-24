@@ -1,4 +1,5 @@
 import asyncio
+import imghdr
 import json
 import logging
 import os
@@ -111,7 +112,7 @@ def get_publications_video(request):
 
         data = []
         for pub in publications:
-            video_url = str(pub.video_file)  # Convertir l'URL en chaîne de caractères
+            video_url = str(pub.video_file)
             print("URL de la vidéo:", video_url)
             data.append({
                 'id': pub.id,
@@ -120,7 +121,7 @@ def get_publications_video(request):
                 'utilisateur_prenom': pub.utilisateur.prenom,
                 'count_likes': pub.count_likes(),
                 'date_publication': pub.date_publication,
-                'videos_file': video_url,  # Utiliser l'URL sous forme de chaîne de caractères
+                'videos_file': video_url,
                 'utilisateur_image': request.build_absolute_uri(pub.utilisateur.image.url) if pub.utilisateur.image else None
             })
         return JsonResponse(data, safe=False)
@@ -579,7 +580,13 @@ class StoryView(View):
 
         if 'file' in request.FILES:
             file = request.FILES['file']
-            media = default_storage.save(f'stories/{file.name}', ContentFile(file.read()))
+            file_type = imghdr.what(file)
+            if file_type in ['jpeg', 'png', 'gif']:
+                file_name = f'stories/{file.name}storyImage.{file_type}'
+            else:
+                file_name = f'stories/{file.name}'
+
+            media = default_storage.save(file_name, ContentFile(file.read()))
 
             story = Story.objects.create(utilisateur=user, media=media)
             return JsonResponse({"success": "Story uploaded successfully"})
@@ -592,13 +599,17 @@ class StoryGetView(View):
     def get(self, request):
         now = timezone.now()
         stories = Story.objects.filter(expires_at__gt=now).order_by('-created_at')
-        data = [
-            {
+        data = []
+        for story in stories:
+            if "storyImage" not in story.media.url:
+                media_url = str(story.media.url)
+            else:
+                media_url = str(story.media)
+            data.append({
                 "id": story.id,
                 "nom_utilisateur": story.utilisateur.nom,
-                "media": story.media.url,
+                "media": media_url,
                 "created_at": story.created_at,
-            }
-            for story in stories
-        ]
+            })
         return JsonResponse(data, safe=False)
+
