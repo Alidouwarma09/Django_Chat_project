@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { MdLibraryAdd } from 'react-icons/md';
+import {MdLibraryAdd, MdPlayCircle} from 'react-icons/md';
 import './css/stories.css';
 
 function Stories({ onStorySelect }) {
@@ -63,6 +63,7 @@ function Stories({ onStorySelect }) {
     const handleStoryClick = (index) => {
         setSelectedStory(stories[index]);
         setSelectedIndex(index);
+        setProgress(0); // Réinitialiser la progression
         onStorySelect(true);
     };
 
@@ -71,7 +72,8 @@ function Stories({ onStorySelect }) {
         if (newIndex >= 0) {
             setSelectedStory(stories[newIndex]);
             setSelectedIndex(newIndex);
-            setDisplayDuration(0)
+            setDisplayDuration(null); // Réinitialiser la durée d'affichage
+            setProgress(0); // Réinitialiser la progression
         }
     };
 
@@ -80,6 +82,8 @@ function Stories({ onStorySelect }) {
         if (newIndex < stories.length) {
             setSelectedStory(stories[newIndex]);
             setSelectedIndex(newIndex);
+            setDisplayDuration(null); // Réinitialiser la durée d'affichage
+            setProgress(0); // Réinitialiser la progression
         }
     };
 
@@ -89,29 +93,36 @@ function Stories({ onStorySelect }) {
     };
 
     useEffect(() => {
+        let timer;
+        let interval;
         if (selectedStory && selectedStory.media) {
             const duration = selectedStory.media.endsWith('.mp4') ? getVideoDuration(selectedStory.media) : 5000;
             setDisplayDuration(duration);
             setProgress(0);
-        }
-    }, [selectedStory]);
 
-    useEffect(() => {
-        let timer;
-        if (selectedStory && displayDuration) {
-            timer = setTimeout(() => {
-                handleNextStory();
-            }, displayDuration);
-
-            if (!selectedStory.media.endsWith('.mp4')) {
-                const interval = setInterval(() => {
-                    setProgress((prev) => prev + 100 / (displayDuration / 100));
+            if (selectedStory.media.endsWith('.mp4')) {
+                // Ne pas utiliser l'intervalle pour les vidéos
+                timer = setTimeout(() => {
+                    handleNextStory();
+                }, duration);
+            } else {
+                interval = setInterval(() => {
+                    setProgress((prev) => {
+                        if (prev >= 100) {
+                            clearInterval(interval);
+                            handleNextStory();
+                            return 0;
+                        }
+                        return prev + 100 / (duration / 100);
+                    });
                 }, 100);
-                return () => clearInterval(interval);
             }
         }
 
-        return () => clearTimeout(timer);
+        return () => {
+            clearTimeout(timer);
+            clearInterval(interval);
+        };
     }, [selectedStory, displayDuration]);
 
     const getVideoDuration = (videoUrl) => {
@@ -121,7 +132,7 @@ function Stories({ onStorySelect }) {
     };
 
     return (
-        <div style={{ zIndex: 9000 }}>
+        <div>
             <div className="stories-container">
                 <div className="story" style={{ backgroundColor: "gray", height: 150 }}>
                     <input type="file" onChange={handleFileChange} style={{ display: 'none' }} id="upload-story" />
@@ -133,10 +144,23 @@ function Stories({ onStorySelect }) {
                 {stories.map((story, index) => (
                     <div key={story.id} className="story" onClick={() => handleStoryClick(index)}>
                         {story.media && story.media.endsWith && story.media.endsWith('.mp4') ? (
-                            <video src={story.media} style={{ width: '100%', height: '100%', borderRadius: '10px' }} />
+                            <div style={{position: 'relative', width: '100%', height: '100%', borderRadius: '10px'}}>
+                                <MdPlayCircle style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    zIndex: 1,
+                                    fontSize: 40,
+                                    color: "white"
+                                }}/>
+                                <video src={story.media}
+                                       style={{width: '100%', height: '100%', borderRadius: '10px', zIndex: 0}}/>
+                            </div>
+
                         ) : (
                             <img src={`${story.media}`} alt="Story"
-                                 style={{ width: '100%', height: '100%', borderRadius: '10px' }} />
+                                 style={{width: '100%', height: '100%', borderRadius: '10px'}}/>
                         )}
 
                         <div className="author">{story.nom_utilisateur}</div>
@@ -171,7 +195,7 @@ function Stories({ onStorySelect }) {
                     <div className="content">
                         <div className="story">
                             {selectedStory.media && selectedStory.media.endsWith('.mp4') ? (
-                                <video src={selectedStory.media}
+                                <video src={selectedStory.media} autoPlay
                                        style={{ width: '100%', height: '100%', borderRadius: '16px' }} />
                             ) : (
                                 <img src={selectedStory.media} alt="Story"

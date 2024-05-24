@@ -182,6 +182,8 @@ function Navbar() {
     return (
         <div>
             {navbarBublicationVisible && <div className="dark-overlay"></div>}
+            {publicationSectionVisible && <div className="dark-overlay"></div>}
+            {VideoSectionVisible && <div className="dark-overlay"></div>}
             <div id="publicationSection" style={{ display: publicationSectionVisible ? 'block' : 'none' }}>
                 <i onClick={handlePublishSectionClose} style={{ fontSize: 30 }} className="bi bi-x-circle-fill"></i>
                 <form className="publier_text_form" id="publicationForm" method="post">

@@ -8,6 +8,7 @@ import moment from "moment";
 import "moment/locale/fr";
 import {IoEyeSharp} from "react-icons/io5";
 import Stories from "../compoment/Stories";
+import { useLongPress } from '@uidotdev/usehooks';
 
 function handleClick(event) {
   event.preventDefault();
@@ -186,10 +187,18 @@ function toggleCommentForm(index) {
   const handleStorySelect = (isSelected) => {
         setIsStorySelected(isSelected);
     };
+ const handleLongPress = () => {
+    console.log("Long press detected");
+  };
+
+  const longPressEvent = useLongPress(handleLongPress, { delay: 800 });
   return (
-    <div  className={isStorySelected ? 'no-background' : ''}>
+    <div  className={isStorySelected ? 'no-background' : ''} onContextMenu={handleClick} onLongPress={handleLongPress}
+    {...longPressEvent}
+      style={{ userSelect: 'none' }}
+    >
         {!isStorySelected && <NavBar />}
-        <div className="conversation active" onContextMenu={handleClick} onLongPress={handleLongPress}>
+        <div className="conversation active" >
             <Stories onStorySelect={handleStorySelect} />
             {publications.map((publication, index) => (
                 <div key={publication.id} className="publication" style={{ borderTop: '2px solid gray' }}>
