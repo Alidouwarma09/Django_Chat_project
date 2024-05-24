@@ -30,15 +30,15 @@ function Acceuil() {
 
   const getPublicationsFromLocalStorage = () => {
     const publications = localStorage.getItem('publications');
+    setLoading(false);
     return publications ? JSON.parse(publications) : [];
   };
 
-  const fetchNewPublications = async () => {
+const fetchNewPublications = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
       localStorage.setItem('publications', JSON.stringify(response.data));
       setPublications(response.data);
-      setLoading(false);
     } catch (error) {
       console.error('Erreur lors du chargement des nouvelles publications:', error);
       setLoading(false);
@@ -47,6 +47,19 @@ function Acceuil() {
 
   useEffect(() => {
     fetchNewPublications();
+  }, []);
+
+  useEffect(() => {
+    const handleSessionEnd = () => {
+      localStorage.removeItem('publications');
+      setPublications([]);
+    };
+
+    window.addEventListener('beforeunload', handleSessionEnd);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleSessionEnd);
+    };
   }, []);
 
   useEffect(() => {
@@ -214,15 +227,12 @@ function Acceuil() {
         {!isStorySelected && <NavBar />}
         <div className="conversation active" >
             <Stories onStorySelect={handleStorySelect} />
-
-
-
             {loading ? (
-  <>
-    <Skeleton height={200} />
-    <Skeleton height={200} />
-    <Skeleton height={200} />
-  </>
+              <>
+                <Skeleton height={200} />
+                <Skeleton height={200} />
+                <Skeleton height={200} />
+              </>
 ) : (
   publications.map((publication, index) => (
       <div key={publication.id} className="publication" style={{borderTop: '2px solid gray'}}>
