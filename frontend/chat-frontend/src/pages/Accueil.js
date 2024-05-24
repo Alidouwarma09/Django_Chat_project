@@ -12,13 +12,7 @@ import { IoEyeSharp } from "react-icons/io5";
 import Stories from "../compoment/Stories";
 import { useLongPress } from '@uidotdev/usehooks';
 
-function handleClick(event) {
-  event.preventDefault();
-}
 
-function handleLongPress(event) {
-  event.preventDefault();
-}
 
 function Acceuil() {
   const [publications, setPublications] = useState([]);
@@ -41,7 +35,6 @@ const fetchNewPublications = async () => {
       setPublications(response.data);
     } catch (error) {
       console.error('Erreur lors du chargement des nouvelles publications:', error);
-      setLoading(false);
     }
   };
 
@@ -220,7 +213,7 @@ const fetchNewPublications = async () => {
 
   const longPressEvent = useLongPress(handleLongPress, { delay: 800 });
   return (
-    <div  className={isStorySelected ? 'no-background' : ''} onContextMenu={handleClick} onLongPress={handleLongPress}
+    <div  className={isStorySelected ? 'no-background' : ''}  onLongPress={handleLongPress}
     {...longPressEvent}
       style={{ userSelect: 'none' }}
     >

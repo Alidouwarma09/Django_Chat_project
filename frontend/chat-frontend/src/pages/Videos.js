@@ -7,6 +7,7 @@ import {IoIosPlayCircle} from "react-icons/io";
 import {GoArrowLeft} from "react-icons/go";
 import {IoSendOutline} from "react-icons/io5";
 import {RiShareForwardFill} from "react-icons/ri";
+import moment from "moment/moment";
 function Videos(id) {
  const [videos, setVideo] = useState([]);
   const [comments, setComments] = useState({});
@@ -41,8 +42,6 @@ useEffect(() => {
       let cachedVideo = getVideoFromLocalStorage();
       if (cachedVideo.length !== 0) {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications_video/`);
-        localStorage.removeItem('videos');
-
         setVideo(response.data);
         localStorage.setItem('videos', JSON.stringify(response.data));
       } else {
@@ -197,8 +196,16 @@ const handleGoBack = () => {
 
                         <div className="user-info">
                             <p className="user-name">{videos.utilisateur_nom} {videos.utilisateur_prenom}</p>
-                            <p className="publication-time"> Il y a {videos.date_publication} <i
-                                className="bi bi-globe-americas"></i></p>
+                            <p className="publication-time">
+                               <span style={{fontSize: 10}}>
+                                    {moment(videos.date_publication).diff(moment(), 'days') < -7
+                                        ? moment(videos.date_publication).format('DD/MM/YYYY')
+                                        : moment(videos.date_publication).fromNow(true)
+                                            .replace('minutes', 'min')
+                                            .replace('heures', 'h')}{" "}
+                                   <i className="bi bi-globe-americas"></i>
+                               </span>
+                            </p>
                         </div>
                     </div>
                     <p>{videos.titre}</p>
@@ -217,12 +224,13 @@ const handleGoBack = () => {
                             color: "white",
                             cursor: 'pointer'
                         }}>
-                            <ReactPlayer
+                        <ReactPlayer
                                 key={videos.id}
                                 url={`${videos.videos_file}`}
                                 id={videos.id}
                                 width="100%"
                                 height="100%"
+                                autoPlay={true}
                                 playing={activeVideo === videos.id}
                             />
                             <div className="play-pause-icon" style={{
@@ -252,7 +260,7 @@ const handleGoBack = () => {
                             <button className="action-button" id="comment-button"
                                     onClick={() => toggleCommentForm(index)}><i
                                 className="bi bi-chat"></i></button>
-                            <span className="comment-count" id="comment-count- photo.id"></span> commentaires
+                            <span className="comment-count" id="comment-count- photo.id"></span> 1
                         </div>
                         <div className="col-4 comment-count-container"
                              style={{fontSize: 10, paddinRight: 30, marginRight: 10}}>
@@ -277,7 +285,6 @@ const handleGoBack = () => {
                                             )}
                                             <span style={{marginLeft: 10, color: "blue"}}>Suivre</span>
                                             <p className="comment-user">{comment.utilisateur_nom} {comment.utilisateur_prenom}</p>
-
                                         </div>
                                         <p className="comment-text">{comment.texte}</p>
                                         <p className="comment-time">{comment.date_comment}</p>
@@ -287,8 +294,6 @@ const handleGoBack = () => {
                                 <p>Soyez le premier à commenter.</p>
                             )}
                         </div>
-
-
                         <form className="commentaire-form" onSubmit={(e) => {
                             e.preventDefault();
                             submitComment(videos.id, commentTexts[videos.id]);
@@ -297,7 +302,6 @@ const handleGoBack = () => {
                                    placeholder="Écrivez un commentaire..."
                                    value={commentTexts[videos.id] || ''}
                                    onChange={(e) => handleCommentChange(e.target.value, videos.id)}/>
-
                             <button type="submit"><IoSendOutline/></button>
                         </form>
                     </div>

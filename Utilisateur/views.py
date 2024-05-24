@@ -116,7 +116,7 @@ def get_publications_video(request):
                  'utilisateur_nom': pub.utilisateur.nom,
                  'utilisateur_prenom': pub.utilisateur.prenom,
                  'count_likes': pub.count_likes(),
-                 'date_publication': pub.date_pub(),
+                 'date_publication': pub.date_publication,
                  'videos_file': request.build_absolute_uri(pub.video_file.url) if pub.video_file else None,
                  'utilisateur_image': request.build_absolute_uri(
                      pub.utilisateur.image.url) if pub.utilisateur.image else None}
