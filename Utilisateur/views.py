@@ -94,10 +94,8 @@ def get_publications(request):
                  'contenu': pub.contenu,
                  'count_likes': pub.count_likes(),
                  'date_publication': pub.date_publication,
-                 'videos': request.build_absolute_uri(
-                     pub.utilisateur.image.url) if pub.utilisateur.image else None,
                  'utilisateur_image': request.build_absolute_uri(
-                     pub.utilisateur.video_file.url) if pub.video_file else None,
+                     pub.utilisateur.image.url) if pub.utilisateur.image else None,
                  'photo_file_url': request.build_absolute_uri(pub.photo_file.url) if pub.photo_file else None}
                 for pub in publications]
         return JsonResponse(data, safe=False)
@@ -111,23 +109,27 @@ def get_publications_video(request):
     try:
         publications = Publication.objects.exclude(video_file='').order_by('-date_publication')
 
-        data = [{'id': pub.id,
-                 'titre': pub.titre,
-                 'utilisateur_nom': pub.utilisateur.nom,
-                 'utilisateur_prenom': pub.utilisateur.prenom,
-                 'count_likes': pub.count_likes(),
-                 'date_publication': pub.date_publication,
-                 'videos_file': request.build_absolute_uri(pub.video_file.url) if pub.video_file else None,
-                 'utilisateur_image': request.build_absolute_uri(
-                     pub.utilisateur.image.url) if pub.utilisateur.image else None}
-                for pub in publications
-                ]
-
+        data = []
+        for pub in publications:
+            video_url = str(pub.video_file)  # Convertir l'URL en chaîne de caractères
+            print("URL de la vidéo:", video_url)
+            data.append({
+                'id': pub.id,
+                'titre': pub.titre,
+                'utilisateur_nom': pub.utilisateur.nom,
+                'utilisateur_prenom': pub.utilisateur.prenom,
+                'count_likes': pub.count_likes(),
+                'date_publication': pub.date_publication,
+                'videos_file': video_url,  # Utiliser l'URL sous forme de chaîne de caractères
+                'utilisateur_image': request.build_absolute_uri(pub.utilisateur.image.url) if pub.utilisateur.image else None
+            })
         return JsonResponse(data, safe=False)
     except ObjectDoesNotExist:
         return JsonResponse({'error': 'Aucune publication trouvée'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
 
 
 def accueil_utilisateur(request):

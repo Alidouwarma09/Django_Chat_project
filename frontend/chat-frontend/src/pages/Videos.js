@@ -224,21 +224,16 @@ const handleGoBack = () => {
                             color: "white",
                             cursor: 'pointer'
                         }}>
-                            <video id="video-id-vyxetj38h9o_html5_api" data-cld-font-face="inherit"
-                                   data-cld-played-event-times="[1]" className="vjs-tech" style={{fontFamily: "inherit"}}
-                                   tabIndex="-1" preload="auto"
-                                   poster="https://res-console.cloudinary.com/dp7nell7v/thumbnails/v1/video/upload/v1716398411/bWVkaWEvdmlkZW9zL3Rpa3Rva18xNzE2MTUyNDY0ODEzNzk0OTY0X3drbzdnYQ==/drilldown"
-                                   src="https://res.cloudinary.com/dp7nell7v/video/upload/v1/media/videos/tiktok_1716152464813794964_wko7ga.mp4?_s=vp-2.0.2"></video>
-
-                            {/*<ReactPlayer*/}
-                            {/*        key={videos.id}*/}
-                            {/*        url={`${videos.videos_file}`}*/}
-                            {/*        id={videos.id}*/}
-                            {/*        width="100%"*/}
-                            {/*        height="100%"*/}
-                            {/*        autoPlay={true}*/}
-                            {/*        playing={activeVideo === videos.id}*/}
-                            {/*    />*/}
+                            <ReactPlayer
+                                    key={videos.id}
+                                     url={`${process.env.REACT_APP_CLOUDINARY_URL}${videos.videos_file}.mp4`}
+                                    id={videos.id}
+                                    width="100%"
+                                    height="100%"
+                                    autoPlay={true}
+                                    playing={activeVideo === videos.id}
+                                    controls
+                                />
                             <div className="play-pause-icon" style={{
                                 position: 'absolute',
                                 top: '50%',

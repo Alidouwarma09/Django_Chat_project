@@ -5,7 +5,7 @@ from cloudinary_storage.storage import MediaCloudinaryStorage, VideoMediaCloudin
 class CustomCloudinaryStorage(Storage):
     def _open(self, name, mode='rb'):
         extension = name.split('.')[-1].lower()
-        if extension in ['mp4', 'mov', 'avi']:  # Vous pouvez ajouter d'autres extensions de vidéo si nécessaire
+        if extension in ['mp4', 'mov', 'avi']:
             return VideoMediaCloudinaryStorage()._open(name, mode)
         else:
             return MediaCloudinaryStorage()._open(name, mode)
