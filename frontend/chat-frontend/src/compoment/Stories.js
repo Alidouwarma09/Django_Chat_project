@@ -24,7 +24,7 @@ const fetchStories = async () => {
                 // Si le nom du fichier ne contient pas "storyImage", retirer l'extension .url
                 return {
                     ...story,
-                    media: story.media.split('.url')[0]
+                    media: story.media
                 };
             } else {
                 return story;
@@ -149,7 +149,7 @@ const fetchStories = async () => {
                 </div>
                 {stories.map((story, index) => (
                     <div key={story.id} className="story" onClick={() => handleStoryClick(index)}>
-                        {story.media && !story.media.includes('storyImage') ? (
+                        {story.media && story.media.includes('storyImage') ? (
                                 <img src={`${story.media}`} alt="Story"
                                      style={{width: '100%', height: '100%', borderRadius: '10px'}}/>
 

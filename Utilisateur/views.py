@@ -601,7 +601,7 @@ class StoryGetView(View):
         stories = Story.objects.filter(expires_at__gt=now).order_by('-created_at')
         data = []
         for story in stories:
-            if "storyImage" not in story.media.url:
+            if "storyImage" in story.media.url:
                 media_url = str(story.media.url)
             else:
                 media_url = str(story.media)
