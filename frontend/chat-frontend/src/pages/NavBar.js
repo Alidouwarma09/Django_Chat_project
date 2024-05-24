@@ -68,6 +68,7 @@ function Navbar() {
     };
 
     const handlePublication = () => {
+        handleVidishSectionClose()
         setIsPublishing(true);
         setNavbarBublicationVisible(false);
         const interval = setInterval(() => {
@@ -116,6 +117,7 @@ function Navbar() {
     };
 
     const handleVideo = () => {
+        handleVidishSectionClose()
         setNavbarBublicationVisible(false);
         setIsPublishing(true);
         const interval = setInterval(() => {
