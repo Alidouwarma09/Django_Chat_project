@@ -22,81 +22,45 @@ function Acceuil() {
   const [isStorySelected, setIsStorySelected] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const getPublicationsFromLocalStorage = () => {
-    const publications = localStorage.getItem('publications');
-    setLoading(false);
-    return publications ? JSON.parse(publications) : [];
-  };
+const getPublicationsFromLocalStorage = () => {
+  const publications = localStorage.getItem('publications');
 
-const fetchNewPublications = async () => {
+  return publications ? JSON.parse(publications) : [];
+};
+
+
+useEffect(() => {
+  async function fetchData() {
+    moment.locale('fr');
+    const token = localStorage.getItem('token');
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    let cachedPublications = getPublicationsFromLocalStorage();
+    setPublications(cachedPublications);
+    for (let publication of cachedPublications) {
+      await fetchComments(publication.id);
+    }
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
-      localStorage.setItem('publications', JSON.stringify(response.data));
-      setPublications(response.data);
+      const newPublications = response.data;
+      setLoading(false)
+      setPublications(newPublications);
+      localStorage.setItem('publications', JSON.stringify(newPublications));
     } catch (error) {
-      console.error('Erreur lors du chargement des nouvelles publications:', error);
+      console.error('Erreur lors du chargement des publications depuis l\'API:', error);
     }
-  };
-
-  useEffect(() => {
-    fetchNewPublications();
-  }, []);
-
+  }
+  fetchData();
+}, []);
   useEffect(() => {
     const handleSessionEnd = () => {
       localStorage.removeItem('publications');
       setPublications([]);
     };
-
     window.addEventListener('beforeunload', handleSessionEnd);
-
     return () => {
       window.removeEventListener('beforeunload', handleSessionEnd);
     };
   }, []);
-
-  useEffect(() => {
-    async function fetchPublications() {
-      moment.locale('fr');
-      try {
-        const token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        let cachedPublications = getPublicationsFromLocalStorage();
-        if (cachedPublications.length === 0) {
-          const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
-          setPublications(response.data);
-          localStorage.setItem('publications', JSON.stringify(response.data));
-        } else {
-          setPublications(cachedPublications);
-        }
-        setIsCommentFormOpenList(new Array(cachedPublications.length).fill(false));
-        for (let publication of cachedPublications) {
-          await fetchComments(publication.id);
-        }
-        fetchNewPublications();
-      } catch (error) {
-        console.error('Erreur lors du chargement des publications:', error);
-      }
-    }
-
-    fetchPublications();
-
-    const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/Utilisateur/api/comment_sse/`);
-    eventSource.onmessage = async (event) => {
-      const data = JSON.parse(event.data);
-      if (data.comments && data.comments.length > 0) {
-        const publicationId = data.comments[0].publication_id;
-        await fetchComments(publicationId);
-      } else {
-        console.error('Aucun commentaire reçu dans les données de l\'événement');
-      }
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, []);
-
   async function fetchComments(publicationId) {
     try {
       const token = localStorage.getItem('token');
@@ -158,11 +122,6 @@ const fetchNewPublications = async () => {
 
   const likePublication = async (publicationId) => {
     audio.play();
-    setPublications(prevPublications =>
-      prevPublications.map(publication =>
-        publication.id === publicationId ? { ...publication, count_likes: publication.count_likes + 1, liked: true } : publication
-      )
-    );
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
@@ -183,14 +142,8 @@ const fetchNewPublications = async () => {
       );
     } catch (error) {
       console.error('Erreur lors du like de la publication:', error);
-      setPublications(prevPublications =>
-        prevPublications.map(publication =>
-          publication.id === publicationId ? { ...publication, count_likes: publication.count_likes - 1, liked: false } : publication
-        )
-      );
     }
   };
-
   function handleCommentChange(text, publicationId) {
     setCommentTexts(prev => ({ ...prev, [publicationId]: text }));
   }
@@ -220,7 +173,7 @@ const fetchNewPublications = async () => {
         {!isStorySelected && <NavBar />}
         <div className="conversation active" >
             <Stories onStorySelect={handleStorySelect} />
-            {loading ? (
+            {loading && publications.length === 0 ? (
               <>
                 <Skeleton height={200} />
                 <Skeleton height={200} />
