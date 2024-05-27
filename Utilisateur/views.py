@@ -96,6 +96,29 @@ def utilisateur_info(request):
     return JsonResponse(data)
 
 
+def utilisateurs_select(request, utilisateur_id):
+    utilisateur = Utilisateur.objects.filter(id=utilisateur_id).first()
+    if not utilisateur:
+        return JsonResponse({'error': 'Utilisateur non trouvé'}, status=404)
+
+    data = {
+        'nom_utilisateur': utilisateur.nom,
+        'prenom_utilisateur': utilisateur.prenom,
+        'image_utilisateur': utilisateur.image.url
+    }
+    return JsonResponse(data)
+
+
+def tout_les_utilisateurs(request):
+    utilisateurs = Utilisateur.objects.all()
+    utilisateurs_list = list(utilisateurs.values('id', 'nom', 'prenom', 'image'))
+
+    for utilisateur in utilisateurs_list:
+        utilisateur['image'] = request.build_absolute_uri(utilisateur['image'])
+
+    return JsonResponse(utilisateurs_list, safe=False)
+
+
 def get_publications(request):
     try:
         publications = Publication.objects.filter(video_file='').order_by('-date_publication')

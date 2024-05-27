@@ -29,8 +29,8 @@ function BottomTab() {
         <GoHomeFill style={{ height: 25, width: 25 }} />
       </button>
       <button
-        className={activeTab === 'messages' ? 'active' : ''}
-        onClick={() => handlePageChange('messages')}
+        className={activeTab === 'utilisateurs' ? 'active' : ''}
+        onClick={() => handlePageChange('utilisateurs')}
       >
         <BiMessageRoundedDots style={{ height: 25, width: 25 }} />
       </button>

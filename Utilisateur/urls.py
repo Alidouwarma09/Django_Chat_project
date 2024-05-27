@@ -6,7 +6,8 @@ from Utilisateur.views import Inscription, connexion_utilisateur, accueil_utilis
     publier_photo, \
     get_publications, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, \
     get_comment_count, start_video_call, toute_les_videos, get_comments, \
-    messages_non_lus_sse, CommentSSEView, get_publications_video, StoryView, StoryGetView, utilisateur_info
+    messages_non_lus_sse, CommentSSEView, get_publications_video, StoryView, StoryGetView, utilisateur_info, \
+    tout_les_utilisateurs, utilisateurs_select
 
 app_name = 'Utilisateur'
 
@@ -43,4 +44,6 @@ urlpatterns = [
     path('api/getstories/', StoryGetView.as_view(), name='story_view'),
     path('apk/stream_messages/<int:utilisateur_detail_id>/', views.stream_messages, name='stream_messages'),
     path('api/user_info/', utilisateur_info, name='utilisateur_info'),
+    path('api/utilisateurs/', tout_les_utilisateurs, name='utilisateur-list'),
+    path('api/utilisateurs_select/<int:utilisateur_id>/', utilisateurs_select, name='utilisateur-select'),
 ]

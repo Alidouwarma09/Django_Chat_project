@@ -7,6 +7,7 @@ import './App.css';
 import Videos from "./pages/Videos";
 import Messages from "./pages/Message";
 import { VideoProvider } from './compoment/VideoContext';
+import Utilisateurs from "./pages/Utilisateurs";
 
 const isAuthenticated = () => {
     return localStorage.getItem('token') !== null;
@@ -21,7 +22,8 @@ function App() {
                     <Route path="/inscription" element={<Inscription />} />
                     <Route path="/parametre" element={<Parametre />} />
                     <Route path="/videos" element={<Videos />} />
-                    <Route path="/messages" element={<Messages />} />
+                    <Route path="/message/:utilisateurId" element={<Messages />} />
+                    <Route path="/utilisateurs" element={<Utilisateurs />} />
                     <Route
                         path="/acceuil"
                         element={isAuthenticated() ? <Acceuil /> : <Navigate to="/connexion" />}
