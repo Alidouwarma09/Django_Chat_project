@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './css/parametre.css'
 import { useNavigate } from 'react-router-dom';
+import {IoMdLogOut} from "react-icons/io";
 
 const Parametres = () => {
-  const [themeSombre, setThemeSombre] = useState(false);
       const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,45 +27,52 @@ const handleDeconnexion = async () => {
 };
 
   return (
-    <div className={`settings ${themeSombre ? 'dark-mode' : ''}`}>
-      <div className="hauteur">
-        <div className="hauteur-item">Followers</div>
-        <div className="hauteur-item">Likes</div>
-        <div className="hauteur-item">Partages</div>
+      <div className="container">
+          <div className="header">
+              <img src="path-to-your-trash-icon.png" alt="Trash Icon"/>
+              <h1>Aujourd'hui</h1>
+              <p className="clean-status">Non nettoyé</p>
+              <p className="clean-status">0B Nettoyage total</p>
+              <button className="clean-btn">NETTOYER MAINTENANT</button>
+          </div>
+
+          <div className="grid">
+              <div className="card">
+                  <i className="material-icons">delete</i>
+                  <p>Spams</p>
+                  <p>Libérer votre espace de stockage</p>
+              </div>
+              <div className="card">
+                  <i className="material-icons">memory</i>
+                  <p>Booster le téléphone</p>
+                  <p>RAM: 63%</p>
+              </div>
+              <div className="card">
+                  <i className="material-icons">ac_unit</i>
+                  <p>Refroidisseur de téléphone</p>
+                  <p>Température : 33°C</p>
+              </div>
+              <div className="card">
+                  <i className="material-icons">cleaning_services</i>
+                  <p>Nettoyer les données d'applis</p>
+                  <p>5 applis peuvent être nettoyées</p>
+              </div>
+              <div className="card">
+                  <i className="material-icons">security</i>
+                  <p>Antivirus</p>
+                  <p>63 jours non analysés</p>
+              </div>
+              <div className="card">
+                  <i className="material-icons">battery_saver</i>
+                  <p>Économie d'énergie</p>
+                  <p>Économiser la batterie</p>
+              </div>
+          </div>
+          <div className="card" style={{marginTop: 10, fontSize: 20, color: "red"}} onClick={handleDeconnexion()}>
+              <IoMdLogOut />
+              Deconnexion
+          </div>
       </div>
-      <h1 className="settings-header">Paramètres <i className="fas fa-chevron-down"></i></h1>
-      <ul className="settings-menu show">
-        <li><span className="icon"><i className="fas fa-user-circle"></i></span>Profil & Comptes</li>
-        <li><span className="icon"><i className="fas fa-lock"></i></span>Sécurité</li>
-        <li><span className="icon"><i className="fas fa-shield-alt"></i></span>Confidentialité & Sécurité</li>
-        <li><span className="icon"><i className="fas fa-credit-card"></i></span>Facturation & Abonnement</li>
-      </ul>
-      <h1 className="settings-header">Personnalisation <i className="fas fa-chevron-down"></i></h1>
-      <ul className="settings-menu show">
-        <li>
-          <span className="icon"><i className="fas fa-moon"></i></span>Mode Sombre
-          <label className="toggle">
-            <input type="checkbox"  />
-          </label>
-        </li>
-        <li>
-          <span className="icon"><i className="fas fa-fingerprint"></i></span> Autoriser l'empreinte digitale
-          <label className="toggle">
-            <input type="checkbox"  />
-          </label>
-        </li>
-      </ul>
-      <h1 className="settings-header">Aide et assistance <i className="fas fa-chevron-down"></i></h1>
-      <ul className="settings-menu show">
-        <li><span className="icon"><i className="fas fa-question-circle"></i></span>Aide et support</li>
-      </ul>
-      <div className="cardreDeconnexion">
-        <button onClick={handleDeconnexion}>
-          <i className="fa-solid fa-arrow-right-from-bracket"></i>
-          Déconnexion
-        </button>
-      </div>
-    </div>
   );
 };
 

@@ -42,6 +42,10 @@ useEffect(() => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
       const newPublications = response.data;
+       for (let publication of newPublications) {
+          await fetchComments(publication.id);
+        }
+
       setLoading(false)
       setPublications(newPublications);
       localStorage.setItem('publications', JSON.stringify(newPublications));
@@ -49,6 +53,7 @@ useEffect(() => {
       console.error('Erreur lors du chargement des publications depuis l\'API:', error);
     }
   }
+
   fetchData();
 }, []);
   useEffect(() => {
