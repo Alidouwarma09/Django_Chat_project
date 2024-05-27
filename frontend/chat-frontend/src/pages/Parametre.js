@@ -4,7 +4,7 @@ import './css/parametre.css'
 import { useNavigate } from 'react-router-dom';
 import {IoMdLogOut} from "react-icons/io";
 import {FaUserCog} from "react-icons/fa";
-import {MdArrowBackIos, MdSettingsInputAntenna} from "react-icons/md";
+import {MdArrowBackIos, MdOutlineSystemUpdateAlt, MdSettingsInputAntenna} from "react-icons/md";
 import {RiListSettingsLine} from "react-icons/ri";
 import Skeleton from "react-loading-skeleton";
 
@@ -115,7 +115,7 @@ const handleDeconnexion = async () => {
               <div className="card" style={{
           background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(72,72,133,1) 35%, rgba(52,111,167,1) 53%, rgba(11,26,32,1) 77%, rgba(0,212,255,1) 100%)'
         }}>
-                  <MdSettingsInputAntenna />
+                  <MdOutlineSystemUpdateAlt />
                   <p>Mise a jour</p>
                   <p>Metre a jour l'application</p>
               </div>

@@ -181,13 +181,10 @@ function Videos(id) {
                                         id={video.id}
                                         width="100%"
                                         height="100%"
-                                        autoPlay={true}
+                                        autoPlay
                                         playing={activeVideo === video.id}
                                         controls
                                     />
-                                    <div className="play-pause-icon" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '3em', color: '#fff', zIndex: 1 }}>
-                                        {!playing ? <IoIosPlayCircle style={{ fontSize: 65 }} /> : ''}
-                                    </div>
                                 </div>
                             </div>
                             <div className="row publication-actions">

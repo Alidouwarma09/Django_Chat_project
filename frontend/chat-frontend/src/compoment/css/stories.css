@@ -214,6 +214,18 @@
   z-index: 100;
   cursor: pointer;
 }
+.story-time {
+    width: 100%;
+    position: fixed;
+    top: 15px;
+  color: #fff;
+  padding: 10px;
+  z-index: 100;
+}
+.timestorie {
+  border-radius:10px;
+  z-index: 200;
+}
 .progress {
   background: #565656;
   border-radius:10px;

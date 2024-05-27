@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {MdLibraryAdd, MdPlayCircle} from 'react-icons/md';
 import './css/stories.css';
+import moment from "moment/moment";
 
 function Stories({ onStorySelect }) {
     const [stories, setStories] = useState([]);
@@ -13,6 +14,7 @@ function Stories({ onStorySelect }) {
     const [progress, setProgress] = useState(0);
 
     useEffect(() => {
+        moment.locale('fr');
         fetchStories();
     }, []);
 
@@ -21,7 +23,6 @@ const fetchStories = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/getstories/`);
         const modifiedData = response.data.map(story => {
             if (!story.media.includes("storyImage")) {
-                // Si le nom du fichier ne contient pas "storyImage", retirer l'extension .url
                 return {
                     ...story,
                     media: story.media
@@ -132,8 +133,6 @@ const fetchStories = async () => {
     }, [selectedStory, displayDuration]);
 
     const getVideoDuration = (videoUrl) => {
-        // Implémentez la logique pour obtenir la durée de la vidéo
-        // Pour cet exemple, supposons que la durée de la vidéo soit de 10 secondes
         return 10000; // Durée en millisecondes
     };
 
@@ -213,13 +212,23 @@ const fetchStories = async () => {
                                          height: '100%', borderRadius: '16px'
                                      }}/>
                             ) : (
-                                <video src={`${process.env.REACT_APP_CLOUDINARY_URL}${selectedStory.media}.mp4`} autoPlay
+                                <video src={`${process.env.REACT_APP_CLOUDINARY_URL}${selectedStory.media}.mp4`}
+                                       autoPlay
                                        style={{width: '100%', height: '100%', borderRadius: '16px'}}/>
 
                             )}
                             <div className="author">{selectedStory.nom_utilisateur}</div>
                             <div className="progress-bar">
-                                <div className="progress" style={{ width: `${progress}%` }}></div>
+                                <div className="progress" style={{width: `${progress}%`}}></div>
+                            </div>
+                            <div className="story-time">
+                                <div className="timestorie"><span style={{fontSize: 10}}>
+                                   il y a {moment(selectedStory.created_at).diff(moment(), 'days') < -7
+                                        ? moment(selectedStory.created_at).format('DD/MM/YYYY')
+                                        : moment(selectedStory.created_at).fromNow(true)
+                                            .replace('minutes', 'min')
+                                            .replace('heures', 'h')}{" "}
+                               </span></div>
                             </div>
                         </div>
                         <div className="previous-btn" onClick={handlePreviousStory}>
