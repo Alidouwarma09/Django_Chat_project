@@ -83,6 +83,19 @@ def connexion_utilisateur(request):
         return JsonResponse({'erreur': 'Nom d\'utilisateur ou mot de passe incorrect !'}, status=400)
 
 
+def utilisateur_info(request):
+    auth_result = TokenAuthentication().authenticate(request)
+
+    if auth_result is not None:
+        user, _ = auth_result
+    data = {
+        'nom_utilisateur': user.nom,
+        'prenom_utilisateur': user.prenom,
+        'image_utilisateu': user.image.url
+    }
+    return JsonResponse(data)
+
+
 def get_publications(request):
     try:
         publications = Publication.objects.filter(video_file='').order_by('-date_publication')
@@ -122,15 +135,14 @@ def get_publications_video(request):
                 'count_likes': pub.count_likes(),
                 'date_publication': pub.date_publication,
                 'videos_file': video_url,
-                'utilisateur_image': request.build_absolute_uri(pub.utilisateur.image.url) if pub.utilisateur.image else None
+                'utilisateur_image': request.build_absolute_uri(
+                    pub.utilisateur.image.url) if pub.utilisateur.image else None
             })
         return JsonResponse(data, safe=False)
     except ObjectDoesNotExist:
         return JsonResponse({'error': 'Aucune publication trouvée'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-
-
 
 
 def accueil_utilisateur(request):
@@ -612,4 +624,3 @@ class StoryGetView(View):
                 "created_at": story.created_at,
             })
         return JsonResponse(data, safe=False)
-

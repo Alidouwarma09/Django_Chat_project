@@ -3,11 +3,39 @@ import axios from 'axios';
 import './css/parametre.css'
 import { useNavigate } from 'react-router-dom';
 import {IoMdLogOut} from "react-icons/io";
+import {FaUserCog} from "react-icons/fa";
+import {MdArrowBackIos, MdSettingsInputAntenna} from "react-icons/md";
+import {RiListSettingsLine} from "react-icons/ri";
+import Skeleton from "react-loading-skeleton";
 
 const Parametres = () => {
       const navigate = useNavigate();
+      const [userInfo, setUserInfo] = useState({});
+        const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+useEffect(() => {
+    const loadUserInfo = async () => {
+      const storedUserInfo = localStorage.getItem('userInfo');
+      if (storedUserInfo) {
+        setUserInfo(JSON.parse(storedUserInfo));
+      } else {
+        try {
+          const token = localStorage.getItem('token');
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/user_info/`, {
+            headers: {
+              'Authorization': `Token ${token}`
+            }
+          });
+          setUserInfo(response.data);
+          localStorage.setItem('userInfo', JSON.stringify(response.data));
+          setLoading(false)
+        } catch (error) {
+          console.error('Erreur lors de la récupération des informations utilisateur:', error);
+        }
+      }
+    };
+
+    loadUserInfo();
   }, []);
 const handleDeconnexion = async () => {
   try {
@@ -19,56 +47,80 @@ const handleDeconnexion = async () => {
     });
     if (response.status === 200) {
       localStorage.removeItem('token');
+      localStorage.removeItem('userInfo');
       navigate('/connexion')
     }
   } catch (error) {
     console.error('Erreur lors de la tentatidsdsve de déconnexion:', error);
   }
 };
+ const handleBack = () => {
+    navigate(-1);
+  };
 
   return (
       <div className="container">
-          <div className="header">
-              <img src="path-to-your-trash-icon.png" alt="Trash Icon"/>
-              <h1>Aujourd'hui</h1>
-              <p className="clean-status">Non nettoyé</p>
-              <p className="clean-status">0B Nettoyage total</p>
-              <button className="clean-btn">NETTOYER MAINTENANT</button>
+          <div className="fixed-header header">
+              <MdArrowBackIos className="back-button"  onClick={handleBack} />
+              {loading && userInfo.length === 0 ? (
+                  <>
+                    <Skeleton height={200} />
+                    <Skeleton height={200} />
+                  </>
+                ) : (
+                  <div>
+                    <img src={`${userInfo.image_utilisateu}`} style={{borderRadius: "50%", width: 70, height: 70}}
+                         alt="Trash Icon"/>
+                    <p className="clean-status">{userInfo.nom_utilisateur} {userInfo.prenom_utilisateur}</p>
+                  </div>
+                )}
+              <button className="clean-btn">Suivre</button>
           </div>
-
           <div className="grid">
-              <div className="card">
-                  <i className="material-icons">delete</i>
-                  <p>Spams</p>
-                  <p>Libérer votre espace de stockage</p>
+              <div className="card" style={{
+          background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(72,72,133,1) 35%, rgba(52,111,167,1) 53%, rgba(11,26,32,1) 77%, rgba(0,212,255,1) 100%)'
+        }}>
+                  <FaUserCog style={{ fontSize: 30}} />
+                  <p>Profile</p>
+                  <p>Modifier les informations du compte</p>
               </div>
-              <div className="card">
-                  <i className="material-icons">memory</i>
-                  <p>Booster le téléphone</p>
-                  <p>RAM: 63%</p>
+              <div className="card" style={{
+          background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(72,72,133,1) 35%, rgba(52,111,167,1) 53%, rgba(11,26,32,1) 77%, rgba(0,212,255,1) 100%)'
+        }}>
+                 <RiListSettingsLine style={{ fontSize: 30}} />
+                  <p>Parametre</p>
+                  <p>Modifier le comportement de l'application</p>
               </div>
-              <div className="card">
-                  <i className="material-icons">ac_unit</i>
-                  <p>Refroidisseur de téléphone</p>
-                  <p>Température : 33°C</p>
+              <div className="card" style={{
+          background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(72,72,133,1) 35%, rgba(52,111,167,1) 53%, rgba(11,26,32,1) 77%, rgba(0,212,255,1) 100%)'
+        }}>
+                  <MdSettingsInputAntenna />
+                  <p>Mise a jour</p>
+                  <p>Metre a jour l'application</p>
               </div>
-              <div className="card">
-                  <i className="material-icons">cleaning_services</i>
-                  <p>Nettoyer les données d'applis</p>
-                  <p>5 applis peuvent être nettoyées</p>
+              <div className="card" style={{
+          background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(72,72,133,1) 35%, rgba(52,111,167,1) 53%, rgba(11,26,32,1) 77%, rgba(0,212,255,1) 100%)'
+        }}>
+                 <MdSettingsInputAntenna />
+                  <p>Mise a jour</p>
+                  <p>Metre a jour l'application</p>
               </div>
-              <div className="card">
-                  <i className="material-icons">security</i>
-                  <p>Antivirus</p>
-                  <p>63 jours non analysés</p>
+              <div className="card" style={{
+          background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(72,72,133,1) 35%, rgba(52,111,167,1) 53%, rgba(11,26,32,1) 77%, rgba(0,212,255,1) 100%)'
+        }}>
+                  <MdSettingsInputAntenna />
+                  <p>Mise a jour</p>
+                  <p>Metre a jour l'application</p>
               </div>
-              <div className="card">
-                  <i className="material-icons">battery_saver</i>
-                  <p>Économie d'énergie</p>
-                  <p>Économiser la batterie</p>
+              <div className="card" style={{
+          background: 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(72,72,133,1) 35%, rgba(52,111,167,1) 53%, rgba(11,26,32,1) 77%, rgba(0,212,255,1) 100%)'
+        }}>
+                  <MdSettingsInputAntenna />
+                  <p>Mise a jour</p>
+                  <p>Metre a jour l'application</p>
               </div>
           </div>
-          <div className="card" style={{marginTop: 10, fontSize: 20, color: "red"}} onClick={handleDeconnexion()}>
+          <div className="card" style={{marginTop: 10, fontSize: 20, color: "red"}} onClick={handleDeconnexion}>
               <IoMdLogOut />
               Deconnexion
           </div>
