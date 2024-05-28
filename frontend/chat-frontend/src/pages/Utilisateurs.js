@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "./css/utilisateurs.css";
+import BottomTab from "./BottomTab";
 import NavBar from "./NavBar";
 
 function Utilisateurs() {
@@ -25,7 +26,6 @@ function Utilisateurs() {
             'Authorization': `Token ${token}`
           }
         });
-        // Utilisez response.data.utilisateurs au lieu de response.data
         setUtilisateurs(response.data.utilisateurs);
       } catch (error) {
         console.error('Erreur lors de la récupération des utilisateurs:', error);
@@ -43,7 +43,7 @@ const handleUserClick = (utilisateurId) => {
 
   return (
     <div>
-      <NavBar />
+<NavBar/>
       <ul className="user-list">
         <li className="content-message-title"><span>Recent</span></li>
         {utilisateurs.map((utilisateur, index) => (
@@ -61,6 +61,7 @@ const handleUserClick = (utilisateurId) => {
           </li>
         ))}
       </ul>
+        < BottomTab/>
     </div>
   );
 }

@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import './css/BottomTab.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MdOutlineSlowMotionVideo } from "react-icons/md";
-import { GoHomeFill } from "react-icons/go";
 import { BiMessageRoundedDots } from "react-icons/bi";
+import {RiHome5Line} from "react-icons/ri";
 
 function BottomTab() {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ function BottomTab() {
         className={activeTab === 'acceuil' ? 'active' : ''}
         onClick={() => handlePageChange('acceuil')}
       >
-        <GoHomeFill style={{ height: 25, width: 25 }} />
+        <RiHome5Line style={{ height: 25, width: 25 }} />
       </button>
       <button
         className={activeTab === 'utilisateurs' ? 'active' : ''}
