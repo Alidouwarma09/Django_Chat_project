@@ -66,6 +66,22 @@ useEffect(() => {
       window.removeEventListener('beforeunload', handleSessionEnd);
     };
   }, []);
+
+
+useEffect(() => {
+  const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/Utilisateur/api/comment_sse`);
+  eventSource.onmessage = (event) => {
+    const newComments = JSON.parse(event.data);
+    setComments(prevComments => ({
+      ...prevComments,
+      ...newComments // Fusionnez les nouveaux commentaires avec les commentaires existants
+    }));
+  };
+  return () => {
+    eventSource.close();
+  };
+}, []);
+
   async function fetchComments(publicationId) {
     try {
       const token = localStorage.getItem('token');
