@@ -25,6 +25,7 @@ body {
 }
 .publication{
     border-top: 2px gray;
+    margin-bottom: 200px;
 }
 
 .action-button {

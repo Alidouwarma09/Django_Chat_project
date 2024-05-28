@@ -74,7 +74,7 @@ useEffect(() => {
     const newComments = JSON.parse(event.data);
     setComments(prevComments => ({
       ...prevComments,
-      ...newComments // Fusionnez les nouveaux commentaires avec les commentaires existants
+      ...newComments
     }));
   };
   return () => {

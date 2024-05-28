@@ -7,7 +7,7 @@ from Utilisateur.views import Inscription, connexion_utilisateur, accueil_utilis
     get_publications, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, \
     get_comment_count, start_video_call, toute_les_videos, get_comments, \
     messages_non_lus_sse, CommentSSEView, get_publications_video, StoryView, StoryGetView, utilisateur_info, \
-    tout_les_utilisateurs, utilisateurs_select, messages_utilisateur, MessageSSEView
+    tout_les_utilisateurs, utilisateurs_select, MessageSSEView, get_user_messages
 
 app_name = 'Utilisateur'
 
@@ -18,7 +18,6 @@ urlpatterns = [
     path('detail_utilisateur/<int:utilisateur_detail_id>/', detail_utilisateur, name='detail_utilisateur'),
     path('api/envoyer_message_images/', envoyer_message_images, name='envoyer_message_images'),
     path('api/envoyer_message_text/', envoyer_message_text, name='envoyer_message_text'),
-    path('api/messages_utilisateur/<int:utilisateur_id>/', messages_utilisateur, name='messages_utilisateur'),
     path('api/envoyer_message_audio/', envoyer_message_audio, name='envoyer_message_audio'),
     path('apk/publier_photo/', publier_photo, name='publier_photo'),
     path('api/get_publications/', get_publications, name='get_publications'),
@@ -38,6 +37,7 @@ urlpatterns = [
     path('api/messages/non-lus/', views.nombre_messages_non_lus, name='nombre_messages_non_lus'),
     path('start-video-call/', start_video_call, name='start_video_call'),
     path('toute_les_videos/', toute_les_videos, name='toute_les_videos'),
+    path('api/get_user_messages/', get_user_messages, name='get_user_messages'),
     path('api/get_comments/<int:publication_id>/', get_comments, name='get_comments'),
     path('api/comment_sse/', CommentSSEView.as_view(), name='comment_sse'),
     path('api/message_sse/', MessageSSEView.as_view(), name='message_sse'),

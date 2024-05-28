@@ -430,22 +430,43 @@ def get_comments(request, publication_id):
     return JsonResponse(comments_data, safe=False)
 
 
+@csrf_exempt
+def get_user_messages(request, utilisateur_id):
+    messages = Message.objects.filter(utilisateur_id=utilisateur_id)
+    messages_data = [{
+        'id': message.id,
+        'contenu_message': message.contenu_message,
+        'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+        # Ajoutez d'autres champs nécessaires ici
+    } for message in messages]
+    return JsonResponse(messages_data, safe=False)
+
+
 class MessageSSEView(View):
     def get(self, request, *args, **kwargs):
+        last_message_id_sent = 0  # Initialisez la variable last_message_id_sent
+
         def event_stream():
-            global last_comment_id_sent
+            nonlocal last_message_id_sent  # Utilisez nonlocal pour accéder à la variable last_message_id_sent de l'encapsulation externe
             while True:
-                message = Message.objects.filter(id__gt=last_message_id_sent).order_by('-timestamp')[:5]
-                if message:
-                    message_data = [
-                        {'envoi': message.envoi, 'contenu_message': message.contenu_message,
-                         'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')} for message in
-                        message]
-                    for message in message_data:
-                        print(message['publication_id'])
+                messages = Message.objects.filter(id__gt=last_message_id_sent).order_by('-timestamp')[:5]
+                if messages:
+                    message_data = []
+                    for message in messages:
+                        # Convertir l'objet Utilisateur en un dictionnaire
+                        user_data = {
+                            'id': message.envoi.id,
+                            'username': message.envoi.username,
+                            # Ajoutez d'autres attributs de l'utilisateur si nécessaire
+                        }
+                        message_data.append({
+                            'envoi': user_data,
+                            'contenu_message': message.contenu_message,
+                            'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+                        })
                     data = json.dumps({'message': message_data})
                     yield f"data: {data}\n\n"
-                    last_message_id_sent = message[0].id
+                    last_message_id_sent = messages[0].id
                 time.sleep(1)
 
         response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')

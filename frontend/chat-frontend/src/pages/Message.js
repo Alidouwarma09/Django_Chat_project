@@ -13,6 +13,7 @@ function Message() {
    const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
      const navigate = useNavigate();
+      const [messagesLoaded, setMessagesLoaded] = useState(false); // État pour suivre si les messages ont déjà été chargés
 
 
 
@@ -38,31 +39,19 @@ function Message() {
 
     fetchUtilisateur();
   }, [utilisateurId]);
-useEffect(() => {
-    const fetchMessages = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/messages_utilisateur/${utilisateurId}/`, {
-                headers: {
-                    'Authorization': `Token ${token}`
-                }
-            });
-            setMessages(response.data.messages);
-        } catch (error) {
-            console.error('Erreur lors de la récupération des messages:', error);
-        }
+
+  useEffect(() => {
+    const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/Utilisateur/api/message_sse`);
+    eventSource.onmessage = (event) => {
+      const { message: newMessage } = JSON.parse(event.data);
+      setMessages(prevMessages => [...prevMessages, ...newMessage]);
     };
-
-    fetchMessages();
-}, [utilisateurId]);
-
-
+    return () => {
+      eventSource.close();
+    };
+  }, []);
 const handleMessageSend = async (e) => {
     e.preventDefault();
-    setMessages([...messages, {
-      contenu_message: messageTexte,
-      timestamp: new Date().toISOString(),
-    }]);
 
     try {
       const token = localStorage.getItem('token');
@@ -85,10 +74,6 @@ const handleMessageSend = async (e) => {
 
       if (response.data.status === 'success') {
         setMessageTexte('');
-        setMessages([...messages, {
-          contenu_message: messageTexte,
-          timestamp: new Date().toISOString(),
-        }]);
       }
     } catch (error) {
       console.error('Erreur lors de l\'envoi du message:', error);
@@ -96,19 +81,12 @@ const handleMessageSend = async (e) => {
       setLoading(false);
     }
   };
-
-
-
-
-
   const handleImageSend = async (e) => {
     e.preventDefault();
     if (!messageImage) return;
-
     const formData = new FormData();
     formData.append('utilisateur_id', utilisateurId);
     formData.append('images', messageImage);
-
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/envoyer_message_images/`, formData, {
@@ -126,15 +104,12 @@ const handleMessageSend = async (e) => {
       console.error('Erreur lors de l\'envoi de l\'image:', error);
     }
   };
-
   const handleAudioSend = async (e) => {
     e.preventDefault();
     if (!messageAudio) return;
-
     const formData = new FormData();
     formData.append('utilisateur_id', utilisateurId);
     formData.append('audio', messageAudio);
-
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/envoyer_message_audio/`, formData, {
@@ -143,7 +118,6 @@ const handleMessageSend = async (e) => {
           'Content-Type': 'multipart/form-data'
         }
       });
-
       if (response.data.status === 'success') {
         setMessageAudio(null);
       }
@@ -151,7 +125,6 @@ const handleMessageSend = async (e) => {
       console.error('Erreur lors de l\'envoi de l\'audio:', error);
     }
   };
-
   if (!utilisateur) {
     return <div>Chargement...</div>;
   }
