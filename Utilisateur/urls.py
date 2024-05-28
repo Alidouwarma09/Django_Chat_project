@@ -7,7 +7,7 @@ from Utilisateur.views import Inscription, connexion_utilisateur, accueil_utilis
     get_publications, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, \
     get_comment_count, start_video_call, toute_les_videos, get_comments, \
     messages_non_lus_sse, CommentSSEView, get_publications_video, StoryView, StoryGetView, utilisateur_info, \
-    tout_les_utilisateurs, utilisateurs_select
+    tout_les_utilisateurs, utilisateurs_select, messages_utilisateur
 
 app_name = 'Utilisateur'
 
@@ -18,6 +18,7 @@ urlpatterns = [
     path('detail_utilisateur/<int:utilisateur_detail_id>/', detail_utilisateur, name='detail_utilisateur'),
     path('api/envoyer_message_images/', envoyer_message_images, name='envoyer_message_images'),
     path('api/envoyer_message_text/', envoyer_message_text, name='envoyer_message_text'),
+    path('api/messages_utilisateur/<int:utilisateur_id>/', messages_utilisateur, name='messages_utilisateur'),
     path('api/envoyer_message_audio/', envoyer_message_audio, name='envoyer_message_audio'),
     path('apk/publier_photo/', publier_photo, name='publier_photo'),
     path('api/get_publications/', get_publications, name='get_publications'),

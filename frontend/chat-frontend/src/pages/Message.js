@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import axios from 'axios';
 import './css/message.css';
 import {IoReloadSharp} from "react-icons/io5";
@@ -11,7 +11,8 @@ function Message() {
   const [messageImage, setMessageImage] = useState(null);
   const [messageAudio, setMessageAudio] = useState(null);
    const [loading, setLoading] = useState(false);
-  const [messages, setMessages] = useState([]); // Ajout de l'état des messages
+  const [messages, setMessages] = useState([]);
+     const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUtilisateur = async () => {
@@ -35,6 +36,24 @@ function Message() {
 
     fetchUtilisateur();
   }, [utilisateurId]);
+useEffect(() => {
+    const fetchMessages = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/messages_utilisateur/${utilisateurId}/`, {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            });
+            setMessages(response.data.messages);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des messages:', error);
+        }
+    };
+
+    fetchMessages();
+}, [utilisateurId]);
+
 
 const handleMessageSend = async (e) => {
     e.preventDefault();
@@ -134,13 +153,16 @@ const handleMessageSend = async (e) => {
   if (!utilisateur) {
     return <div>Chargement...</div>;
   }
+   const handleBack = () => {
+    navigate(-1);
+  };
   return (
       <div>
           <div className="chat-container">
             <div className="chat-content">
               <div className="conversation active" id="conversation-1">
                 <div className="conversation-top">
-                  <button type="button" className="conversation-back"><i className="ri-arrow-left-line"></i></button>
+                  <button type="button" className="conversation-back" onClick={handleBack}><i className="ri-arrow-left-line"></i></button>
                   <div className="conversation-user">
                     <img className="conversation-user-image"
                          src={utilisateur.image_utilisateur}

@@ -202,6 +202,24 @@ def detail_utilisateur(request, utilisateur_detail_id):
     return render(request, 'detail_utilisateur.html', {'utilisateur_detail': utilisateur_detail})
 
 
+def messages_utilisateur(request, utilisateur_id):
+    auth_result = TokenAuthentication().authenticate(request)
+
+    if auth_result is None:
+        return JsonResponse({'error': 'Utilisateur non authentifié'}, status=401)
+
+    utilisateur_connecte, _ = auth_result
+
+    try:
+        messages = Message.objects.filter(
+            (Q(envoi=utilisateur_connecte) & Q(recoi_id=utilisateur_id)) |
+            (Q(envoi_id=utilisateur_id) & Q(recoi=utilisateur_connecte))
+        ).values('contenu_message', 'timestamp', 'envoi', 'recoi')
+        return JsonResponse({'messages': list(messages)})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
 def envoyer_message_images(request):
     if request.method == 'POST':
         form = MessageimagesForm(request.POST, request.FILES)
