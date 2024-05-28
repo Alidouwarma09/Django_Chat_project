@@ -430,6 +430,44 @@ def get_comments(request, publication_id):
     return JsonResponse(comments_data, safe=False)
 
 
+class MessageSSEView(View):
+    def get(self, request, *args, **kwargs):
+        def event_stream():
+            global last_comment_id_sent
+            while True:
+                message = Message.objects.filter(id__gt=last_message_id_sent).order_by('-timestamp')[:5]
+                if message:
+                    message_data = [
+                        {'envoi': message.envoi, 'contenu_message': message.contenu_message,
+                         'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')} for message in
+                        message]
+                    for message in message_data:
+                        print(message['publication_id'])
+                    data = json.dumps({'message': message_data})
+                    yield f"data: {data}\n\n"
+                    last_message_id_sent = message[0].id
+                time.sleep(1)
+
+        response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+        response['Cache-Control'] = 'no-cache'
+        return response
+
+
+# @csrf_exempt
+# def get_message(request, publication_id):
+#     messages = Message.objects.filter(publication_id=publication_id).order_by('-date_comment')
+#     comments_data = [{
+#         'id': message.id,
+#         'texte': message.texte,
+#         'utilisateur_nom': message.utilisateur.nom,
+#         'utilisateur_prenom': message.utilisateur.prenom,
+#         'date_comment': comment.date_commentaire(),
+#         'utilisateur_image_com': request.build_absolute_uri(
+#             comment.utilisateur.image.url) if comment.utilisateur.image else None,
+#     } for message in messages]
+#     return JsonResponse(comments_data, safe=False)
+
+
 def get_comment_count(request):
     publication_id = request.GET.get('publication_id')
     comment_count = Comment.objects.filter(publication_id=publication_id).count()
