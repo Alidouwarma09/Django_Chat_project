@@ -111,12 +111,19 @@ def utilisateurs_select(request, utilisateur_id):
 
 def tout_les_utilisateurs(request):
     utilisateurs = Utilisateur.objects.all()
-    utilisateurs_list = list(utilisateurs.values('id', 'nom', 'prenom', 'image'))
+    utilisateurs_list = []
 
-    for utilisateur in utilisateurs_list:
-        utilisateur['image'] = request.build_absolute_uri(utilisateur['image'])
+    for utilisateur in utilisateurs:
+        utilisateur_data = {
+            'id': utilisateur.id,
+            'nom': utilisateur.nom,
+            'prenom': utilisateur.prenom,
+            'image': request.build_absolute_uri(utilisateur.image.url)
+            # Assurez-vous d'utiliser .url pour obtenir l'URL de l'image
+        }
+        utilisateurs_list.append(utilisateur_data)
 
-    return JsonResponse(utilisateurs_list, safe=False)
+    return JsonResponse({'utilisateurs': utilisateurs_list})
 
 
 def get_publications(request):

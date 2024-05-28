@@ -3,7 +3,6 @@ import axios from 'axios';
 import './css/videos.css'
 import likeSon from './son/likesSon.mp3'
 import ReactPlayer from "react-player";
-import { IoIosPlayCircle } from "react-icons/io";
 import { GoArrowLeft } from "react-icons/go";
 import { IoSendOutline } from "react-icons/io5";
 import { RiShareForwardFill } from "react-icons/ri";

@@ -8,7 +8,7 @@ function Utilisateurs() {
   const [utilisateurs, setUtilisateurs] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
+ useEffect(() => {
     const fetchUtilisateurs = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -17,7 +17,8 @@ function Utilisateurs() {
             'Authorization': `Token ${token}`
           }
         });
-        setUtilisateurs(response.data);
+        // Utilisez response.data.utilisateurs au lieu de response.data
+        setUtilisateurs(response.data.utilisateurs);
       } catch (error) {
         console.error('Erreur lors de la récupération des utilisateurs:', error);
       }
