@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import './css/message.css'
+import './css/message.css';
+import {IoReloadSharp} from "react-icons/io5";
 
 function Message() {
   const { utilisateurId } = useParams();
   const [utilisateur, setUtilisateur] = useState(null);
+  const [messageTexte, setMessageTexte] = useState('');
+  const [messageImage, setMessageImage] = useState(null);
+  const [messageAudio, setMessageAudio] = useState(null);
+   const [loading, setLoading] = useState(false);
+  const [messages, setMessages] = useState([]); // Ajout de l'état des messages
 
   useEffect(() => {
-    console.log('utilisateurId:', utilisateurId);
     const fetchUtilisateur = async () => {
       if (!utilisateurId) {
         console.error('ID d\'utilisateur manquant dans l\'URL');
@@ -22,7 +27,6 @@ function Message() {
             'Authorization': `Token ${token}`
           }
         });
-        console.log('Réponse de l\'API:', response.data);
         setUtilisateur(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération de l\'utilisateur:', error);
@@ -32,13 +36,106 @@ function Message() {
     fetchUtilisateur();
   }, [utilisateurId]);
 
-  if (!utilisateur) {
-    return <div>Aucun utilisateur sélectionné</div>;
-  }
+const handleMessageSend = async (e) => {
+    e.preventDefault();
+    setMessages([...messages, {
+      contenu_message: messageTexte,
+      timestamp: new Date().toISOString(),
+    }]);
 
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+    formData.append('utilisateur_id', utilisateurId);
+    formData.append('contenu_message', messageTexte);
+
+    setLoading(true);
+
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/Utilisateur/api/envoyer_message_text/`,
+      formData,
+      {
+        headers: {
+          'Authorization': `Token ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    );
+
+      if (response.data.status === 'success') {
+        setMessageTexte('');
+        setMessages([...messages, {
+          contenu_message: messageTexte,
+          timestamp: new Date().toISOString(),
+        }]);
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi du message:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
+
+
+  const handleImageSend = async (e) => {
+    e.preventDefault();
+    if (!messageImage) return;
+
+    const formData = new FormData();
+    formData.append('utilisateur_id', utilisateurId);
+    formData.append('images', messageImage);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/envoyer_message_images/`, formData, {
+        headers: {
+          'Authorization': `Token ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.data.status === 'success') {
+        setMessageImage(null);
+        // Handle successful image message send
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi de l\'image:', error);
+    }
+  };
+
+  const handleAudioSend = async (e) => {
+    e.preventDefault();
+    if (!messageAudio) return;
+
+    const formData = new FormData();
+    formData.append('utilisateur_id', utilisateurId);
+    formData.append('audio', messageAudio);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/envoyer_message_audio/`, formData, {
+        headers: {
+          'Authorization': `Token ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.data.status === 'success') {
+        setMessageAudio(null);
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi de l\'audio:', error);
+    }
+  };
+
+  if (!utilisateur) {
+    return <div>Chargement...</div>;
+  }
   return (
       <div>
-        <section className="chat-section">
           <div className="chat-container">
             <div className="chat-content">
               <div className="conversation active" id="conversation-1">
@@ -52,7 +149,7 @@ function Message() {
                     <div>
                       <div
                           className="conversation-user-name">{utilisateur.nom_utilisateur} {utilisateur.prenom_utilisateur}</div>
-                      <div className="conversation-user-status online">online</div>
+                      <div className="conversation-user-status online">En ligne</div>
                     </div>
                   </div>
                   <div className="conversation-buttons">
@@ -63,24 +160,41 @@ function Message() {
                 </div>
                 <div className="conversation-main">
                   <ul className="conversation-wrapper">
-                    <div className="coversation-divider"><span>Today</span></div>
-                    {/* Messages here */}
+                    <div className="coversation-divider"><span>Aujourd'hui</span></div>
+                    {messages.map((message, index) => (
+                      <li key={index} className="conversation-item me">
+                        <div className="conversation-item-content">
+                          <div className="conversation-item-wrapper">
+                            <div className="conversation-item-box">
+                              <div className="conversation-item-text">
+                                <p>{message.contenu_message}</p>
+                                <div className="conversation-item-time">{message.timestamp}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                   {loading && <IoReloadSharp className="loading rotate" />}
                   </ul>
                 </div>
-                <div className="conversation-form">
+                <form className="conversation-form" onSubmit={handleMessageSend}>
                   <button type="button" className="conversation-form-button"><i className="ri-emotion-line"></i>
                   </button>
+
                   <div className="conversation-form-group">
-                    <textarea className="conversation-form-input" rows="1" placeholder="Type here..."></textarea>
-                    <button type="button" className="conversation-form-record"><i className="ri-mic-line"></i></button>
+                    <textarea className="conversation-form-input" rows="1" placeholder="Type here..."
+                              value={messageTexte} onChange={(e) => setMessageTexte(e.target.value)}></textarea>
+                    <button type="button" className="conversation-form-record"><i className="ri-mic-line"></i>
+                    </button>
                   </div>
-                  <button type="button" className="conversation-form-button conversation-form-submit"><i
+
+                  <button type="submit" className="conversation-form-button conversation-form-submit"><i
                       className="ri-send-plane-2-line"></i></button>
-                </div>
+                </form>
               </div>
             </div>
           </div>
-        </section>
       </div>
   );
 }

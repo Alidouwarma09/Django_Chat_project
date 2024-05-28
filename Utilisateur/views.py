@@ -228,18 +228,25 @@ def envoyer_message_text(request):
         form = MessageForm(request.POST)
         if form.is_valid():
             contenu_message = form.cleaned_data['contenu_message']
-            envoi_utilisateur = request.user
-            utilisateur_recoi = get_object_or_404(Utilisateur, id=request.POST.get('utilisateur_id'))
-            nouveau_message = Message.objects.create(
-                envoi=envoi_utilisateur,
-                recoi=utilisateur_recoi,
-                contenu_message=contenu_message
-            )
-            nouveau_message.save()
-            return JsonResponse({'status': 'success', 'message': contenu_message,
-                                 'timestamp': nouveau_message.timestamp.strftime("%Y-%m-%d %H:%M:%S")})
-        else:
+            auth_result = TokenAuthentication().authenticate(request)
 
+            if auth_result is not None:
+                envoi_utilisateur, _ = auth_result
+                utilisateur_recoi = get_object_or_404(Utilisateur, id=request.POST.get('utilisateur_id'))
+                nouveau_message = Message.objects.create(
+                    envoi=envoi_utilisateur,
+                    recoi=utilisateur_recoi,
+                    contenu_message=contenu_message
+                )
+                nouveau_message.save()
+                return JsonResponse({
+                    'status': 'success',
+                    'contenu_message': contenu_message,
+                    'timestamp': nouveau_message.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+                })
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Authentication failed'})
+        else:
             return JsonResponse({'status': 'error', 'errors': form.errors})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
