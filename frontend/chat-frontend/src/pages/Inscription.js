@@ -65,9 +65,9 @@ const [imagePreview, setImagePreview] = useState(null);
                             <h1>Inscription</h1>
                         </div>
                         <form onSubmit={handleSubmit} className="login-card-form" encType="multipart/form-data">
-                            <div className="form-item image-upload-container">
+                            <div className="form-item image-upload-container" style={{display: "grid"}} >
                                 {imagePreview &&
-                                    <img src={imagePreview} alt="Prévisualisation" className="image-preview"/>}
+                                    <img src={imagePreview} alt="Prévisualisation" style={{borderRadius: "50%", height: 60, width: 60}} className="image-preview"/>}
                                 <TbCameraPlus className="upload-icon" onClick={triggerFileInput} />
                                 <input
                                     ref={fileInputRef}

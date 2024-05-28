@@ -8,6 +8,14 @@ function Utilisateurs() {
   const [utilisateurs, setUtilisateurs] = useState([]);
   const navigate = useNavigate();
 
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/connexion');
+        }
+    }, [navigate]);
+
  useEffect(() => {
     const fetchUtilisateurs = async () => {
       try {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {Link, useNavigate} from 'react-router-dom';
 import Chater_logo from './icons/chater_logo.png'
@@ -11,6 +11,14 @@ function Connexion() {
     const [formErrors, setFormErrors] = useState({ username: '', password: '' });
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/acceuil');
+        }
+    }, [navigate]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -29,8 +37,11 @@ function Connexion() {
             password: password
         })
         .then(response => {
+                if (response.status === 200) {
+                   localStorage.setItem('token', response.data.token);
+                  navigate('/acceuil')
+                }
             localStorage.setItem('token', response.data.token);
-            navigate('/acceuil')
         })
         .catch(error => {
             setLoading(false);
