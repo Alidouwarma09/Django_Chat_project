@@ -541,6 +541,35 @@ def creer_publication_video(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
+def creer_publication_photo(request):
+    try:
+        if request.method == 'POST':
+            auth_result = TokenAuthentication().authenticate(request)
+            if auth_result is not None:
+                user, _ = auth_result
+                utilisateur_id = user.id
+
+                titre = request.POST.get('titre')
+                photo_file = request.FILES.get('photo_file')
+
+                if titre and photo_file:
+                    publication = Publication.objects.create(utilisateur_id=utilisateur_id, titre=titre,
+                                                             photo_file=photo_file)
+                    publication_data = serialize('json', [publication])
+                    return JsonResponse({'publication': publication_data, 'publication_id': publication.id})
+                else:
+                    errors = {}
+                    if not titre:
+                        errors['titre'] = 'Le titre est manquant'
+                    if not photo_file:
+                        errors['photo_file'] = 'Le fichier photo est manquant'
+                    return JsonResponse({'error': 'Données manquantes', 'errors': errors}, status=400)
+            else:
+                return JsonResponse({'error': 'Unauthorized'}, status=401)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
 def parametre(request):
     return render(request, 'parametre.html')
 

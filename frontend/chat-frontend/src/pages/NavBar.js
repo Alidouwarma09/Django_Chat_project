@@ -9,10 +9,12 @@ import {LuRefreshCcw} from "react-icons/lu";
 function Navbar() {
     const [publicationSectionVisible, setPublicationSectionVisible] = useState(false);
     const [VideoSectionVisible, setVideoSectionVisible] = useState(false);
+    const [PhotoSectionVisible, setPhotoSectionVisible] = useState(false);
     const navigate = useNavigate();
     const [selectedBackground, setSelectedBackground] = useState('');
     const [textPreview, setTextPreview] = useState('');
     const [videoPreview, setVideoPreview] = useState('');
+    const [photoPreview, setPhotoPreview] = useState('');
     const [isPublishing, setIsPublishing] = useState(false);
     const [progressPercent, setProgressPercent] = useState(0);
     const [navbarBublicationVisible, setNavbarBublicationVisible] = useState(false);
@@ -50,6 +52,11 @@ function Navbar() {
         setNavbarBublicationVisible(false);
         document.getElementById('videoFileInput').click();
     };
+    const handlePhotoClick = () => {
+        setPhotoSectionVisible(true);
+        setNavbarBublicationVisible(false);
+        document.getElementById('photoFileInput').click();
+    };
 
     const handleBackgroundClick = (background) => {
         setSelectedBackground(background);
@@ -64,6 +71,13 @@ function Navbar() {
         if (selectedFile) {
             const videoURL = URL.createObjectURL(selectedFile);
             setVideoPreview(videoURL);
+        }
+    };
+    const handlePhotoChange = (event) => {
+        const selectedFile = event.target.files[0];
+        if (selectedFile) {
+            const videoURL = URL.createObjectURL(selectedFile);
+            setPhotoPreview(videoURL);
         }
     };
 
@@ -163,6 +177,53 @@ function Navbar() {
             console.error('Erreur:', error);
         });
     };
+    const handlePhoto = () => {
+        handlePhotoishSectionClose()
+        setNavbarBublicationVisible(false);
+        setIsPublishing(true);
+        const interval = setInterval(() => {
+            setProgressPercent(prevPercent => {
+                const newPercent = prevPercent + 10;
+                if (newPercent >= 100) {
+                    clearInterval(interval);
+                }
+                return newPercent;
+            });
+        }, 1000);
+        const token = localStorage.getItem('token');
+        const titre = document.getElementById('texteInput2').value;
+
+        const formData = new FormData();
+        formData.append('titre', titre);
+        formData.append('photo_file', document.getElementById('photoFileInput').files[0]);
+
+        fetch(`${process.env.REACT_APP_API_URL}/Utilisateur/api/creer_publication_photo/`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Token ${token}`,
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: formData,
+        })
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data:', data);
+                if (data) {
+                    setTimeout(() => {
+                        setIsPublishing(false);
+                        setProgressPercent(100);
+                        notification.success({ message: 'Votre contenu a été publié avec succès' });
+                        setPhotoSectionVisible(false);
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+            });
+    };
 
     const handlePublishSectionClose = () => {
         setPublicationSectionVisible(false);
@@ -170,6 +231,9 @@ function Navbar() {
 
     const handleVidishSectionClose = () => {
         setVideoSectionVisible(false);
+    };
+    const handlePhotoishSectionClose = () => {
+        setPhotoSectionVisible(false);
     };
 
     const handleNavbarBublicationClick = () => {
@@ -186,6 +250,7 @@ function Navbar() {
             {navbarBublicationVisible && <div className="dark-overlay"></div>}
             {publicationSectionVisible && <div className="dark-overlay"></div>}
             {VideoSectionVisible && <div className="dark-overlay"></div>}
+            {PhotoSectionVisible && <div className="dark-overlay"></div>}
             <div id="publicationSection" style={{ display: publicationSectionVisible ? 'block' : 'none' }}>
                 <i onClick={handlePublishSectionClose} style={{ fontSize: 30 }} className="bi bi-x-circle-fill"></i>
                 <form className="publier_text_form" id="publicationForm" method="post">
@@ -277,6 +342,25 @@ function Navbar() {
                     </button>
                 </form>
             </div>
+            <div id="publicationSection" style={{ display: PhotoSectionVisible ? 'block' : 'none' }}>
+                <i onClick={handlePhotoishSectionClose} style={{ fontSize: 30 }} className="bi bi-x-circle-fill"></i>
+                <form className="publier_text_form" id="photoForm" method="post">
+                    <textarea id="texteInput2" name="titre" placeholder="Éntrer un titre"></textarea>
+                    <input id="photoFileInput" type="file" name="photo_file" accept="image/*" style={{ display: 'none' }}
+                           onChange={handlePhotoChange} />
+                    <h3>Aperçu</h3>
+                    <div id="preview">
+                        {photoPreview && (
+                            <img  id="photoPreview" src={photoPreview}  alt="image"/>
+                        )}
+                    </div>
+                    <button id="publicationButton" type="button" onClick={() => {
+                        handlePhoto();
+                        setPublicationSectionVisible(false);
+                    }}>Publier
+                    </button>
+                </form>
+            </div>
             {isPublishing && (
                 <Progress
                     percent={progressPercent}
@@ -305,7 +389,7 @@ function Navbar() {
                 <nav className="navbarBublication" ref={navbarBublicationRef}>
                     <p onClick={handlePublicationClick}><i id="publication-action-icon" className="bi bi-fonts"></i> Publication</p>
                     <p onClick={handleVideoClick}><i id="video-icon" className="bi bi-camera-video"></i> Mettre en ligne une video </p>
-                    <p><i id="photo-icon" className="bi bi-patch-plus"></i> Partager une image</p>
+                    <p onClick={handlePhotoClick}><i id="photo-icon" className="bi bi-patch-plus"></i> Partager une image</p>
                 </nav>
             )}
         </div>

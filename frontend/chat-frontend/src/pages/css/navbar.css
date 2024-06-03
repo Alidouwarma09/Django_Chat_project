@@ -104,6 +104,14 @@
         resize: none;
     }
 
+    #texteInput2 {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #dddfe2;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        resize: none;
+    }
     #preview {
         border-top: 1px solid #dddfe2;
         padding-top: 16px;

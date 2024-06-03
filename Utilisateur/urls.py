@@ -27,6 +27,7 @@ urlpatterns = [
     path('apk/get_comment_count/', get_comment_count, name='get_comment_count'),
     path('api/creer_publication/', views.creer_publication, name='creer_publication'),
     path('api/creer_publication_video/', views.creer_publication_video, name='creer_publication_video'),
+    path('api/creer_publication_photo/', views.creer_publication_photo, name='creer_publication_photo'),
     path('parametre/', views.parametre, name='parametre'),
     path('utilisateur_fini_ecrire/', views.utilisateur_fini_ecrire, name='utilisateur_fini_ecrire'),
     path('utilisateur_en_train_decrire/', views.utilisateur_en_train_decrire, name='utilisateur_en_train_decrire'),
