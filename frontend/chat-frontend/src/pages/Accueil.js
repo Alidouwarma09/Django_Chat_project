@@ -24,6 +24,7 @@ function Acceuil() {
   const [loading, setLoading] = useState(true);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedPublicationId, setSelectedPublicationId] = useState(null);
+  const [copiedText, setCopiedText] = useState(false);
 
 
   const getPublicationsFromLocalStorage = () => {
@@ -194,11 +195,27 @@ useEffect(() => {
   const copyTextToClipboard = (text) => {
     navigator.clipboard.writeText(text)
         .then(() => {
-          console.log('Texte copié avec succès !');
+          setCopiedText(true);
+          setTimeout(() => {
+            setCopiedText(false);
+            handleClosePopup();
+          }, 2000); // 2 secondes
         })
-        .catch((error) => {
-          console.error('Erreur lors de la copie du texte :', error);
-        });
+  };
+  const downloadImage = async (url) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `image_${Date.now()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      handleClosePopup();
+    } catch (error) {
+      console.error('Erreur lors du téléchargement de l\'image:', error);
+    }
   };
   const handleClosePopup = () => {
     setSelectedPublicationId(null);
@@ -246,9 +263,9 @@ useEffect(() => {
               <div key={publication.id} className="popup-wrapper" style={{ position: 'absolute', right: 0, marginTop: 150, width:300}}>
                 <div className="popup-content" id="popup-content">
                   {publication.contenu ? (
-                      <p onClick={() => copyTextToClipboard(publication.contenu)}>Copier le texte</p>
+                      <p onClick={() => copyTextToClipboard(publication.contenu)}> {copiedText ? "Texte copié" : "Copier le texte"}</p>
                   ) : (
-                      <p>Télécharger l'image</p>
+                      <p onClick={() => downloadImage(publication.photo_file_url)}>Télécharger l'image</p>
                   )}
                 </div>
               </div>
