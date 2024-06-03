@@ -80,6 +80,8 @@
         margin-top: 16px;
         z-index: 100;
         overflow-x: auto;
+        top: 0;
+        height: 100%;
 
     }
         #publicationForm {
