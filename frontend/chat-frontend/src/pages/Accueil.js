@@ -232,6 +232,7 @@ useEffect(() => {
               justifyContent: "center",
               alignItems: "center",
               color: "white",
+              fontSize: 20,
               backgroundImage:
               publication.couleur_fond
           }}>
