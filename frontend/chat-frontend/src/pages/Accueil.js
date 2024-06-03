@@ -11,6 +11,7 @@ import "moment/locale/fr";
 import { IoEyeSharp } from "react-icons/io5";
 import Stories from "../compoment/Stories";
 import { useLongPress } from '@uidotdev/usehooks';
+import {CiMenuKebab} from "react-icons/ci";
 
 
 
@@ -21,8 +22,11 @@ function Acceuil() {
   const [commentTexts, setCommentTexts] = useState({});
   const [isStorySelected, setIsStorySelected] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedPublicationId, setSelectedPublicationId] = useState(null);
 
-const getPublicationsFromLocalStorage = () => {
+
+  const getPublicationsFromLocalStorage = () => {
   const publications = localStorage.getItem('publications');
 
   return publications ? JSON.parse(publications) : [];
@@ -184,7 +188,21 @@ useEffect(() => {
   const handleLongPress = () => {
     console.log("Long press detected");
   };
-
+  const handleOpenPopup = (publicationId) => {
+    setSelectedPublicationId(publicationId);
+  };
+  const copyTextToClipboard = (text) => {
+    navigator.clipboard.writeText(text)
+        .then(() => {
+          console.log('Texte copié avec succès !');
+        })
+        .catch((error) => {
+          console.error('Erreur lors de la copie du texte :', error);
+        });
+  };
+  const handleClosePopup = () => {
+    setSelectedPublicationId(null);
+  };
   const longPressEvent = useLongPress(handleLongPress, { delay: 800 });
   return (
     <div  className={isStorySelected ? 'no-background' : ''}  onLongPress={handleLongPress}
@@ -204,25 +222,40 @@ useEffect(() => {
   publications.map((publication, index) => (
       <div key={publication.id} className="publication" style={{borderTop: '2px solid gray'}}>
           {publication.photo_file && <img src={publication.photo_file} alt="Publication"/>}
-          <div className="publication-header">
-              <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur"
-                   className="user-profile"/>
-              <div className="user-info">
-                  <p className="user-name">{publication.utilisateur_nom} {publication.utilisateur_prenom}</p>
-                  <p className="publication-time">
-                               <span style={{fontSize: 10}}>
-                                    {moment(publication.date_publication).diff(moment(), 'days') < -7
-                                        ? moment(publication.date_publication).format('DD/MM/YYYY')
-                                        : moment(publication.date_publication).fromNow(true)
-                                            .replace('minutes', 'min')
-                                            .replace('jours', 'j')
-                                            .replace('une heure', '1h')
-                                            .replace('heures', 'h')}{" "}
-                                   <i className="bi bi-globe-americas"></i>
-                               </span>
-                  </p>
-              </div>
+        <div className="publication-header">
+          <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur" className="user-profile" />
+          <div className="user-info">
+            <p className="user-name">{publication.utilisateur_nom} {publication.utilisateur_prenom}</p>
+            <p className="publication-time">
+            <span style={{ fontSize: 10 }}>
+                {moment(publication.date_publication).diff(moment(), 'days') < -7
+                    ? moment(publication.date_publication).format('DD/MM/YYYY')
+                    : moment(publication.date_publication).fromNow(true)
+                        .replace('minutes', 'min')
+                        .replace('jours', 'j')
+                        .replace('une heure', '1h')
+                        .replace('heures', 'h')}{" "}
+              <i className="bi bi-globe-americas"></i>
+            </span>
+            </p>
           </div>
+          <div style={{ position: 'absolute', right: 0, padding:30, fontSize:20 }}>
+            <CiMenuKebab onClick={() => handleOpenPopup(publication.id)} />
+          </div>
+          {selectedPublicationId === publication.id && (
+              <div key={publication.id} className="popup-wrapper" style={{ position: 'absolute', right: 0, marginTop: 150, width:300}}>
+                <div className="popup-content" id="popup-content">
+                  {publication.contenu ? (
+                      <p onClick={() => copyTextToClipboard(publication.contenu)}>Copier le texte</p>
+                  ) : (
+                      <p>Télécharger l'image</p>
+                  )}
+                </div>
+              </div>
+          )}
+
+        </div>
+
           {!publication.contenu && (
               <>
                 <p style={{
