@@ -223,7 +223,13 @@ useEffect(() => {
           </div>
           {!publication.contenu && (
               <>
-                  <p>{publication.titre}</p>
+                <p style={{
+                  fontFamily: "verdana",
+                  textShadow: `1px 1px 1px #919191,
+                                1px 18px 6px rgba(16,16,16,0.4),
+                                1px 30px 60px rgba(16,16,16,0.4)`,
+                  fontSize: 15
+                }}>{publication.titre}</p>
               </>
           )}
           <div className="publication-content" style={{
@@ -233,8 +239,10 @@ useEffect(() => {
               alignItems: "center",
               color: "white",
               fontSize: 20,
-              backgroundImage:
-              publication.couleur_fond
+            backgroundImage: publication.photo_file ? '' : publication.couleur_fond,
+            textShadow: `1px 1px 1px #919191,
+                                1px 18px 6px rgba(16,16,16,0.4),
+                                1px 30px 60px rgba(16,16,16,0.4)`
           }}>
               {publication.contenu ? (
                   <>
