@@ -215,6 +215,8 @@ useEffect(() => {
                                         ? moment(publication.date_publication).format('DD/MM/YYYY')
                                         : moment(publication.date_publication).fromNow(true)
                                             .replace('minutes', 'min')
+                                            .replace('jours', 'j')
+                                            .replace('une heure', '1h')
                                             .replace('heures', 'h')}{" "}
                                    <i className="bi bi-globe-americas"></i>
                                </span>

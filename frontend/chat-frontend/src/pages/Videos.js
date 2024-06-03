@@ -184,6 +184,15 @@ function Videos(id) {
                                         playing={activeVideo === video.id}
                                         controls
                                     />
+                                    {/*<video*/}
+                                    {/*    key={video.id}*/}
+                                    {/*    src={`${process.env.REACT_APP_CLOUDINARY_URL}${video.videos_file}.mp4`}*/}
+                                    {/*    id={video.id}*/}
+                                    {/*    width="100%"*/}
+                                    {/*    height="100%"*/}
+                                    {/*    autoPlay={ video.id}*/}
+                                    {/*    controls*/}
+                                    {/*/>*/}
                                 </div>
                             </div>
                             <div className="row publication-actions">
