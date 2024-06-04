@@ -11,6 +11,7 @@ import Utilisateurs from "./pages/Utilisateurs";
 
 const isAuthenticated = () => {
     return localStorage.getItem('token') !== null;
+
 };
 
 function App() {
