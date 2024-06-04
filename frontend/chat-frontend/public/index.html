@@ -5,12 +5,7 @@
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#931a1a" />
-      <meta name="apple-mobile-web-app-capable" content="yes">
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-      <!-- Icons and Splash Screens -->
-      <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-      <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
@@ -31,17 +26,4 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>
-  <script>
-      if (window.matchMedia('(display-mode: standalone)').matches) {
-          // Couleur de la barre de statut pour Android
-          const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-          if (metaThemeColor) {
-              metaThemeColor.setAttribute('content', '#931a1a');
-          }
-
-          // Couleur de la barre de navigation pour Android
-          document.body.style.backgroundColor = '#931a1a';
-          document.body.style.height = '100vh';
-      }
-  </script>
 </html>
