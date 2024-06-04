@@ -144,7 +144,7 @@ function Videos(id) {
                     <GoArrowLeft onClick={handleGoBack} style={{ width: 34, height: 34, color: "white" }} />
                 </nav>
             </div>
-            <div className="conversation active">
+            <div className="conversation active" style={{height: "100vh", overflow: "auto"}}>
                 {loading ? (
                     <>
                         <Skeleton height={200} />
