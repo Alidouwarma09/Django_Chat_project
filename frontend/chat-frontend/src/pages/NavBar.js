@@ -6,6 +6,8 @@ import { Progress, notification } from 'antd';
 import { BsPlusSquareDotted } from "react-icons/bs";
 import {LuRefreshCcw} from "react-icons/lu";
 
+
+
 function Navbar() {
     const [publicationSectionVisible, setPublicationSectionVisible] = useState(false);
     const [VideoSectionVisible, setVideoSectionVisible] = useState(false);
@@ -387,6 +389,7 @@ function Navbar() {
             </nav>
             {navbarBublicationVisible && (
                 <nav className="navbarBublication" ref={navbarBublicationRef}>
+
                     <p onClick={handlePublicationClick}><i id="publication-action-icon" className="bi bi-fonts"></i> Publication</p>
                     <p onClick={handleVideoClick}><i id="video-icon" className="bi bi-camera-video"></i> Mettre en ligne une video </p>
                     <p onClick={handlePhotoClick}><i id="photo-icon" className="bi bi-patch-plus"></i> Partager une image</p>

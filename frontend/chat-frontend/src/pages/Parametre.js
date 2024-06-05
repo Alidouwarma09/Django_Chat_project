@@ -7,6 +7,7 @@ import {FaUserCog} from "react-icons/fa";
 import {MdArrowBackIos, MdOutlineSystemUpdateAlt, MdSettingsInputAntenna} from "react-icons/md";
 import {RiListSettingsLine} from "react-icons/ri";
 import Skeleton from "react-loading-skeleton";
+import ThemeButton from "../compoment/ThemeButton";
 
 const Parametres = () => {
       const navigate = useNavigate();
@@ -89,6 +90,7 @@ const handleDeconnexion = async () => {
         }}>
                  <RiListSettingsLine style={{ fontSize: 30}} />
                   <p>Parametre</p>
+                  <ThemeButton />
                   <p>Modifier le comportement de l'application</p>
               </div>
               <div className="card" style={{
