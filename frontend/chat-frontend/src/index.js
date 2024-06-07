@@ -4,13 +4,21 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import theme from "./theme";
+import PullToRefresh from "./compoment/PullRefresh";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+const refreshFunction = async () => {
+    // Ajoutez ici votre logique de rafraîchissement, par exemple, recharger les données depuis une API
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Simuler un délai
+};
 root.render(
   <React.StrictMode>
+
       <ChakraProvider theme={theme}>
           <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-          <App />
+          <PullToRefresh onRefresh={refreshFunction}>
+              <App />
+          </PullToRefresh>
       </ChakraProvider>
   </React.StrictMode>
 );
