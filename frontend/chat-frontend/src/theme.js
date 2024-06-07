@@ -12,6 +12,10 @@ const styles = {
             color: mode('gray.800', 'white')(props),
         },
         '.navbar': {
+            bg: props.colorMode === 'dark' ? 'gray.900' : 'white',
+            color: props.colorMode === 'dark' ? 'white' : 'gray.800',
+        },
+        '.conversation': {
             bg: props.colorMode === 'dark' ? 'gray.800' : 'white',
             color: props.colorMode === 'dark' ? 'white' : 'gray.800',
         },
