@@ -20,7 +20,6 @@ function Acceuil() {
   const [commentTexts, setCommentTexts] = useState({});
   const [isStorySelected, setIsStorySelected] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedPublicationId, setSelectedPublicationId] = useState(null);
   const [copiedText, setCopiedText] = useState(false);
 
@@ -37,7 +36,6 @@ function Acceuil() {
     }
     return [];
   };
-
   useEffect(() => {
     async function fetchData() {
       moment.locale('fr');
@@ -64,6 +62,16 @@ function Acceuil() {
     }
 
     fetchData();
+  }, []);
+  useEffect(() => {
+    const cachedData = localStorage.getItem('publications');
+    if (cachedData) {
+      const cachedPublications = JSON.parse(cachedData); // Convertir en tableau
+      setPublications(cachedPublications);
+      cachedPublications.forEach(publication => {
+        fetchComments(publication.id);
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -220,14 +228,14 @@ function Acceuil() {
   const longPressEvent = useLongPress(handleLongPress, { delay: 800 });
 
   return (
-      <div className={isStorySelected ? 'no-background' : ''} onLongPress={handleLongPress}
+      <div className={isStorySelected ? 'no-background' : ''} onMouseDown={handleLongPress}
            {...longPressEvent}
            style={{ userSelect: 'none' }}
       >
         {!isStorySelected && <NavBar />}
         <div className="conversation active"  style={{height: "100vh", overflow: "auto", paddingBottom: 250}}>
           <Stories onStorySelect={handleStorySelect} />
-          {loading && publications.length === 0 ? (
+          {loading && (!publications || publications.length === 0) ? (
               <>
                 <Skeleton baseColor="#030f1e" height={200} />
                 <Skeleton baseColor="#030f1e" height={200} />

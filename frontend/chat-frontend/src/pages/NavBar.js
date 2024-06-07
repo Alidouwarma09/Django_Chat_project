@@ -3,7 +3,6 @@ import './css/navbar.css';
 import { CiMenuBurger } from "react-icons/ci";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import {  notification } from 'antd';
-import { BsPlusSquareDotted } from "react-icons/bs";
 import {LuRefreshCcw} from "react-icons/lu";
 import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react";
 import {IoIosAddCircle} from "react-icons/io";
@@ -355,7 +354,7 @@ function Navbar() {
                     <h3>Aperçu</h3>
                     <div id="preview">
                         {photoPreview && (
-                            <img  id="photoPreview" src={photoPreview}  alt="image"/>
+                            <img  id="photoPreview" src={photoPreview}  alt="Aperçu"/>
                         )}
                     </div>
                     <button id="publicationButton" type="button" onClick={() => {
