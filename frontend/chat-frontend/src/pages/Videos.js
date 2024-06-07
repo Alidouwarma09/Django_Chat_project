@@ -48,7 +48,7 @@ function Videos(id) {
     const submitComment = async (VideoId, texte) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post(
+            await axios.post(
                 `${process.env.REACT_APP_API_URL}/Utilisateur/api/post_comment/${VideoId}`,
                 JSON.stringify({ texte }),
                 {
@@ -58,11 +58,13 @@ function Videos(id) {
                     }
                 }
             );
+            // Pas besoin d'utiliser 'response' ici
             await fetchCommentsVideo(VideoId);
         } catch (error) {
             console.error('Erreur lors de l\'envoi du commentaire:', error);
         }
     };
+
 
     const getLikedVideoFromLocalStorage = () => {
         const likedPublications = localStorage.getItem('likedPublications');
