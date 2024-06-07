@@ -8,6 +8,7 @@
     border-radius: 100%;
     transition: margin-top 0.5s;
     margin-bottom: -50px;
+
 }
 
 .refresh-container .spinner {
@@ -16,21 +17,6 @@
     color: white;
     background-color: #0ea5e9;
     border-radius: 50%;
-}
-
-.refresh-container.load-init .spinner * {
-    fill: #ffffff;
-}
-
-.refresh-container.load-init::after {
-    content: "";
-    background-color: #0430e2;
-    min-width: 50px;
-    height: 50px;
-    border-radius: 100%;
-    position: absolute;
-    z-index: 4;
-    transition: 1.5s;
 }
 
 .refresh-container.load-start .spinner {

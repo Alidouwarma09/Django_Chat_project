@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './css/PullToRefresh.css';
 import { IoIosRefresh } from "react-icons/io";
+import axios from "axios";
 
 const PullToRefresh = ({ onRefresh, children }) => {
     const refreshContainerRef = useRef(null);
@@ -8,18 +9,31 @@ const PullToRefresh = ({ onRefresh, children }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [startY, setStartY] = useState(0);
 
+    const fetchData = async () => {
+        try {
+            // Effectuer une requête HTTP pour récupérer de nouvelles données
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
+            // Mettre à jour l'état ou le contenu de la page avec les nouvelles données
+            console.log("donnees:", response); // Afficher les nouvelles données dans la console
+            // Mettre à jour l'état ou le contenu de la page avec les nouvelles données
+        } catch (error) {
+            console.error('Erreur lors de la récupération des données:', error);
+        }
+    };
+
     useEffect(() => {
         const refreshContainer = refreshContainerRef.current;
         const spinnerContainer = spinnerContainerRef.current;
 
-        const loadInit = () => {
+        const loadInit = async () => {
             if (refreshContainer && spinnerContainer) {
-                refreshContainer.classList.add("load-init");
+                refreshContainer.classList.add("refresh-container");
                 setIsLoading(true);
+                await fetchData();
                 if (onRefresh) {
                     onRefresh().finally(() => {
                         setIsLoading(false);
-                        refreshContainer.classList.remove("load-init", "load-start");
+                        refreshContainer.classList.remove("load-start");
                         refreshContainer.style.marginTop = "0px";
                         spinnerContainer.style.transform = "rotate(0deg)";
                     });
