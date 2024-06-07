@@ -55,7 +55,8 @@ const PullToRefresh = ({ onRefresh, children }) => {
 
                 let changeY = startY < currentY ? Math.abs(startY - currentY) : 0;
 
-                if (refreshContainer && spinnerContainer) {
+                // Vérifier si vous êtes déjà en haut de la page
+                if (window.scrollY === 0 && refreshContainer && spinnerContainer) {
                     if (changeY <= 80) {
                         refreshContainer.style.marginTop = `${changeY + 50}px`;
                         spinnerContainer.style.transform = `rotate(${changeY * 13.5}deg)`;

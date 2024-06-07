@@ -5,6 +5,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Progress, notification } from 'antd';
 import { BsPlusSquareDotted } from "react-icons/bs";
 import {LuRefreshCcw} from "react-icons/lu";
+import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react";
 
 
 
@@ -364,18 +365,10 @@ function Navbar() {
                 </form>
             </div>
             {isPublishing && (
-                <Progress
-                    percent={progressPercent}
-                    style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        zIndex: 9999,
-                        fontSize: '40px',
-                        strokeColor: "red",
-                    }}
-                    status="active" />)}
+                <CircularProgress value={progressPercent} color='green.400' style={{ top: 0, left: "50%", zIndex: 9999,
+                                  }} status="active">
+                    <CircularProgressLabel>{progressPercent}%</CircularProgressLabel>
+                </CircularProgress>)}
             <nav className="navbar">
                      <LuRefreshCcw style={{marginRight: 10}} onClick={handleReload} className={isReloading ? "refresh-icon rotating" : "refresh-icon"}/>
                 <BsPlusSquareDotted onClick={handleNavbarBublicationClick}/>

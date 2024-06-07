@@ -225,7 +225,7 @@ function Acceuil() {
            style={{ userSelect: 'none' }}
       >
         {!isStorySelected && <NavBar />}
-        <div className="conversation active"  style={{height: "100vh", overflow: "auto"}}>
+        <div className="conversation active"  style={{height: "100vh", overflow: "auto", paddingBottom: 250}}>
           <Stories onStorySelect={handleStorySelect} />
           {loading && publications.length === 0 ? (
               <>
