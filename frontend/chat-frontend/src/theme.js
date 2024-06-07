@@ -19,6 +19,14 @@ const styles = {
             bg: props.colorMode === 'dark' ? 'gray.800' : 'white',
             color: props.colorMode === 'dark' ? 'white' : 'gray.800',
         },
+        '.navbarBublication': {
+            bg: props.colorMode === 'dark' ? 'gray.800' : 'white',
+            color: props.colorMode === 'dark' ? 'white' : 'gray.800',
+        },
+        '.bottom-tab': {
+            bg: props.colorMode === 'dark' ? 'gray.800' : 'white',
+            color: props.colorMode === 'dark' ? 'white' : 'gray.800',
+        },
 
     }),
 };

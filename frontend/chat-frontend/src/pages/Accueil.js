@@ -229,9 +229,9 @@ function Acceuil() {
           <Stories onStorySelect={handleStorySelect} />
           {loading && publications.length === 0 ? (
               <>
-                <Skeleton height={200} />
-                <Skeleton height={200} />
-                <Skeleton height={200} />
+                <Skeleton baseColor="#030f1e" height={200} />
+                <Skeleton baseColor="#030f1e" height={200} />
+                <Skeleton baseColor="#030f1e" height={200} />
               </>
           ) : (
               publications.map((publication, index) => (

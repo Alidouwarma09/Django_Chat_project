@@ -14,7 +14,12 @@
         align-items: center;
         z-index: 21;
         border-bottom: 1px solid gray;
+        justify-content: space-between;
     }
+    .navbar > * {
+        text-align: center;
+    }
+
 .navbarBublication {
     padding: 20px 8%;
     box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);

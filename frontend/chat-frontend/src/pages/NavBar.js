@@ -2,10 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import './css/navbar.css';
 import { CiMenuBurger } from "react-icons/ci";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Progress, notification } from 'antd';
+import {  notification } from 'antd';
 import { BsPlusSquareDotted } from "react-icons/bs";
 import {LuRefreshCcw} from "react-icons/lu";
 import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react";
+import {IoIosAddCircle} from "react-icons/io";
 
 
 
@@ -370,19 +371,15 @@ function Navbar() {
                     <CircularProgressLabel>{progressPercent}%</CircularProgressLabel>
                 </CircularProgress>)}
             <nav className="navbar">
-                     <LuRefreshCcw style={{marginRight: 10}} onClick={handleReload} className={isReloading ? "refresh-icon rotating" : "refresh-icon"}/>
-                <BsPlusSquareDotted onClick={handleNavbarBublicationClick}/>
-                <div className="profile-dropdown" style={{marginLeft: 'auto'}}>
-                    <div className="profile-dropdown-btn">
-                        <div className="menu" onClick={handleMenuClick}>
-                            <CiMenuBurger/>
-                        </div>
-                    </div>
+                    <LuRefreshCcw style={{ marginRight: 10 }} onClick={handleReload} className={isReloading ? "refresh-icon rotating" : "refresh-icon"} />
+                <IoIosAddCircle onClick={handleNavbarBublicationClick} style={{ fontSize: 65, bac }} />
+                <div className="menu" onClick={handleMenuClick} >
+                    <CiMenuBurger />
                 </div>
             </nav>
+
             {navbarBublicationVisible && (
                 <nav className="navbarBublication" ref={navbarBublicationRef}>
-
                     <p onClick={handlePublicationClick}><i id="publication-action-icon" className="bi bi-fonts"></i> Publication</p>
                     <p onClick={handleVideoClick}><i id="video-icon" className="bi bi-camera-video"></i> Mettre en ligne une video </p>
                     <p onClick={handlePhotoClick}><i id="photo-icon" className="bi bi-patch-plus"></i> Partager une image</p>
