@@ -372,7 +372,7 @@ function Navbar() {
                 </CircularProgress>)}
             <nav className="navbar">
                     <LuRefreshCcw style={{ marginRight: 10 }} onClick={handleReload} className={isReloading ? "refresh-icon rotating" : "refresh-icon"} />
-                <IoIosAddCircle onClick={handleNavbarBublicationClick} style={{ fontSize: 65, bac }} />
+                <IoIosAddCircle onClick={handleNavbarBublicationClick} style={{ fontSize: 65 }} />
                 <div className="menu" onClick={handleMenuClick} >
                     <CiMenuBurger />
                 </div>
