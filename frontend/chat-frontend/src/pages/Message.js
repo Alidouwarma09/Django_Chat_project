@@ -180,7 +180,7 @@ const handleMessageSend = async (e) => {
                   </button>
 
                   <div className="conversation-form-group">
-                    <textarea className="conversation-form-input" rows="1" placeholder="Type here..."
+                    <textarea className="conversation-form-input" rows="1" placeholder="Votre message ici..."
                               value={messageTexte} onChange={(e) => setMessageTexte(e.target.value)}></textarea>
                     <button type="button" className="conversation-form-record"><i className="ri-mic-line"></i>
                     </button>
