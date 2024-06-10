@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import './css/navbar.css';
-import { CiMenuBurger } from "react-icons/ci";
+import {CiLogout, CiMenuBurger} from "react-icons/ci";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import {  notification } from 'antd';
 import {LuRefreshCcw} from "react-icons/lu";
@@ -8,6 +8,7 @@ import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react";
 import axios from "axios";
 import ThemeButton from "../compoment/ThemeButton";
 import {IoIosNotifications} from "react-icons/io";
+import {GrDownload} from "react-icons/gr";
 
 
 
@@ -435,6 +436,9 @@ function Navbar() {
                 <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu">
                     <IoIosNotifications />
                 </div>
+                <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu">
+                    <GrDownload />
+                </div>
                 <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu" onClick={handleMenuClick}>
                     <CiMenuBurger />
                 </div>
@@ -446,7 +450,6 @@ function Navbar() {
                     <img src={`${userInfo.image_utilisateu}`} style={{borderRadius: "50%", width: 70, height: 70}}
                          alt="Trash Icon"/>
                 </span>
-
                         <div className="text logo-text">
                             <span className="name">{userInfo.nom_utilisateur} </span>
                             <span className="profession">{userInfo.prenom_utilisateur}</span>
@@ -508,10 +511,10 @@ function Navbar() {
                         </ul>
                     </div>
 
-                    <div className="bottom-content">
-                        <li className="" onClick={handleDeconnexion}>
+                    <div className="bottom-content" >
+                        <li className="" onClick={handleDeconnexion} style={{ backgroundColor: "pink", borderRadius: "15px", width:"100%"}}>
                             <a href="#">
-                                <i className='bx bx-log-out icon'></i>
+                                <CiLogout style={{fontSize: 30}} />
                                 <span className="text">Deconnexion</span>
                             </a>
                         </li>

@@ -9,6 +9,7 @@ import { RiShareForwardFill } from "react-icons/ri";
 import moment from "moment/moment";
 import Skeleton from "react-loading-skeleton";
 import { VideoContext } from '../compoment/VideoContext';
+import {FaDownload} from "react-icons/fa";
 
 function Videos(id) {
     const { videos, loading, setVideos } = useContext(VideoContext); // Utiliser le contexte
@@ -138,6 +139,23 @@ function Videos(id) {
     const handleGoBack = () => {
         window.history.back();
     };
+    const handleDownload = async (url, fileName) => {
+        try {
+            const response = await axios.get(url, {
+                responseType: 'blob', // Définit le type de réponse comme binaire
+            });
+            const blob = new Blob([response.data], { type: response.headers['content-type'] });
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = fileName; // Nom du fichier à télécharger
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error('Erreur lors du téléchargement de la vidéo:', error);
+        }
+    };
 
     return (
         <div>
@@ -186,15 +204,7 @@ function Videos(id) {
                                         playing={activeVideo === video.id}
                                         controls
                                     />
-                                    {/*<video*/}
-                                    {/*    key={video.id}*/}
-                                    {/*    src={`${process.env.REACT_APP_CLOUDINARY_URL}${video.videos_file}.mp4`}*/}
-                                    {/*    id={video.id}*/}
-                                    {/*    width="100%"*/}
-                                    {/*    height="100%"*/}
-                                    {/*    autoPlay={ video.id}*/}
-                                    {/*    controls*/}
-                                    {/*/>*/}
+
                                 </div>
                             </div>
                             <div className="row publication-actions">
@@ -213,8 +223,7 @@ function Videos(id) {
                                     <span className="comment-count" id="comment-count-photo.id"></span> 1
                                 </div>
                                 <div className="col-4 comment-count-container" style={{ fontSize: 10, paddingRight: 30, marginRight: 10 }}>
-                                    <RiShareForwardFill style={{ fontSize: 25 }} />
-                                    <span className="comment-count">15,42k</span>
+                                    <FaDownload onClick={() => handleDownload(`${process.env.REACT_APP_CLOUDINARY_URL}${video.videos_file}.mp4`, `${video.titre}.mp4`)} />
                                 </div>
                             </div>
                             <div className="comments-section" id={`comments-section-${video.id}`} data-url="" style={{ overflowY: "auto", overflowX: "hidden", maxHeight: 300, display: isCommentFormOpenList[index] ? 'block' : 'none' }}>
