@@ -12,7 +12,7 @@ const styles = {
             color: mode('gray.800', 'white')(props),
         },
         '.navbar': {
-            bg: props.colorMode === 'dark' ? 'gray.900' : 'white',
+            bg: props.colorMode === 'dark' ? 'gray.900' : '#f5f5f5',
             color: props.colorMode === 'dark' ? 'white' : 'gray.800',
         },
         '.conversation': {

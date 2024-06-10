@@ -367,7 +367,7 @@ function Navbar() {
                                   }} status="active">
                     <CircularProgressLabel>{progressPercent}%</CircularProgressLabel>
                 </CircularProgress>)}
-            <nav className="navbar messages-container">
+            <nav className="navbar">
                     <LuRefreshCcw style={{ marginRight: 10 }} onClick={handleReload} className={isReloading ? "refresh-icon rotating" : "refresh-icon"} />
                 <div className="menu" onClick={handleMenuClick} >
                     <CiMenuBurger />

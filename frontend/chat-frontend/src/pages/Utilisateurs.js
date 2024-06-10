@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "./css/utilisateurs.css";
 import {IoIosArrowBack} from "react-icons/io";
+import BottomTab from "./BottomTab";
 
 function Utilisateurs() {
     const [utilisateurs, setUtilisateurs] = useState([]);
@@ -93,6 +94,7 @@ function Utilisateurs() {
                 ))}
             </div>
             <button className="new-message-button">+</button>
+            <BottomTab/>
         </div>
     );
 }
