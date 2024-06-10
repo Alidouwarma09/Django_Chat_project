@@ -243,13 +243,11 @@ function Navbar() {
         setNavbarBublicationVisible(!navbarBublicationVisible);
     };
     const handleReload = () => {
-    // Active la rotation de l'icône
     setIsReloading(true);
-    // Recharge la page
     window.location.reload();
   };
     return (
-        <div>
+        <div >
             {navbarBublicationVisible && <div className="dark-overlay"></div>}
             {publicationSectionVisible && <div className="dark-overlay"></div>}
             {VideoSectionVisible && <div className="dark-overlay"></div>}
@@ -369,9 +367,8 @@ function Navbar() {
                                   }} status="active">
                     <CircularProgressLabel>{progressPercent}%</CircularProgressLabel>
                 </CircularProgress>)}
-            <nav className="navbar">
+            <nav className="navbar messages-container">
                     <LuRefreshCcw style={{ marginRight: 10 }} onClick={handleReload} className={isReloading ? "refresh-icon rotating" : "refresh-icon"} />
-                <IoIosAddCircle onClick={handleNavbarBublicationClick} style={{ fontSize: 65 }} />
                 <div className="menu" onClick={handleMenuClick} >
                     <CiMenuBurger />
                 </div>
@@ -384,7 +381,9 @@ function Navbar() {
                     <p onClick={handlePhotoClick}><i id="photo-icon" className="bi bi-patch-plus"></i> Partager une image</p>
                 </nav>
             )}
+            <button className="new-publication-button" onClick={handleNavbarBublicationClick}>+</button>
         </div>
+
     );
 }
 

@@ -17,7 +17,8 @@ function Utilisateurs() {
         }
     }, [navigate]);
 
-    useEffect(() => {
+
+    useEffect(() =>  {
         const fetchUtilisateurs = async () => {
             try {
                 const token = localStorage.getItem('token');
@@ -33,7 +34,7 @@ function Utilisateurs() {
             }
         };
 
-        if (!isLoaded) { // Ne pas refaire la requête si les utilisateurs sont déjà chargés
+        if (!isLoaded) {
             fetchUtilisateurs();
         }
     }, [isLoaded]);
@@ -71,7 +72,7 @@ function Utilisateurs() {
     return (
         <div className="messages-container">
             <div className="header">
-                <h1 style={{display: "flex", alignItems: "center", gap: "15px"}}> <IoIosArrowBack />Messages</h1>
+                <h1 style={{display: "flex", alignItems: "center", gap: "15px"}}> <IoIosArrowBack onClick={handleGoBack} />Messages</h1>
                 <input
                     type="text"
                     placeholder="Rechercher dans les messages"
