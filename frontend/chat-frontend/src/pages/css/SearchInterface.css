@@ -32,6 +32,11 @@
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    overflow-x: auto;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+.search-tabs::-webkit-scrollbar {
+    display: none;  /* Safari et Chrome */
 }
 
 .tab {

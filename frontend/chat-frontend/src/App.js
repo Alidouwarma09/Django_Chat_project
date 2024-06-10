@@ -8,7 +8,6 @@ import Messages from "./pages/Message";
 import { VideoProvider } from './compoment/VideoContext';
 import Utilisateurs from "./pages/Utilisateurs";
 import Recherche from "./pages/Recherche";
-
 const isAuthenticated = () => {
     return localStorage.getItem('token') !== null;
 

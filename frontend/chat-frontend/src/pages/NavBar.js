@@ -9,6 +9,7 @@ import axios from "axios";
 import ThemeButton from "../compoment/ThemeButton";
 import {IoIosNotifications} from "react-icons/io";
 import {GrDownload} from "react-icons/gr";
+import {FaUserCog} from "react-icons/fa";
 
 
 
@@ -468,8 +469,8 @@ function Navbar() {
 
                             <li className="nav-link">
                                 <a href="#">
-                                    <i className='bx bx-home-alt icon'></i>
-                                    <span className="text">Dashboard</span>
+                                    <i className='icon'><FaUserCog style={{fontSize: 30}} /></i>
+                                    <span className="text">Compte</span>
                                 </a>
                             </li>
 

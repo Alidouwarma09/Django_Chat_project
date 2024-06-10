@@ -10,9 +10,11 @@ import moment from "moment/moment";
 import Skeleton from "react-loading-skeleton";
 import { VideoContext } from '../compoment/VideoContext';
 import {FaDownload} from "react-icons/fa";
+import Navbar from "./NavBar";
+import BottomTab from "./BottomTab";
 
 function Videos(id) {
-    const { videos, loading, setVideos } = useContext(VideoContext); // Utiliser le contexte
+    const { videos, loading, setVideos, downloadedVideos, setDownloadedVideos } = useContext(VideoContext); // Utiliser le contexte
     const [comments, setComments] = useState({});
     const [isCommentFormOpenList, setIsCommentFormOpenList] = useState([]);
     const [commentTexts, setCommentTexts] = useState({});
@@ -136,9 +138,7 @@ function Videos(id) {
         }
     };
 
-    const handleGoBack = () => {
-        window.history.back();
-    };
+
     const handleDownload = async (url, fileName) => {
         try {
             const response = await axios.get(url, {
@@ -160,9 +160,7 @@ function Videos(id) {
     return (
         <div>
             <div>
-                <nav className="navbar" style={{ backgroundColor: "black", zIndex: 100 }}>
-                    <GoArrowLeft onClick={handleGoBack} style={{ width: 34, height: 34, color: "white" }} />
-                </nav>
+                <Navbar/>
             </div>
             <div className="conversation active" style={{height: "100vh", overflow: "auto"}}>
                 {loading ? (
@@ -258,6 +256,7 @@ function Videos(id) {
                     ))
                 )}
             </div>
+            <BottomTab />
         </div>
     );
 }
