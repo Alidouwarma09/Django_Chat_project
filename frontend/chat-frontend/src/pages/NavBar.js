@@ -5,6 +5,8 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import {  notification } from 'antd';
 import {LuRefreshCcw} from "react-icons/lu";
 import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react";
+import axios from "axios";
+import ThemeButton from "../compoment/ThemeButton";
 
 
 
@@ -22,10 +24,29 @@ function Navbar() {
     const [navbarBublicationVisible, setNavbarBublicationVisible] = useState(false);
     const navbarBublicationRef = useRef(null);
     const [isReloading, setIsReloading] = useState(false);
+    const [sidebarVisible, setSidebarVisible] = useState(false);
+    const [userInfo, setUserInfo] = useState({});
+    const sidebarRef = useRef(null);
 
     const handleMenuClick = () => {
-        navigate('/parametre/');
+        setSidebarVisible(!sidebarVisible); // Inverse la visibilité de la barre de navigation
     };
+    const handleOutsideClick = useCallback((event) => {
+        if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+            setSidebarVisible(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (sidebarVisible) {
+            document.addEventListener('mousedown', handleOutsideClick);
+        } else {
+            document.removeEventListener('mousedown', handleOutsideClick);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleOutsideClick);
+        };
+    }, [sidebarVisible, handleOutsideClick]);
 
     const handleClickOutside = useCallback((event) => {
         if (navbarBublicationRef.current && !navbarBublicationRef.current.contains(event.target)) {
@@ -43,6 +64,29 @@ function Navbar() {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [navbarBublicationVisible, handleClickOutside]);
+    useEffect(() => {
+        const loadUserInfo = async () => {
+            const storedUserInfo = localStorage.getItem('userInfo');
+            if (storedUserInfo) {
+                setUserInfo(JSON.parse(storedUserInfo));
+            } else {
+                try {
+                    const token = localStorage.getItem('token');
+                    const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/user_info/`, {
+                        headers: {
+                            'Authorization': `Token ${token}`
+                        }
+                    });
+                    setUserInfo(response.data);
+                    localStorage.setItem('userInfo', JSON.stringify(response.data));
+                } catch (error) {
+                    console.error('Erreur lors de la récupération des informations utilisateur:', error);
+                }
+            }
+        };
+
+        loadUserInfo();
+    }, []);
 
     const handlePublicationClick = () => {
         setPublicationSectionVisible(true);
@@ -130,6 +174,23 @@ function Navbar() {
         .catch(error => {
             console.error('Erreur:', error);
         });
+    };
+    const handleDeconnexion = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/Model/Deconnexion/`, {}, {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            });
+            if (response.status === 200) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userInfo');
+                navigate('/connexion')
+            }
+        } catch (error) {
+            console.error('Erreur lors de la tentatidsdsve de déconnexion:', error);
+        }
     };
     const handleVideo = () => {
         handleVidishSectionClose()
@@ -248,6 +309,7 @@ function Navbar() {
         <div >
             {navbarBublicationVisible && <div className="dark-overlay"></div>}
             {publicationSectionVisible && <div className="dark-overlay"></div>}
+            <div className="dark-overlay" style={{ display: sidebarVisible ? 'block' : 'none' }}></div>
             {VideoSectionVisible && <div className="dark-overlay"></div>}
             {PhotoSectionVisible && <div className="dark-overlay"></div>}
             <div id="publicationSection" style={{ display: publicationSectionVisible ? 'block' : 'none' }}>
@@ -369,24 +431,24 @@ function Navbar() {
                 <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center"}}>
                     <LuRefreshCcw style={{ marginRight: 10 }} onClick={handleReload} className={isReloading ? "refresh-icon rotating" : "refresh-icon"} />
                 </div>
-                <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu" onClick={handleMenuClick} >
+                <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu" onClick={handleMenuClick}>
                     <CiMenuBurger />
                 </div>
 
             </nav>
-            <nav className="sidebar ">
+            <nav className="sidebar "  style={{ display: sidebarVisible ? 'block' : 'none' }} ref={sidebarRef}>
                 <header>
                     <div className="image-text">
                 <span className="image">
+                    <img src={`${userInfo.image_utilisateu}`} style={{borderRadius: "50%", width: 70, height: 70}}
+                         alt="Trash Icon"/>
                 </span>
 
                         <div className="text logo-text">
-                            <span className="name">Codinglab</span>
-                            <span className="profession">Web developer</span>
+                            <span className="name">{userInfo.nom_utilisateur} </span>
+                            <span className="profession">{userInfo.prenom_utilisateur}</span>
                         </div>
                     </div>
-
-                    <i className='bx bx-chevron-right toggle'></i>
                 </header>
 
                 <div className="menu-bar">
@@ -394,49 +456,50 @@ function Navbar() {
 
                         <li className="search-box">
                             <i className='bx bx-search icon'></i>
-                            <input type="text" placeholder="Search..."></input>
+                            <input type="text" placeholder="Recherche..."></input>
                         </li>
 
                         <ul className="menu-links">
+
                             <li className="nav-link">
                                 <a href="#">
                                     <i className='bx bx-home-alt icon'></i>
-                                    <span className="text nav-text">Dashboard</span>
+                                    <span className="text">Dashboard</span>
                                 </a>
                             </li>
 
                             <li className="nav-link">
                                 <a href="#">
                                     <i className='bx bx-bar-chart-alt-2 icon'></i>
-                                    <span className="text nav-text">Revenue</span>
+                                    <span className="text">Revenue</span>
                                 </a>
                             </li>
 
                             <li className="nav-link">
                                 <a href="#">
                                     <i className='bx bx-bell icon'></i>
-                                    <span className="text nav-text">Notifications</span>
+                                    <span className="text">Notifications</span>
                                 </a>
                             </li>
 
                             <li className="nav-link">
                                 <a href="#">
                                     <i className='bx bx-pie-chart-alt icon'></i>
-                                    <span className="text nav-text">Analytics</span>
+                                    <span className="text">Analytics</span>
                                 </a>
                             </li>
 
                             <li className="nav-link">
                                 <a href="#">
                                     <i className='bx bx-heart icon'></i>
-                                    <span className="text nav-text">Likes</span>
+                                    <span className="text">Likes</span>
                                 </a>
                             </li>
 
                             <li className="nav-link">
                                 <a href="#">
                                     <i className='bx bx-wallet icon'></i>
-                                    <span className="text nav-text">Wallets</span>
+                                    <span className="text">Wallets</span>
                                 </a>
                             </li>
 
@@ -444,22 +507,21 @@ function Navbar() {
                     </div>
 
                     <div className="bottom-content">
-                        <li className="">
+                        <li className="" onClick={handleDeconnexion}>
                             <a href="#">
                                 <i className='bx bx-log-out icon'></i>
-                                <span className="text nav-text">Logout</span>
+                                <span className="text">Deconnexion</span>
                             </a>
                         </li>
 
                         <li className="mode">
                             <div className="sun-moon">
                                 <i className='bx bx-moon icon moon'></i>
-                                <i className='bx bx-sun icon sun'></i>
                             </div>
-                            <span className="mode-text text">Dark mode</span>
+                            <span className="mode-text text">Mode sombre</span>
 
                             <div className="toggle-switch">
-                                <span className="switch"></span>
+                                <ThemeButton />
                             </div>
                         </li>
 

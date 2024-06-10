@@ -15,6 +15,10 @@ const styles = {
             bg: props.colorMode === 'dark' ? 'gray.900' : '#f5f5f5',
             color: props.colorMode === 'dark' ? 'white' : 'gray.800',
         },
+        '.sidebar': {
+            bg: props.colorMode === 'dark' ? 'gray.900' : '#f5f5f5',
+            color: props.colorMode === 'dark' ? 'white' : 'gray.800',
+        },
         '.conversation': {
             bg: props.colorMode === 'dark' ? 'gray.800' : 'white',
             color: props.colorMode === 'dark' ? 'white' : 'gray.800',
