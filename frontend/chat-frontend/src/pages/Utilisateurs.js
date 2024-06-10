@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "./css/utilisateurs.css";
-import BottomTab from "./BottomTab";
+import {IoIosArrowBack} from "react-icons/io";
 
 function Utilisateurs() {
     const [utilisateurs, setUtilisateurs] = useState([]);
@@ -64,11 +64,14 @@ function Utilisateurs() {
     const filteredUtilisateurs = utilisateurs.filter(utilisateur =>
         `${utilisateur.nom} ${utilisateur.prenom}`.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    const handleGoBack = () => {
+        window.history.back();
+    };
 
     return (
         <div className="messages-container">
             <div className="header">
-                <h1>Messages</h1>
+                <h1 style={{display: "flex", alignItems: "center", gap: "15px"}}> <IoIosArrowBack />Messages</h1>
                 <input
                     type="text"
                     placeholder="Rechercher dans les messages"
