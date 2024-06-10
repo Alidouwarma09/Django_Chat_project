@@ -192,16 +192,31 @@ function Videos(id) {
                             <p>{video.titre}</p>
                             <div className="publication-content" style={{ minHeight: 400, display: "flex", justifyContent: "center", alignItems: "center", color: "white" }}>
                                 <div onClick={() => togglePlayPause(video.id)} style={{ minHeight: 400, display: "flex", justifyContent: "center", alignItems: "center", color: "white", cursor: 'pointer' }}>
-                                    <ReactPlayer
-                                        key={video.id}
-                                        url={`${process.env.REACT_APP_CLOUDINARY_URL}${video.videos_file}.mp4`}
-                                        id={video.id}
-                                        width="100%"
-                                        height="100%"
-                                        autoPlay
-                                        playing={activeVideo === video.id}
-                                        controls
-                                    />
+                                    {activeVideo === video.id ? (
+                                        <ReactPlayer
+                                            key={video.id}
+                                            url={`${process.env.REACT_APP_CLOUDINARY_URL}${video.videos_file}.mp4`}
+                                            width="100%"
+                                            height="100%"
+                                            playing={playing}
+                                            controls
+                                        />
+                                    ) : (
+                                        <div onClick={() => togglePlayPause(video.id)} style={{ cursor: 'pointer', position: 'relative' }}>
+                                            <video
+                                                src={`${process.env.REACT_APP_CLOUDINARY_URL}${video.videos_file}.mp4#t=0.001`}
+                                                controls={false}
+                                                muted={true}
+                                                loop={false}
+                                                width="100%"
+                                                height="100%"
+                                                style={{ objectFit: 'cover' }}
+                                            />
+                                            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '50%', padding: '10px' }}>
+                                                <i className="bi bi-play-circle" style={{ fontSize: '2rem', color: 'white' }}></i>
+                                            </div>
+                                        </div>
+                                    )}
 
                                 </div>
                             </div>
