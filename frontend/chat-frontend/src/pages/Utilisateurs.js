@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "./css/utilisateurs.css";
 import BottomTab from "./BottomTab";
-import NavBar from "./NavBar";
 
 function Utilisateurs() {
   const [utilisateurs, setUtilisateurs] = useState([]);
@@ -42,28 +41,25 @@ const handleUserClick = (utilisateurId) => {
 
 
   return (
-    <div>
-<NavBar/>
-      <ul className="user-list">
-        <li className="content-message-title"><span>Recent</span></li>
-        {utilisateurs.map((utilisateur, index) => (
-          <li key={index}>
-            <a onClick={() => handleUserClick(utilisateur.id)}>
-              <img
-                className="content-message-image"
-                src={utilisateur.image}
-                alt={`${utilisateur.nom} ${utilisateur.prenom}`}
-              />
-              <span className="content-message-info">
-                <span className="content-message-name">{utilisateur.nom} {utilisateur.prenom}</span>
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
-        < BottomTab/>
-    </div>
+      <div className="messages-container">
+          <div className="header">
+              <h1>Messages</h1>
+              <input type="text" placeholder="Rechercher dans les messages" />
+          </div>
+          <div className="messages-list">
+              {utilisateurs.map(utilisateur => (
+                  <div key={utilisateur.id} className="message-item" onClick={() => handleUserClick(utilisateur.id)}>
+                      <div className="message-avatar">
+                          <img src={utilisateur.image} alt={`${utilisateur.nom} ${utilisateur.prenom}`} className="avatar-image" />
+                      </div>
+                      <div className="message-content">
+                          <div className="message-name">{utilisateur.nom} {utilisateur.prenom}</div>
+                      </div>
+                  </div>
+              ))}
+          </div>
+          <button className="new-message-button">+</button>
+      </div>
   );
 }
-
 export default Utilisateurs;
