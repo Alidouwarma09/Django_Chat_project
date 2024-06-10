@@ -5,7 +5,7 @@ from Utilisateur import views
 from Utilisateur.views import Inscription, connexion_utilisateur, accueil_utilisateur, detail_utilisateur, \
     publier_photo, \
     get_publications, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, \
-    get_comment_count, start_video_call, toute_les_videos, get_comments, \
+    get_comment_count, start_video_call, get_comments, \
     messages_non_lus_sse, get_publications_video, StoryView, StoryGetView, utilisateur_info, \
     tout_les_utilisateurs, utilisateurs_select, MessageSSEView, get_user_messages
 
@@ -28,7 +28,6 @@ urlpatterns = [
     path('api/creer_publication/', views.creer_publication, name='creer_publication'),
     path('api/creer_publication_video/', views.creer_publication_video, name='creer_publication_video'),
     path('api/creer_publication_photo/', views.creer_publication_photo, name='creer_publication_photo'),
-    path('parametre/', views.parametre, name='parametre'),
     path('utilisateur_fini_ecrire/', views.utilisateur_fini_ecrire, name='utilisateur_fini_ecrire'),
     path('utilisateur_en_train_decrire/', views.utilisateur_en_train_decrire, name='utilisateur_en_train_decrire'),
     path('UpdateThemeSombre/', views.UpdateThemeSombre.as_view(), name='UpdateThemeSombre'),
@@ -37,7 +36,6 @@ urlpatterns = [
     path('api/auth_options/', views.get_auth_options, name='auth_options'),
     path('api/messages/non-lus/', views.nombre_messages_non_lus, name='nombre_messages_non_lus'),
     path('start-video-call/', start_video_call, name='start_video_call'),
-    path('toute_les_videos/', toute_les_videos, name='toute_les_videos'),
     path('api/get_user_messages/', get_user_messages, name='get_user_messages'),
     path('api/get_comments/<int:publication_id>/', get_comments, name='get_comments'),
     path('api/message_sse/', MessageSSEView.as_view(), name='message_sse'),

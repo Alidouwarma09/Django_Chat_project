@@ -7,6 +7,7 @@ import {LuRefreshCcw} from "react-icons/lu";
 import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react";
 import axios from "axios";
 import ThemeButton from "../compoment/ThemeButton";
+import {IoIosNotifications} from "react-icons/io";
 
 
 
@@ -428,9 +429,13 @@ function Navbar() {
                     <CircularProgressLabel>{progressPercent}%</CircularProgressLabel>
                 </CircularProgress>)}
             <nav className="navbar">
-                <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center"}}>
-                    <LuRefreshCcw style={{ marginRight: 10 }} onClick={handleReload} className={isReloading ? "refresh-icon rotating" : "refresh-icon"} />
+                <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu" onClick={handleReload}>
+                    <LuRefreshCcw />
                 </div>
+                <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu">
+                    <IoIosNotifications />
+                </div>
+
                 <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu" onClick={handleMenuClick}>
                     <CiMenuBurger />
                 </div>
@@ -453,7 +458,6 @@ function Navbar() {
 
                 <div className="menu-bar">
                     <div className="menu">
-
                         <li className="search-box">
                             <i className='bx bx-search icon'></i>
                             <input type="text" placeholder="Recherche..."></input>
