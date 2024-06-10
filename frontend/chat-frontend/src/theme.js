@@ -5,7 +5,7 @@ const styles = {
     global: (props) => ({
         body: {
             bg: mode('white', 'gray.800')(props),
-            color: mode('white.800', 'white')(props),
+            color: mode('gray.800', 'white')(props),
         },
         html: {
             bg: mode('white', 'gray.800')(props),
@@ -24,10 +24,13 @@ const styles = {
             color: props.colorMode === 'dark' ? 'white' : 'gray.800',
         },
         '.bottom-tab': {
-            bg: props.colorMode === 'dark' ? 'gray.800' : 'white',
+            bg: props.colorMode === 'dark' ? 'gray.800' : '#f5f5f5',
             color: props.colorMode === 'dark' ? 'white' : 'gray.800',
         },
-
+        '.messages-list': {
+            bg: props.colorMode === 'dark' ? 'gray.800' : '#f5f5f5',
+            color: props.colorMode === 'dark' ? 'white' : 'gray.800',
+        },
     }),
 };
 
