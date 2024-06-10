@@ -5,7 +5,6 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import {  notification } from 'antd';
 import {LuRefreshCcw} from "react-icons/lu";
 import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react";
-import {IoIosAddCircle} from "react-icons/io";
 
 
 
@@ -132,7 +131,6 @@ function Navbar() {
             console.error('Erreur:', error);
         });
     };
-
     const handleVideo = () => {
         handleVidishSectionClose()
         setNavbarBublicationVisible(false);
@@ -368,10 +366,13 @@ function Navbar() {
                     <CircularProgressLabel>{progressPercent}%</CircularProgressLabel>
                 </CircularProgress>)}
             <nav className="navbar">
+                <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center"}}>
                     <LuRefreshCcw style={{ marginRight: 10 }} onClick={handleReload} className={isReloading ? "refresh-icon rotating" : "refresh-icon"} />
-                <div className="menu" onClick={handleMenuClick} >
+                </div>
+                <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu" onClick={handleMenuClick} >
                     <CiMenuBurger />
                 </div>
+
             </nav>
 
             {navbarBublicationVisible && (
