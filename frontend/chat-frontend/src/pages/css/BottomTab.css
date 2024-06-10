@@ -18,7 +18,6 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-  background-color: #311740;
   font-family: 'Poppins', sans-serif;
 }
 
@@ -59,8 +58,6 @@ body {
   transition: color .3s;
 }
 
-/* */
-
 .nav-item.active {
   flex-grow: 3;
   border-radius: 30px;
@@ -71,8 +68,4 @@ body {
 
 .nav-item.active > .nav-text {
   display: inline-block;
-}
-
-.material-icons.person-icon ~ .nav-text {
-  color: #0091a9;
 }
