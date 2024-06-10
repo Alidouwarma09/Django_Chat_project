@@ -435,11 +435,9 @@ function Navbar() {
                 <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu">
                     <IoIosNotifications />
                 </div>
-
                 <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu" onClick={handleMenuClick}>
                     <CiMenuBurger />
                 </div>
-
             </nav>
             <nav className="sidebar "  style={{ display: sidebarVisible ? 'block' : 'none' }} ref={sidebarRef}>
                 <header>
