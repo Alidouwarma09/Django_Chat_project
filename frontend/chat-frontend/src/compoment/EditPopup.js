@@ -12,14 +12,16 @@ const EditPopup = ({ label, value, onSave, onClose }) => {
     return (
         <div className="edit-popup-overlay">
             <div className="edit-popup">
-                <h2>Modifier {label}</h2>
+                <h2>Changer le {label}</h2>
                 <input
                     type="text"
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                 />
-                <button onClick={handleSave}>OK</button>
-                <button onClick={onClose}>Annuler</button>
+                <div style={{display: "flex"}}>
+                    <button className="bouton-enregistre" onClick={handleSave}>Enregistrer</button>
+                    <button className="bouton-Annuler" onClick={onClose}>Annuler</button>
+                </div>
             </div>
         </div>
     );

@@ -43,6 +43,7 @@ urlpatterns = [
     path('api/getstories/', StoryGetView.as_view(), name='story_view'),
     path('apk/stream_messages/<int:utilisateur_detail_id>/', views.stream_messages, name='stream_messages'),
     path('api/user_info/', utilisateur_info, name='utilisateur_info'),
+    path('api/update_user/', views.update_user, name='update_user'),
     path('api/utilisateurs/', tout_les_utilisateurs, name='utilisateur-list'),
     path('api/utilisateurs_select/<int:utilisateur_id>/', utilisateurs_select, name='utilisateur-select'),
 ]

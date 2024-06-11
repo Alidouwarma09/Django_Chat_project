@@ -27,11 +27,33 @@ const Profile = () => {
         setIsEditing(true);
     };
 
-    const handleSave = (newValue) => {
+    const handleSave = async (newValue) => {
         const updatedUserInfo = { ...userInfo, [currentField.field]: newValue };
         setUserInfo(updatedUserInfo);
         localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/Utilisateur/api/update_user/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: userInfo.id,
+                    field: currentField.field,
+                    new_value: newValue,
+                }),
+            });
+
+            const result = await response.json();
+            if (!result.success) {
+                console.error('Erreur lors de la mise à jour:', result.error);
+            }
+        } catch (error) {
+            console.error('Erreur de connexion à l\'API:', error);
+
+        }
     };
+
     return (
         <div className="profile-container">
             <header className="header2">
@@ -72,7 +94,11 @@ const Profile = () => {
                     <div className="profile-item">
                         <FaPhone />
                         <span className="label">Téléphone</span>
-                        <span className="value">+225 {userInfo.numero_utilisateur || '+225 0789817277'}</span>
+                        <span className="value">+225 {userInfo.numero_utilisateur}</span>
+                        <div className="note-container">
+                            <p className="note">Ce est pas votre nom d’utilisateur.</p>
+                            <CiEdit className="edit-icon" onClick={() => handleEdit('numero_utilisateur', 'Telephone')} />
+                        </div>
                     </div>
                 </div>
             </div>

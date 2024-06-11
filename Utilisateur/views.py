@@ -52,6 +52,57 @@ def Inscription(request):
     return JsonResponse({'success': False, 'error': 'Requête invalide'}, status=400)
 
 
+FIELD_MAPPING = {
+}
+
+
+@csrf_exempt
+def update_user(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user_id = data.get('user_id')
+            field = data.get('field')
+            new_value = data.get('new_value')
+            print(f"Data received: {data}")
+
+            if not user_id or not field or not new_value:
+                return JsonResponse({'success': False, 'error': 'Données invalides'}, status=400)
+            mapped_field = FIELD_MAPPING.get(field, field)
+
+            try:
+                user = Utilisateur.objects.get(id=user_id)
+                if mapped_field == 'nom_utilisateur':
+                    user.nom = new_value
+                elif mapped_field == 'prenom_utilisateur':
+                    user.prenom = new_value
+                elif mapped_field == 'numero_utilisateur':
+                    user.username = new_value
+                user.save()
+                print(user)
+
+                updated_user_info = {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'nom': user.nom,
+                    'prenom': user.prenom,
+                    'roles': user.roles,
+                    'is_active': user.is_active,
+                    'is_staff': user.is_staff,
+                    'is_admin': user.is_admin,
+                    'image': user.image.url if user.image else None,
+                }
+                return JsonResponse({'success': True, 'user': updated_user_info})
+            except Utilisateur.DoesNotExist:
+                return JsonResponse({'success': False, 'error': 'Utilisateur non trouvé'}, status=404)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Données JSON invalides'}, status=400)
+
+    return JsonResponse({'success': False, 'error': 'Requête invalide'}, status=400)
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -90,11 +141,11 @@ def utilisateur_info(request):
         user, _ = auth_result
     data = {
         'nom_utilisateur': user.nom,
+        'id': user.id,
         'numero_utilisateur': user.username,
         'prenom_utilisateur': user.prenom,
         'image_utilisateu': user.image.url
     }
-    print(data)
     return JsonResponse(data)
 
 
@@ -174,8 +225,6 @@ def get_publications_video(request):
         return JsonResponse({'error': 'Aucune publication trouvée'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-
-
 
 
 def detail_utilisateur(request, utilisateur_detail_id):
@@ -507,7 +556,6 @@ def creer_publication_photo(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
-
 @method_decorator(login_required(login_url='Utilisateur:Connexion_utlisateur'), name='dispatch')
 class UpdateThemeSombre(View):
     def post(self, request, *args, **kwargs):
@@ -638,7 +686,6 @@ def start_video_call(request):
         return JsonResponse({'success': True, 'call_sid': call.sid})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
-
 
 
 @method_decorator(csrf_exempt, name='dispatch')

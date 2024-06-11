@@ -35,3 +35,13 @@
 .edit-popup button {
     margin: 5px;
 }
+.bouton-enregistre{
+    border-radius: 2px;
+    color: #9ae6b4;
+    background-color: rgba(139, 250, 160, 0.16);
+}
+.bouton-Annuler{
+    border-radius: 2px;
+    color: #e69a9a;
+    background-color: rgba(183, 125, 125, 0.16);
+}
