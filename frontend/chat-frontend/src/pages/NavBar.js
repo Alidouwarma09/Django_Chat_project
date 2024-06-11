@@ -477,7 +477,7 @@ function Navbar() {
 
                             <li className="nav-link">
                                     <i className='bx bx-bar-chart-alt-2 icon'></i>
-                                    <span className="text">Revenue</span>
+                                    <span className="text">Mes postes</span>
                             </li>
 
                             <li className="nav-link">

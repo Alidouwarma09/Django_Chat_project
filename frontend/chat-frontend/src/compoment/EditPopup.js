@@ -9,6 +9,15 @@ const EditPopup = ({ label, value, onSave, onClose }) => {
         onClose();
     };
 
+    const handleInputChange = (e) => {
+        let newValue = e.target.value;
+        if (label === 'Téléphone') {
+            // Supprimer tous les caractères non numériques
+            newValue = newValue.replace(/\D/g, '');
+        }
+        setInputValue(newValue);
+    };
+
     return (
         <div className="edit-popup-overlay">
             <div className="edit-popup">
@@ -16,7 +25,7 @@ const EditPopup = ({ label, value, onSave, onClose }) => {
                 <input
                     type="text"
                     value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
+                    onChange={handleInputChange}
                 />
                 <div style={{display: "flex"}}>
                     <button className="bouton-enregistre" onClick={handleSave}>Enregistrer</button>

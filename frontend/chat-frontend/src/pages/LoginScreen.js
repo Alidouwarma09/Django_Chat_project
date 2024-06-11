@@ -61,24 +61,20 @@ function Connexion() {
                     </div>
                     <div className="login-card-header">
                         <h1>Connexion</h1>
-                        <div>Connectez-vous à l'aide du numéro entré lors de l'inscription</div>
                     </div>
                     <form onSubmit={handleSubmit} className="login-card-form">
                         <div className="form-item">
                             <span className="form-item-icon material-symbols-rounded">phone</span>
-                            <input type="number" placeholder="Entrer numéro" id="phoneForm" autoFocus required
+                            <input type="number" placeholder="Téléphone" id="phoneForm" autoFocus required
                                    name="username" className={formErrors.username ? 'error' : ''} value={username}
                                    onChange={handleChange}/>
                         </div>
                         <div className="form-item">
                             <span className="form-item-icon material-symbols-rounded">lock</span>
-                            <input type="password" placeholder="Enter Password" id="passwordForm" required
+                            <input type="password" placeholder="Mot de passe" id="passwordForm" required
                                    name="password" className={formErrors.password ? 'error' : ''} value={password}
                                    onChange={handleChange}/>
                         </div>
-                        {(formErrors.username || formErrors.password) &&
-                            <span id="errorMessage" style={{fontSize: '12px', color: 'red'}}>Numéro ou mot de passe incorrect !</span>
-                        }
                         <button className="login-button" type="submit" id="submitButton" disabled={loading}>
                             {loading ? 'Chargement...' : 'Se connecter'}
                         </button>

@@ -88,17 +88,17 @@ const Profile = () => {
                         </div>
                     </div>
                     <div className="profile-item">
-                        <span className="label">Infos</span>
-                        <span className="value">En ligne le 07/03/2023</span>
-                    </div>
-                    <div className="profile-item">
                         <FaPhone />
                         <span className="label">Téléphone</span>
                         <span className="value">+225 {userInfo.numero_utilisateur}</span>
                         <div className="note-container">
                             <p className="note">Ce est pas votre nom d’utilisateur.</p>
-                            <CiEdit className="edit-icon" onClick={() => handleEdit('numero_utilisateur', 'Telephone')} />
+                            <CiEdit className="edit-icon" onClick={() => handleEdit('numero_utilisateur', 'Téléphone')} />
                         </div>
+                    </div>
+                    <div className="profile-item">
+                        <span className="label">Infos</span>
+                        <span className="value">En ligne le 07/03/2023</span>
                     </div>
                 </div>
             </div>
