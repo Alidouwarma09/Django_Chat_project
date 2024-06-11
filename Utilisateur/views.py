@@ -90,9 +90,11 @@ def utilisateur_info(request):
         user, _ = auth_result
     data = {
         'nom_utilisateur': user.nom,
+        'numero_utilisateur': user.username,
         'prenom_utilisateur': user.prenom,
         'image_utilisateu': user.image.url
     }
+    print(data)
     return JsonResponse(data)
 
 
@@ -119,7 +121,6 @@ def tout_les_utilisateurs(request):
             'nom': utilisateur.nom,
             'prenom': utilisateur.prenom,
             'image': request.build_absolute_uri(utilisateur.image.url)
-            # Assurez-vous d'utiliser .url pour obtenir l'URL de l'image
         }
         utilisateurs_list.append(utilisateur_data)
 
@@ -175,31 +176,6 @@ def get_publications_video(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
-def accueil_utilisateur(request):
-    connecte_id = request.user.id
-    utilisateurs = Utilisateur.objects.exclude(id=connecte_id)
-
-    for utilisateur in utilisateurs:
-        utilisateur.nombre_messages_non_lus = Message.objects.filter(
-            recoi=request.user,
-            envoi=utilisateur,
-            vu=False
-        ).count()
-        dernier_message = Message.objects.filter(
-            recoi=request.user,
-            envoi=utilisateur
-        ).order_by('-timestamp').first()
-
-        if dernier_message and dernier_message.contenu_message:
-            mots = dernier_message.contenu_message.split()[:3]
-            utilisateur.preview_message = ' '.join(mots)
-        else:
-            utilisateur.preview_message = "auccun message"
-
-    context = {
-        'utilisateurs': utilisateurs,
-    }
-    return render(request, 'tout_les_utilisateurs.html', context)
 
 
 def detail_utilisateur(request, utilisateur_detail_id):

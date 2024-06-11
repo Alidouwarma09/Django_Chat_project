@@ -2,7 +2,7 @@
 from django.urls import path
 
 from Utilisateur import views
-from Utilisateur.views import Inscription, connexion_utilisateur, accueil_utilisateur, detail_utilisateur, \
+from Utilisateur.views import Inscription, connexion_utilisateur, detail_utilisateur, \
     publier_photo, \
     get_publications, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, \
     get_comment_count, start_video_call, get_comments, \
@@ -14,7 +14,6 @@ app_name = 'Utilisateur'
 urlpatterns = [
     path('api/inscription/', Inscription, name='Inscription'),
     path('Connexion/', connexion_utilisateur, name='Connexion_utlisateur'),
-    path('accueil_utilisateur/', accueil_utilisateur, name='accueil_utilisateur'),
     path('detail_utilisateur/<int:utilisateur_detail_id>/', detail_utilisateur, name='detail_utilisateur'),
     path('api/envoyer_message_images/', envoyer_message_images, name='envoyer_message_images'),
     path('api/envoyer_message_text/', envoyer_message_text, name='envoyer_message_text'),

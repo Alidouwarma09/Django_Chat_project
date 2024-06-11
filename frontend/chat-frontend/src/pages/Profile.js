@@ -3,9 +3,12 @@ import './css/Profile.css';
 import { IoChevronBackSharp } from "react-icons/io5";
 import { FaPhone } from "react-icons/fa";
 import {CiEdit, CiUser} from "react-icons/ci";
+import EditPopup from '../compoment/EditPopup';
 
 const Profile = () => {
     const [userInfo, setUserInfo] = useState({});
+    const [isEditing, setIsEditing] = useState(false);
+    const [currentField, setCurrentField] = useState({});
 
     useEffect(() => {
         const loadUserInfo = async () => {
@@ -14,15 +17,26 @@ const Profile = () => {
                 setUserInfo(JSON.parse(storedUserInfo));
             }
         };
-
         loadUserInfo();
     }, []);
+    const handleGoBack = () => {
+        window.history.back();
+    };
+    const handleEdit = (field, label) => {
+        setCurrentField({ field, label, value: userInfo[field] });
+        setIsEditing(true);
+    };
 
+    const handleSave = (newValue) => {
+        const updatedUserInfo = { ...userInfo, [currentField.field]: newValue };
+        setUserInfo(updatedUserInfo);
+        localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+    };
     return (
         <div className="profile-container">
             <header className="header2">
                 <div className="header-content">
-                    <IoChevronBackSharp style={{ fontSize: 25 }} />
+                    <IoChevronBackSharp onClick={handleGoBack} style={{ fontSize: 25 }} />
                     <h1>Profil utilisateur</h1>
                 </div>
             </header>
@@ -39,7 +53,7 @@ const Profile = () => {
                         <span className="value">{userInfo.nom_utilisateur || 'Nom non défini'}</span>
                         <div className="note-container">
                             <p className="note">Ce n’est pas votre nom d’utilisateur. Ce nom sera visible par vos contacts chater.</p>
-                            <CiEdit className="edit-icon" />
+                            <CiEdit className="edit-icon"  onClick={() => handleEdit('nom_utilisateur', 'Nom')}/>
                         </div>
                     </div>
                     <div className="profile-item">
@@ -48,7 +62,7 @@ const Profile = () => {
                         <span className="value">{userInfo.prenom_utilisateur || 'Nom non défini'}</span>
                         <div className="note-container">
                             <p className="note">Ce n’est pas votre nom d’utilisateur. Ce nom sera visible par vos contacts chater.</p>
-                            <CiEdit className="edit-icon" />
+                            <CiEdit className="edit-icon" onClick={() => handleEdit('prenom_utilisateur', 'Prénom')} />
                         </div>
                     </div>
                     <div className="profile-item">
@@ -58,10 +72,18 @@ const Profile = () => {
                     <div className="profile-item">
                         <FaPhone />
                         <span className="label">Téléphone</span>
-                        <span className="value">{userInfo.telephone || '+225 0789817277'}</span>
+                        <span className="value">+225 {userInfo.numero_utilisateur || '+225 0789817277'}</span>
                     </div>
                 </div>
             </div>
+            {isEditing &&
+                <EditPopup
+                    label={currentField.label}
+                    value={currentField.value}
+                    onSave={handleSave}
+                    onClose={() => setIsEditing(false)}
+                />
+            }
         </div>
     );
 }
