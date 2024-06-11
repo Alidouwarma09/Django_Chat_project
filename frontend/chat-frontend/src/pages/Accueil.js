@@ -13,6 +13,7 @@ import Stories from "../compoment/Stories";
 import { useLongPress } from '@uidotdev/usehooks';
 import {CiMenuKebab} from "react-icons/ci";
 import {RiVerifiedBadgeFill} from "react-icons/ri";
+import {useNavigate} from "react-router-dom";
 
 function Acceuil() {
   const [publications, setPublications] = useState([]);
@@ -23,9 +24,15 @@ function Acceuil() {
   const [loading, setLoading] = useState(true);
   const [selectedPublicationId, setSelectedPublicationId] = useState(null);
   const [copiedText, setCopiedText] = useState(false);
+  const navigate = useNavigate();
 
   const cacheDuration = 1000 * 60 * 5; // 5 minutes
-
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/connexion');
+    }
+  }, [navigate]);
   const getPublicationsFromLocalStorage = () => {
     const cachedData = localStorage.getItem('publications');
     const cacheTimestamp = localStorage.getItem('publicationsTimestamp');

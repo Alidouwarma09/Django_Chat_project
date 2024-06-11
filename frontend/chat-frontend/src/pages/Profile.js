@@ -58,7 +58,7 @@ const Profile = () => {
         <div className="profile-container">
             <header className="header2">
                 <div className="header-content">
-                    <IoChevronBackSharp onClick={handleGoBack} style={{ fontSize: 25 }} />
+                    <IoChevronBackSharp onClick={handleGoBack} style={{ fontSize: 25, width: 40 }} />
                     <h1>Profil utilisateur</h1>
                 </div>
             </header>
