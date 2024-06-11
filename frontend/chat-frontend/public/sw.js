@@ -3,8 +3,7 @@ const CACHE_NAME = "spotlist-cache-v1";
 const STATIC_ASSETS = [
     "/index.html",
     "/manifest.json",
-    "/static/b",
-    // Ajoutez ici d'autres ressources statiques que vous souhaitez mettre en cache
+    "/static/bundle.js",
 ];
 
 const CACHE_ASSETS = STATIC_ASSETS;
