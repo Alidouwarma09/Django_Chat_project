@@ -6,22 +6,28 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 5px;
     background-color: #f0f0f0;
     height: 100vh;
     box-sizing: border-box;
+    width: 100%;
 }
 
-.header {
+.header2 {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: white;
     padding: 10px 20px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid gray;
 }
+.header-content{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
 
+}
 .back-button {
     font-size: 24px;
     background: none;
@@ -29,24 +35,15 @@ body {
     cursor: pointer;
 }
 
-.header h1 {
-    margin: 0;
+.header2 h1 {
     font-size: 18px;
 }
-
-.header-spacer {
-    width: 24px; /* Same width as the back-button */
-}
-
 .profile-info {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
     width: 100%;
     max-width: 400px;
 }
@@ -81,4 +78,15 @@ body {
 .note {
     font-size: 12px;
     color: gray;
+}
+.note-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.edit-icon {
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 40px;
+    color: #48116c;
 }
