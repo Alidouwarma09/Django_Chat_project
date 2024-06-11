@@ -10,6 +10,8 @@ import ThemeButton from "../compoment/ThemeButton";
 import {IoIosNotifications} from "react-icons/io";
 import {GrDownload} from "react-icons/gr";
 import {FaUserCog} from "react-icons/fa";
+import {VscActivateBreakpoints} from "react-icons/vsc";
+import {MdOutlineSystemUpdate} from "react-icons/md";
 
 
 
@@ -491,13 +493,13 @@ function Navbar() {
                             </li>
 
                             <li className="nav-link">
-                                    <i className='bx bx-heart icon'></i>
-                                    <span className="text">Likes</span>
+                                <i className='icon'><VscActivateBreakpoints /></i>
+                                    <span className="text">Cache</span>
                             </li>
 
                             <li className="nav-link">
-                                    <i className='bx bx-wallet icon'></i>
-                                    <span className="text">Wallets</span>
+                                <i className='icon'><MdOutlineSystemUpdate /></i>
+                                    <span className="text">Mise a jour</span>
                             </li>
 
                         </ul>
@@ -505,10 +507,9 @@ function Navbar() {
 
                     <div className="bottom-content" >
                         <li className="" onClick={handleDeconnexion} style={{ backgroundColor: "pink", borderRadius: "15px", width:"100%"}}>
-                            <a href="#">
-                                <CiLogout style={{fontSize: 30}} />
-                                <span className="text">Deconnexion</span>
-                            </a>
+                            <i ><CiLogout style={{fontSize: 30}} /></i>
+
+                                <span className="text">Déconnexion</span>
                         </li>
 
                         <li className="mode">
