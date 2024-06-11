@@ -2,7 +2,11 @@ const CACHE_NAME = "spotlist-cache-v1";
 
 const STATIC_ASSETS = [
     "/index.html",
-    '/manifest.json'
+    "/manifest.json",
+    "/static/js/bundle.js",
+    "/static/js/0.chunk.js",
+    "/static/js/main.chunk.js",
+    "/static/css/main.chunk.css",
 ];
 
 const CACHE_ASSETS = STATIC_ASSETS;
