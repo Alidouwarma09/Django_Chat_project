@@ -2,8 +2,7 @@ const CACHE_NAME = "spotlist-cache-v1";
 
 const STATIC_ASSETS = [
     "/index.html",
-    "/manifest.json",
-    "/static/bundle.js",
+    '/manifest.json'
 ];
 
 const CACHE_ASSETS = STATIC_ASSETS;
