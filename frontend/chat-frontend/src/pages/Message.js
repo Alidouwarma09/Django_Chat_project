@@ -13,7 +13,7 @@ function Message() {
    const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
      const navigate = useNavigate();
-      const [messagesLoaded, setMessagesLoaded] = useState(false); // État pour suivre si les messages ont déjà été chargés
+      const [messagesLoaded, setMessagesLoaded] = useState(false);
 
 
 
@@ -98,7 +98,6 @@ const handleMessageSend = async (e) => {
 
       if (response.data.status === 'success') {
         setMessageImage(null);
-        // Handle successful image message send
       }
     } catch (error) {
       console.error('Erreur lors de l\'envoi de l\'image:', error);
@@ -178,7 +177,6 @@ const handleMessageSend = async (e) => {
                 <form className="conversation-form" onSubmit={handleMessageSend}>
                   <button type="button" className="conversation-form-button"><i className="ri-emotion-line"></i>
                   </button>
-
                   <div className="conversation-form-group">
                     <textarea className="conversation-form-input" rows="1" placeholder="Votre message ici..."
                               value={messageTexte} onChange={(e) => setMessageTexte(e.target.value)}></textarea>

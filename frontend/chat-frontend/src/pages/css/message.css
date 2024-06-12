@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 :root {
-    /* This color palletes from Tailwind CSS */
     --white: #fff;
     --black: #000;
 
@@ -269,9 +268,6 @@
     --rose-950: #4c0519;
 }
 
-
-
-/* start: Globals */
 *, ::before, ::after {
     margin: 0;
     padding: 0;
@@ -314,11 +310,6 @@ body {
     background-color: var(--white);
     position: relative;
 }
-/* end: Chat */
-
-
-
-/* start: Sidebar */
 .chat-sidebar {
     width: 64px;
     background-color: var(--slate-100);
@@ -442,11 +433,7 @@ body {
     margin-right: 12px;
     font-size: 17px;
 }
-/* end: Sidebar */
 
-
-
-/* start: Content side */
 .chat-content {
     padding-left: 64px;
     height: 100%;
@@ -589,11 +576,6 @@ body {
     color: var(--slate-400);
     font-weight: 500;
 }
-/* end: Content side */
-
-
-
-/* start: Conversation */
 .conversation {
     background-color: var(--slate-100);
     height: 100%;
@@ -603,13 +585,13 @@ body {
 }
 .conversation-top {
     padding: 8px 16px;
-    background-color: var(--white);
     display: flex;
     align-items: center;
     position: fixed;
     top: 0;
     z-index: 100;
     width: 100%;
+    border-bottom: 1px solid #dad7d7;
 }
 .conversation-back {
     background-color: transparent;
@@ -878,6 +860,10 @@ body {
     background-color: var(--white);
     display: flex;
     align-items: flex-end;
+    position: fixed;
+    bottom: 0;
+    border-top: 1px solid #dad7d7;
+    width: 100%;
 }
 .conversation-form-group {
     width: 100%;
@@ -965,11 +951,6 @@ body {
 .conversation-default p {
     margin-top: 16px;
 }
-/* end: Conversation */
-
-
-
-/* start: Breakpoints */
 @media screen and (max-width: 1600px) {
     .chat-container {
         max-width: unset;
