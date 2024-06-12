@@ -45,14 +45,16 @@ function Message() {
     const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/Utilisateur/api/message_sse?token=${token}&utilisateur_id=${utilisateurId}`);
 
     eventSource.onmessage = (event) => {
-      const { message: newMessage } = JSON.parse(event.data);
-      setMessages(prevMessages => [...prevMessages, ...newMessage]);
+      const { message: newMessages } = JSON.parse(event.data);
+      const uniqueNewMessages = newMessages.filter(newMessage => !messages.some(msg => msg.id === newMessage.id));
+      setMessages(prevMessages => [...prevMessages, ...uniqueNewMessages]);
     };
 
     return () => {
       eventSource.close();
     };
-  }, [utilisateurId]);
+  }, [utilisateurId, messages]);
+
 
   const handleMessageSend = async (e) => {
     e.preventDefault();

@@ -459,34 +459,31 @@ class MessageSSEView(View):
 
         try:
             token_obj = Token.objects.get(key=token)
-            current_user = token_obj.user
+            current_user = token_obj.user_id
+            print("connecter:", current_user)
         except Token.DoesNotExist:
             return HttpResponseForbidden("Token invalide")
-
         utilisateur_id = request.GET.get('utilisateur_id')
-        print(utilisateur_id)
 
         def event_stream(current_user, utilisateur_id):
             nonlocal last_message_id_sent
             while True:
-                # Filtrer les messages pour l'utilisateur connecté et l'utilisateur à qui vous écrivez
-                messages = (Message.objects.filter(envoi=current_user, recoi_id=utilisateur_id) |
-                            Message.objects.filter(recoi=current_user, envoi_id=utilisateur_id))
+                messages = (Message.objects.filter(envoi_id=current_user, recoi_id=utilisateur_id) |
+                            Message.objects.filter(recoi_id=current_user, envoi_id=utilisateur_id))
                 messages = messages.filter(id__gt=last_message_id_sent).order_by('-timestamp')[:5]
 
                 filtered_messages = []
                 for message in messages:
-                    if message.envoi == current_user or message.recoi.id == utilisateur_id:
-                        user_data = {
-                            'id': message.envoi.id,
-                            'username': message.envoi.username,
-                        }
-                        filtered_messages.append({
-                            'envoi': user_data,
-                            'contenu_message': message.contenu_message,
-                            'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
-                        })
-                        last_message_id_sent = message.id
+                    user_data = {
+                        'id': message.envoi.id,
+                        'username': message.envoi.username,
+                    }
+                    filtered_messages.append({
+                        'envoi': user_data,
+                        'contenu_message': message.contenu_message,
+                        'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+                    })
+                    last_message_id_sent = message.id
 
                 if filtered_messages:
                     data = json.dumps({'message': filtered_messages})
