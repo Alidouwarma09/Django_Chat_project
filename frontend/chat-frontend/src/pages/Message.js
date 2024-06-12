@@ -107,8 +107,7 @@ function Message() {
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
   const currentUserId = userInfo?.id;
   return (
-      <div>
-        <div className="conversation" id="conversation-1">
+        <div className="chat-container">
           <div className="conversation-top">
             <button type="button" className="conversation-back" onClick={handleBack}><i className="ri-arrow-left-line"></i></button>
             <div className="conversation-user">
@@ -130,21 +129,28 @@ function Message() {
           </div>
           <div className="conversation-main">
             <ul className="conversation-wrapper">
-              <div className="coversation-divider"><span>Aujourd'hui</span></div>
               {messages.map((message, index) => (
-                  <li key={index} className={`conversation-item ${message.utilisateur_envoi !== currentUserId ? 'mon-message' : ''}`}>
-                    <div className="conversation-item-content">
-                      <div className="conversation-item-wrapper">
-                        <div className="conversation-item-box">
-                          <div className="conversation-item-text ">
-                            <p>{message.contenu_message}</p>
-                            <div className="conversation-item-time">{message.timestamp}</div>
+                  <div key={index}>
+                    {/* Afficher le jour où le message a été envoyé */}
+                    <div className="coversation-divider">
+                      <span>{new Date(message.timestamp).toLocaleDateString()}</span>
+                    </div>
+                    <li className={`conversation-item ${message.utilisateur_envoi !== currentUserId ? 'mon-message' : ''}`}>
+                      <div className="conversation-item-content">
+                        <div className="conversation-item-wrapper">
+                          <div className="conversation-item-box">
+                            <div className="conversation-item-text">
+                              <p>{message.contenu_message}</p>
+                              {/* Afficher l'heure d'envoi */}
+                              <div className="conversation-item-time">{new Date(message.timestamp).toLocaleTimeString()}</div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </li>
+                    </li>
+                  </div>
               ))}
+
               {loading && <IoReloadSharp className="loading rotate" />}
             </ul>
           </div>
@@ -162,7 +168,6 @@ function Message() {
                 className="ri-send-plane-2-line"></i></button>
           </form>
         </div>
-      </div>
   );
 }
 
