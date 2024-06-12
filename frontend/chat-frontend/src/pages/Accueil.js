@@ -305,16 +305,17 @@ function Acceuil() {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
+                      whiteSpace: 'pre-wrap',
                       color: "white",
                       fontSize: 20,
-                      backgroundImage: publication.photo_file ? '' : publication.couleur_fond,
+                      background: publication.photo_file ? '' : publication.couleur_fond,
                       textShadow: `1px 1px 1px #919191,
                                 1px 18px 6px rgba(16,16,16,0.4),
                                 1px 30px 60px rgba(16,16,16,0.4)`
                     }}>
                       {publication.contenu ? (
                           <>
-                            {publication.contenu}
+                            <div style={{ whiteSpace: "pre-wrap"}}> {publication.contenu}</div>
                           </>
                       ) : (
                           <>

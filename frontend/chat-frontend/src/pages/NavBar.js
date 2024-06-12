@@ -380,7 +380,7 @@ function Navbar() {
                     </div>
                     <h3>Aperçu</h3>
                     <div id="preview" style={{ background: selectedBackground }}>
-                        <div id="textePreview">{textPreview}</div>
+                        <div style={{ whiteSpace: "pre-wrap"}} id="textePreview">{textPreview}</div>
                     </div>
                     <button id="publicationButton" type="button" onClick={() => {
                         handlePublication();
