@@ -469,7 +469,6 @@ class MessageSSEView(View):
                 messages = (Message.objects.filter(envoi_id=current_user, recoi_id=utilisateur_id) |
                             Message.objects.filter(recoi_id=current_user, envoi_id=utilisateur_id))
                 latest_message = messages.order_by('-timestamp').first()
-
                 if latest_message and latest_message.id > last_message_id_sent:
                     filtered_messages = []
                     for message in messages.filter(id__gt=last_message_id_sent):
@@ -477,7 +476,6 @@ class MessageSSEView(View):
                             'id': message.envoi_id,
                             'username': message.envoi.username,
                         }
-                        print(user_data)
                         filtered_messages.append({
                             'id': message.id,
                             'envoi': user_data,

@@ -41,16 +41,13 @@ function Message() {
       return;
     }
 
-    const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/Utilisateur/api/message_sse?token=${token}&utilisateur_id=${utilisateurId}`);
-
+    const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/Utilisateur/api/message_sse?token=${token}&utilisateur_id=${utilisateurId}`, { mode: 'cors' });
     eventSource.onmessage = (event) => {
       const { message: newMessages } = JSON.parse(event.data);
       setMessages(prevMessages => {
         const updatedMessages = [...prevMessages];
-
-        // Ajoute uniquement les nouveaux messages qui n'existent pas déjà
         newMessages.forEach(newMsg => {
-          if (!prevMessages.find(msg => msg.id === newMsg.id)) { // Assurer que chaque message a un 'id' unique
+          if (!prevMessages.find(msg => msg.id === newMsg.id)) {
             updatedMessages.push(newMsg);
           }
         });
@@ -140,7 +137,7 @@ function Message() {
                         <div className="conversation-item-content">
                           <div className="conversation-item-wrapper">
                             <div className="conversation-item-box">
-                              <div className="conversation-item-text">
+                              <div className="conversation-item-text me">
                                 <p>{message.contenu_message}</p>
                                 <div className="conversation-item-time">{message.timestamp}</div>
                               </div>

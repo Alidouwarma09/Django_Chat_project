@@ -18,6 +18,7 @@ import cloudinary_storage
 from pathlib import Path
 
 import dj_database_url
+from corsheaders.defaults import default_headers
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -52,11 +53,12 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 # settings.py
 
@@ -108,14 +110,15 @@ DEFAULT_FILE_STORAGE = 'Chat.custom_storage.CustomCloudinaryStorage'
 WSGI_APPLICATION = 'Chat.wsgi.application'
 
 CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",  # Remplacez cela par l'URL de votre application React
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "https://django-chat-project.onrender.com",  # Remplacez cela par l'URL de votre application React
+]
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
     'authorization',
     'content-type',
+    'cache-control',
     'dnt',
     'origin',
     'user-agent',
