@@ -106,6 +106,21 @@ function Message() {
   };
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
   const currentUserId = userInfo?.id;
+  function formatDate(timestamp) {
+    const messageDate = new Date(timestamp);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (messageDate.toDateString() === today.toDateString()) {
+      return 'Aujourd\'hui';
+    } else if (messageDate.toDateString() === yesterday.toDateString()) {
+      return 'Hier';
+    } else {
+      return messageDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+  }
+
   return (
         <div className="chat-container">
           <div className="conversation-top">
@@ -131,9 +146,8 @@ function Message() {
             <ul className="conversation-wrapper">
               {messages.map((message, index) => (
                   <div key={index}>
-                    {/* Afficher le jour où le message a été envoyé */}
                     <div className="coversation-divider">
-                      <span>{new Date(message.timestamp).toLocaleDateString()}</span>
+                      <span>{formatDate(message.timestamp)}</span>
                     </div>
                     <li className={`conversation-item ${message.utilisateur_envoi !== currentUserId ? 'mon-message' : ''}`}>
                       <div className="conversation-item-content">
@@ -141,8 +155,7 @@ function Message() {
                           <div className="conversation-item-box">
                             <div className="conversation-item-text">
                               <p>{message.contenu_message}</p>
-                              {/* Afficher l'heure d'envoi */}
-                              <div className="conversation-item-time">{new Date(message.timestamp).toLocaleTimeString()}</div>
+                              <div className="conversation-item-time">{new Date(message.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</div>
                             </div>
                           </div>
                         </div>
