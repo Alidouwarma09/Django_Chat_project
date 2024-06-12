@@ -5,13 +5,12 @@ import './css/message.css';
 import { IoReloadSharp } from "react-icons/io5";
 
 function Message() {
-  const { utilisateurId } = useParams(); // Récupérer l'ID de l'utilisateur à qui vous écrivez depuis les paramètres de l'URL
+  const { utilisateurId } = useParams();
   const [utilisateur, setUtilisateur] = useState(null);
   const [messageTexte, setMessageTexte] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const navigate = useNavigate();
-  const [messagesLoaded, setMessagesLoaded] = useState(false);
 
   useEffect(() => {
     const fetchUtilisateur = async () => {
@@ -46,14 +45,27 @@ function Message() {
 
     eventSource.onmessage = (event) => {
       const { message: newMessages } = JSON.parse(event.data);
-      const uniqueNewMessages = newMessages.filter(newMessage => !messages.some(msg => msg.id === newMessage.id));
-      setMessages(prevMessages => [...prevMessages, ...uniqueNewMessages]);
+      setMessages(prevMessages => {
+        const updatedMessages = [...prevMessages];
+
+        // Ajoute uniquement les nouveaux messages qui n'existent pas déjà
+        newMessages.forEach(newMsg => {
+          if (!prevMessages.find(msg => msg.id === newMsg.id)) { // Assurer que chaque message a un 'id' unique
+            updatedMessages.push(newMsg);
+          }
+        });
+
+        return updatedMessages;
+      });
     };
+
+
+
 
     return () => {
       eventSource.close();
     };
-  }, [utilisateurId, messages]);
+  }, [utilisateurId]);
 
 
   const handleMessageSend = async (e) => {

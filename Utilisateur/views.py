@@ -6,9 +6,6 @@ import os
 import time
 from asyncio import sleep
 from threading import Lock
-
-from asgiref.sync import sync_to_async
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
@@ -16,13 +13,13 @@ from django.core.files.storage import default_storage
 from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import  get_object_or_404
 from django.http import StreamingHttpResponse, HttpResponseForbidden
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET
 from rest_framework.authentication import TokenAuthentication
 from twilio.rest import Client
 from django.utils import timezone
@@ -451,8 +448,8 @@ def get_user_messages(request, utilisateur_id):
 
 class MessageSSEView(View):
     def get(self, request, *args, **kwargs):
-        last_message_id_sent = 0
         token = request.GET.get('token')
+        utilisateur_id = request.GET.get('utilisateur_id')
 
         if not token:
             return HttpResponseForbidden("Token manquant dans l'URL")
@@ -463,33 +460,35 @@ class MessageSSEView(View):
             print("connecter:", current_user)
         except Token.DoesNotExist:
             return HttpResponseForbidden("Token invalide")
-        utilisateur_id = request.GET.get('utilisateur_id')
+
+        last_message_id_sent = 0
 
         def event_stream(current_user, utilisateur_id):
             nonlocal last_message_id_sent
             while True:
                 messages = (Message.objects.filter(envoi_id=current_user, recoi_id=utilisateur_id) |
                             Message.objects.filter(recoi_id=current_user, envoi_id=utilisateur_id))
-                messages = messages.filter(id__gt=last_message_id_sent).order_by('-timestamp')[:5]
+                latest_message = messages.order_by('-timestamp').first()
 
-                filtered_messages = []
-                for message in messages:
-                    user_data = {
-                        'id': message.envoi.id,
-                        'username': message.envoi.username,
-                    }
-                    filtered_messages.append({
-                        'envoi': user_data,
-                        'contenu_message': message.contenu_message,
-                        'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
-                    })
-                    last_message_id_sent = message.id
+                if latest_message and latest_message.id > last_message_id_sent:
+                    filtered_messages = []
+                    for message in messages.filter(id__gt=last_message_id_sent):
+                        user_data = {
+                            'id': message.envoi_id,
+                            'username': message.envoi.username,
+                        }
+                        print(user_data)
+                        filtered_messages.append({
+                            'id': message.id,
+                            'envoi': user_data,
+                            'contenu_message': message.contenu_message,
+                            'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+                        })
+                        last_message_id_sent = message.id
 
-                if filtered_messages:
-                    data = json.dumps({'message': filtered_messages})
-                    yield f"data: {data}\n\n"
-
-                time.sleep(1)
+                    if filtered_messages:
+                        data = json.dumps({'message': filtered_messages})
+                        yield f"data: {data}\n\n"
 
         response = StreamingHttpResponse(event_stream(current_user, utilisateur_id), content_type='text/event-stream')
         response['Cache-Control'] = 'no-cache'
