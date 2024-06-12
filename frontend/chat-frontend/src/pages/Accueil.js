@@ -238,7 +238,7 @@ function Acceuil() {
   return (
       <div className={isStorySelected ? 'no-background' : ''} onMouseDown={handleLongPress}
            {...longPressEvent}
-           style={{ userSelect: 'none' }}
+           style={{ userSelect: 'none', overflow: "hidden" }}
       >
         {!isStorySelected && <NavBar />}
         <div className="conversation active"  style={{height: "100vh", overflow: "auto", paddingBottom: 250}}>
@@ -379,8 +379,9 @@ function Acceuil() {
               ))
           )}
 
-          {!isStorySelected && <BottomTab />}
+
         </div>
+        {!isStorySelected && <BottomTab />}
       </div>
   );
 }
