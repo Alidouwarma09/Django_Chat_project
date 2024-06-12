@@ -104,7 +104,8 @@ function Message() {
   const handleBack = () => {
     navigate(-1);
   };
-
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  const currentUserId = userInfo?.id;
   return (
       <div>
         <div className="chat-container">
@@ -133,11 +134,11 @@ function Message() {
                 <ul className="conversation-wrapper">
                   <div className="coversation-divider"><span>Aujourd'hui</span></div>
                   {messages.map((message, index) => (
-                      <li key={index} className="conversation-item me">
+                      <li key={index} className={`conversation-item ${message.utilisateur_envoi === currentUserId ? 'me' : ''}`}>
                         <div className="conversation-item-content">
                           <div className="conversation-item-wrapper">
                             <div className="conversation-item-box">
-                              <div className="conversation-item-text me">
+                              <div className="conversation-item-text ">
                                 <p>{message.contenu_message}</p>
                                 <div className="conversation-item-time">{message.timestamp}</div>
                               </div>

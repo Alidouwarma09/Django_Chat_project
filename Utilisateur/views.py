@@ -472,12 +472,14 @@ class MessageSSEView(View):
                 if latest_message and latest_message.id > last_message_id_sent:
                     filtered_messages = []
                     for message in messages.filter(id__gt=last_message_id_sent):
+                        print(message.envoi.id)
                         user_data = {
                             'id': message.envoi_id,
                             'username': message.envoi.username,
                         }
                         filtered_messages.append({
                             'id': message.id,
+                            'utilisateur_envoi': message.envoi.id,
                             'envoi': user_data,
                             'contenu_message': message.contenu_message,
                             'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
