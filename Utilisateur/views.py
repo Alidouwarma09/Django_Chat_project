@@ -13,7 +13,7 @@ from django.core.files.storage import default_storage
 from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
-from django.shortcuts import  get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.http import StreamingHttpResponse, HttpResponseForbidden
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -425,25 +425,6 @@ def get_comments(request, publication_id):
             comment.utilisateur.image.url) if comment.utilisateur.image else None,
     } for comment in comments]
     return JsonResponse(comments_data, safe=False)
-
-
-@csrf_exempt
-def get_user_messages(request, utilisateur_id):
-    auth_result = TokenAuthentication().authenticate(request)
-    if auth_result is not None:
-        utilisateur_envoi, _ = auth_result
-        print(utilisateur_envoi)
-    messages_sent_by_current_user = Message.objects.filter(envoi=utilisateur_envoi, recoi_id=utilisateur_id)
-    messages_received_by_current_user = Message.objects.filter(envoi_id=utilisateur_id, recoi_id=utilisateur_envoi)
-    all_messages = messages_sent_by_current_user | messages_received_by_current_user
-    all_messages = all_messages.order_by('timestamp')
-
-    messages_data = [{
-        'id': message.id,
-        'contenu_message': message.contenu_message,
-        'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-    } for message in all_messages]
-    return JsonResponse(messages_data, safe=False)
 
 
 class MessageSSEView(View):

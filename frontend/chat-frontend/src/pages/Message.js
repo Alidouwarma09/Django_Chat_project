@@ -134,7 +134,7 @@ function Message() {
                 <ul className="conversation-wrapper">
                   <div className="coversation-divider"><span>Aujourd'hui</span></div>
                   {messages.map((message, index) => (
-                      <li key={index} className={`conversation-item ${message.utilisateur_envoi === currentUserId ? 'me' : ''}`}>
+                      <li key={index} className={`conversation-item ${message.utilisateur_envoi !== currentUserId ? 'mon-message' : ''}`}>
                         <div className="conversation-item-content">
                           <div className="conversation-item-wrapper">
                             <div className="conversation-item-box">
