@@ -108,63 +108,59 @@ function Message() {
   const currentUserId = userInfo?.id;
   return (
       <div>
-        <div className="chat-container">
-          <div className="chat-content">
-            <div className="conversation active" id="conversation-1">
-              <div className="conversation-top">
-                <button type="button" className="conversation-back" onClick={handleBack}><i className="ri-arrow-left-line"></i></button>
-                <div className="conversation-user">
-                  <img className="conversation-user-image"
-                       src={utilisateur.image_utilisateur}
-                       alt={`${utilisateur.nom_utilisateur} ${utilisateur.prenom_utilisateur}`}
-                  />
-                  <div>
-                    <div
-                        className="conversation-user-name">{utilisateur.nom_utilisateur} {utilisateur.prenom_utilisateur}</div>
-                    <div className="conversation-user-status online">En ligne</div>
-                  </div>
-                </div>
-                <div className="conversation-buttons">
-                  <button type="button"><i className="ri-phone-fill"></i></button>
-                  <button type="button"><i className="ri-vidicon-line"></i></button>
-                  <button type="button"><i className="ri-information-line"></i></button>
-                </div>
+        <div className="conversation" id="conversation-1">
+          <div className="conversation-top">
+            <button type="button" className="conversation-back" onClick={handleBack}><i className="ri-arrow-left-line"></i></button>
+            <div className="conversation-user">
+              <img className="conversation-user-image"
+                   src={utilisateur.image_utilisateur}
+                   alt={`${utilisateur.nom_utilisateur} ${utilisateur.prenom_utilisateur}`}
+              />
+              <div>
+                <div
+                    className="conversation-user-name">{utilisateur.nom_utilisateur} {utilisateur.prenom_utilisateur}</div>
+                <div className="conversation-user-status online">En ligne</div>
               </div>
-              <div className="conversation-main">
-                <ul className="conversation-wrapper">
-                  <div className="coversation-divider"><span>Aujourd'hui</span></div>
-                  {messages.map((message, index) => (
-                      <li key={index} className={`conversation-item ${message.utilisateur_envoi !== currentUserId ? 'mon-message' : ''}`}>
-                        <div className="conversation-item-content">
-                          <div className="conversation-item-wrapper">
-                            <div className="conversation-item-box">
-                              <div className="conversation-item-text ">
-                                <p>{message.contenu_message}</p>
-                                <div className="conversation-item-time">{message.timestamp}</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                  ))}
-                  {loading && <IoReloadSharp className="loading rotate" />}
-                </ul>
-              </div>
-              <form className="conversation-form" onSubmit={handleMessageSend}>
-                <button type="button" className="conversation-form-button"><i className="ri-emotion-line"></i>
-                </button>
-                <div className="conversation-form-group">
-                <textarea className="conversation-form-input" rows="1" placeholder="Votre message ici..."
-                          value={messageTexte} onChange={(e) => setMessageTexte(e.target.value)}></textarea>
-                  <button type="button" className="conversation-form-record"><i className="ri-mic-line"></i>
-                  </button>
-                </div>
-
-                <button type="submit" className="conversation-form-button conversation-form-submit"><i
-                    className="ri-send-plane-2-line"></i></button>
-              </form>
+            </div>
+            <div className="conversation-buttons">
+              <button type="button"><i className="ri-phone-fill"></i></button>
+              <button type="button"><i className="ri-vidicon-line"></i></button>
+              <button type="button"><i className="ri-information-line"></i></button>
             </div>
           </div>
+          <div className="conversation-main">
+            <ul className="conversation-wrapper">
+              <div className="coversation-divider"><span>Aujourd'hui</span></div>
+              {messages.map((message, index) => (
+                  <li key={index} className={`conversation-item ${message.utilisateur_envoi !== currentUserId ? 'mon-message' : ''}`}>
+                    <div className="conversation-item-content">
+                      <div className="conversation-item-wrapper">
+                        <div className="conversation-item-box">
+                          <div className="conversation-item-text ">
+                            <p>{message.contenu_message}</p>
+                            <div className="conversation-item-time">{message.timestamp}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+              ))}
+              {loading && <IoReloadSharp className="loading rotate" />}
+            </ul>
+          </div>
+          <form className="conversation-form" onSubmit={handleMessageSend}>
+            <button type="button" className="conversation-form-button"><i className="ri-emotion-line"></i>
+            </button>
+            <div className="conversation-form-group">
+                <textarea className="conversation-form-input" rows="1" placeholder="Votre message ici..."
+                          value={messageTexte} onChange={(e) => setMessageTexte(e.target.value)}></textarea>
+              <button type="button" className="conversation-form-record"><i className="ri-mic-line"></i>
+              </button>
+            </div>
+
+            <button type="submit" className="conversation-form-button conversation-form-submit"><i
+                className="ri-send-plane-2-line"></i></button>
+          </form>
         </div>
       </div>
   );
