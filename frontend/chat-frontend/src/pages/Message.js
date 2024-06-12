@@ -3,6 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './css/message.css';
 import { IoReloadSharp } from "react-icons/io5";
+import {Spinner} from "@chakra-ui/react";
+import {Box} from "@mui/material";
+import Icon from "antd/es/icon";
 
 function Message() {
   const { utilisateurId } = useParams();
@@ -98,7 +101,21 @@ function Message() {
   };
 
   if (!utilisateur) {
-    return <div>Chargement...</div>;
+    return (
+        <div className="loading-container">
+          <Box textAlign="center" mt="10" className="conversation-wrapper">
+            <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+                size="xl"
+                className="loading-container"
+            />
+            <Icon as={IoReloadSharp} className="loading-icon" />
+          </Box>
+        </div>
+    );
   }
 
   const handleBack = () => {

@@ -156,3 +156,23 @@
 }
 
 
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Pour occuper toute la hauteur de la page */
+
+}
+
+.conversation-wrapper {
+    max-height: 70vh;
+    overflow: hidden;
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
