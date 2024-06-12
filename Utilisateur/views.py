@@ -17,7 +17,7 @@ from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 from django.shortcuts import redirect, get_object_or_404
-from django.http import StreamingHttpResponse
+from django.http import StreamingHttpResponse, HttpResponseForbidden
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -208,7 +208,6 @@ def get_publications_video(request):
         data = []
         for pub in publications:
             video_url = str(pub.video_file)
-            print("URL de la vidéo:", video_url)
             data.append({
                 'id': pub.id,
                 'titre': pub.titre,
@@ -433,44 +432,69 @@ def get_comments(request, publication_id):
 
 @csrf_exempt
 def get_user_messages(request, utilisateur_id):
-    messages = Message.objects.filter(utilisateur_id=utilisateur_id)
+    auth_result = TokenAuthentication().authenticate(request)
+    if auth_result is not None:
+        utilisateur_envoi, _ = auth_result
+        print(utilisateur_envoi)
+    messages_sent_by_current_user = Message.objects.filter(envoi=utilisateur_envoi, recoi_id=utilisateur_id)
+    messages_received_by_current_user = Message.objects.filter(envoi_id=utilisateur_id, recoi_id=utilisateur_envoi)
+    all_messages = messages_sent_by_current_user | messages_received_by_current_user
+    all_messages = all_messages.order_by('timestamp')
+
     messages_data = [{
         'id': message.id,
         'contenu_message': message.contenu_message,
         'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-        # Ajoutez d'autres champs nécessaires ici
-    } for message in messages]
+    } for message in all_messages]
     return JsonResponse(messages_data, safe=False)
 
 
 class MessageSSEView(View):
     def get(self, request, *args, **kwargs):
-        last_message_id_sent = 0  # Initialisez la variable last_message_id_sent
+        last_message_id_sent = 0
+        token = request.GET.get('token')
 
-        def event_stream():
-            nonlocal last_message_id_sent  # Utilisez nonlocal pour accéder à la variable last_message_id_sent de l'encapsulation externe
+        if not token:
+            return HttpResponseForbidden("Token manquant dans l'URL")
+
+        try:
+            token_obj = Token.objects.get(key=token)
+            current_user = token_obj.user
+        except Token.DoesNotExist:
+            return HttpResponseForbidden("Token invalide")
+
+        utilisateur_id = request.GET.get('utilisateur_id')
+        print(utilisateur_id)
+
+        def event_stream(current_user, utilisateur_id):
+            nonlocal last_message_id_sent
             while True:
-                messages = Message.objects.filter(id__gt=last_message_id_sent).order_by('-timestamp')[:5]
-                if messages:
-                    message_data = []
-                    for message in messages:
-                        # Convertir l'objet Utilisateur en un dictionnaire
+                # Filtrer les messages pour l'utilisateur connecté et l'utilisateur à qui vous écrivez
+                messages = (Message.objects.filter(envoi=current_user, recoi_id=utilisateur_id) |
+                            Message.objects.filter(recoi=current_user, envoi_id=utilisateur_id))
+                messages = messages.filter(id__gt=last_message_id_sent).order_by('-timestamp')[:5]
+
+                filtered_messages = []
+                for message in messages:
+                    if message.envoi == current_user or message.recoi.id == utilisateur_id:
                         user_data = {
                             'id': message.envoi.id,
                             'username': message.envoi.username,
-                            # Ajoutez d'autres attributs de l'utilisateur si nécessaire
                         }
-                        message_data.append({
+                        filtered_messages.append({
                             'envoi': user_data,
                             'contenu_message': message.contenu_message,
                             'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
                         })
-                    data = json.dumps({'message': message_data})
+                        last_message_id_sent = message.id
+
+                if filtered_messages:
+                    data = json.dumps({'message': filtered_messages})
                     yield f"data: {data}\n\n"
-                    last_message_id_sent = messages[0].id
+
                 time.sleep(1)
 
-        response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+        response = StreamingHttpResponse(event_stream(current_user, utilisateur_id), content_type='text/event-stream')
         response['Cache-Control'] = 'no-cache'
         return response
 
