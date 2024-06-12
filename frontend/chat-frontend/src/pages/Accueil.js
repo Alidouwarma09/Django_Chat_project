@@ -245,9 +245,7 @@ function Acceuil() {
           <Stories onStorySelect={handleStorySelect} />
           {loading && (!publications || publications.length === 0) ? (
               <>
-                <Skeleton baseColor="#030f1e" height={200} />
-                <Skeleton baseColor="#030f1e" height={200} />
-                <Skeleton baseColor="#030f1e" height={200} />
+                <Skeleton count={5} baseColor="#030f1e" height={200} />
               </>
           ) : (
               publications.map((publication, index) => (
@@ -272,8 +270,8 @@ function Acceuil() {
                     </span>
                         </p>
                       </div>
-                      <div style={{ position: 'absolute', right: 0, padding: 30, fontSize: 20 }}>
-                        <CiMenuKebab onClick={() => handleOpenPopup(publication.id)} />
+                      <div style={{ right: 0, padding: 30, fontSize: 20, marginLeft: "50%"}}>
+                        <CiMenuKebab onClick={() => handleOpenPopup(publication.id)} style={{ marginRight: 20}} />
                       </div>
                       {selectedPublicationId === publication.id && (
                           <div key={publication.id} className="popup-wrapper" style={{ position: 'absolute', right: 0, marginTop: 150, width: 300 }}>
