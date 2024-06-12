@@ -328,15 +328,15 @@ function Navbar() {
                     <input type="hidden" id="couleurFondHidden" name="couleur_fond" value="" />
                     <div id="backgroundOptions" style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
                         <div className="backgroundOption"
-                            data-value="linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5))" style={{
-                                backgroundImage: "linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5))",
+                            data-value="black" style={{
+                                backgroundColor: "black",
                                 borderRadius: "50%",
                                 width: "50px",
                                 height: "50px",
                                 display: "inline-block",
                                 marginRight: "10px"
                             }}
-                            onClick={() => handleBackgroundClick("linear-gradient(to bottom, rgba(255,128,255,0.5), rgba(0,0,128,0.5))")}></div>
+                            onClick={() => handleBackgroundClick("black")}></div>
                         <div className="backgroundOption"
                             data-value="linear-gradient(to bottom, rgba(128,0,128,0.5), rgba(0,0,128,0.5))" style={{
                                 backgroundImage: "linear-gradient(to bottom, rgba(128,0,128,0.5), rgba(0,0,128,0.5))",
