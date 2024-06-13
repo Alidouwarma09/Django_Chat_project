@@ -436,7 +436,7 @@ function Navbar() {
                     <CircularProgressLabel>{progressPercent}%</CircularProgressLabel>
                 </CircularProgress>)}
             <nav className="navbar">
-                <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu" onClick={handleReload}>
+                <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="rotating" onClick={handleReload}>
                     <LuRefreshCcw />
                 </div>
                 <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu">

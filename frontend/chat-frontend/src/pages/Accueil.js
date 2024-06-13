@@ -211,7 +211,7 @@ function Acceuil() {
   let timer = null;
 
   const handleTouchStart = (publicationId) => {
-    timer = setTimeout(() => handleLongPress2(publicationId), 700);
+    timer = setTimeout(() => handleLongPress2(publicationId), 500);
   };
 
   const handleTouchEnd = () => {
