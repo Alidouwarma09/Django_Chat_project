@@ -260,9 +260,6 @@ function Acceuil() {
                   style={{ borderTop: '2px solid gray' }}
                   onTouchStart={() => handleTouchStart(publication.id)}
                   onTouchEnd={handleTouchEnd}
-                  onMouseDown={() => handleTouchStart(publication.id)}
-                  onMouseUp={handleTouchEnd}
-                  onMouseLeave={handleTouchEnd}
               >
                 {publication.photo_file && <img src={publication.photo_file} alt="Publication" />}
                 <div className="publication-header">
