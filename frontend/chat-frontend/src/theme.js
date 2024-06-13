@@ -31,10 +31,6 @@ const styles = {
             bg: props.colorMode === 'dark' ? 'gray.800' : '#f5f5f5',
             color: props.colorMode === 'dark' ? 'white' : 'gray.800',
         },
-        '.messages-list': {
-            bg: props.colorMode === 'dark' ? 'gray.800' : '#f5f5f5',
-            color: props.colorMode === 'dark' ? 'white' : 'gray.800',
-        },
     }),
 };
 

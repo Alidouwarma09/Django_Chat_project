@@ -3,6 +3,7 @@
     font-family: Arial, sans-serif;
     height: 100%;
     overflow: hidden;
+    background-color: #ffffff
 }
 
 .header {
@@ -29,7 +30,6 @@
 
 .messages-list {
     padding: 10px;
-    background-color: #fff;
     overflow-y: auto;
     max-height: 500px;
     height: 100%;
@@ -57,9 +57,6 @@
     margin-right: 10px;
 }
 
-.favorite-icon {
-    color: red;
-}
 
 .avatar {
     font-size: 18px;

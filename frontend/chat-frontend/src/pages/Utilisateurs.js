@@ -81,17 +81,19 @@ function Utilisateurs() {
                     onChange={handleSearchChange}
                 />
             </div>
-            <div className="messages-list">
-                {filteredUtilisateurs.map(utilisateur => (
-                    <div key={utilisateur.id} className="message-item" onClick={() => handleUserClick(utilisateur.id)}>
-                        <div className="message-avatar">
-                            <img src={utilisateur.image} alt={`${utilisateur.nom} ${utilisateur.prenom}`} className="avatar-image" />
+            <div>
+                <div className="messages-list">
+                    {filteredUtilisateurs.map(utilisateur => (
+                        <div key={utilisateur.id} className="message-item" onClick={() => handleUserClick(utilisateur.id)}>
+                            <div className="message-avatar">
+                                <img src={utilisateur.image} alt={`${utilisateur.nom} ${utilisateur.prenom}`} className="avatar-image" />
+                            </div>
+                            <div className="message-content">
+                                <div className="message-name">{utilisateur.nom} {utilisateur.prenom}</div>
+                            </div>
                         </div>
-                        <div className="message-content">
-                            <div className="message-name">{utilisateur.nom} {utilisateur.prenom}</div>
-                        </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
             <button className="new-message-button">+</button>
             <BottomTab/>
