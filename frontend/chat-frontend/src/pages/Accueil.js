@@ -226,37 +226,39 @@ function Acceuil() {
     setShowPopup(false);
   };
 
-
+  const overlayClassName = showPopup ? 'overlay-blur' : '';
   const longPressEvent = useLongPress(handleLongPress, { delay: 700 });
 
   return (
-      <div className={isStorySelected ? 'no-background' : ''} onMouseDown={handleLongPress}
-           {...longPressEvent}
-           style={{ userSelect: 'none', overflow: "hidden" }}
-      >
-        {!isStorySelected && <NavBar />}
-        <div className="conversation active"  style={{height: "100vh", overflow: "auto", paddingBottom: 250}}>
-          <Stories onStorySelect={handleStorySelect} />
-          {loading && (!publications || publications.length === 0) ? (
-              <>
-                <Skeleton count={5} baseColor="#030f1e" height={200} />
-              </>
-          ) : (
-              publications.map((publication, index) => (
-                  <div
-                      key={publication.id}
-                      id={`publication-${publication.id}`}
-                      className="publication"
-                      style={{ borderTop: '2px solid gray' }}
-                      {...longPressEvent2}
-                      onMouseDown={() => handleLongPress2(publication.id)}
-                  >
-                    {publication.photo_file && <img src={publication.photo_file} alt="Publication" />}
-                    <div className="publication-header">
-                      <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur" className="user-profile" />
-                      <div className="user-info">
-                        <p style={{display: "flex"}} className="user-name">{publication.utilisateur_nom} {publication.utilisateur_prenom} <RiVerifiedBadgeFill style={{color: "blue", fontSize: 20, marginLeft: 10}} /></p>
-                        <p className="publication-time">
+<div>
+  {showPopup && <div className="dark-overlay2"></div>}
+  <div className={`${isStorySelected ? 'no-background' : ''}`} onMouseDown={handleLongPress}
+       {...longPressEvent}
+       style={{ userSelect: 'none', overflow: "hidden" }}
+  >
+    {!isStorySelected && <NavBar />}
+    <div className="conversation active"  style={{height: "100vh", overflow: "auto", paddingBottom: 250}}>
+      <Stories onStorySelect={handleStorySelect} />
+      {loading && (!publications || publications.length === 0) ? (
+          <>
+            <Skeleton count={5} baseColor="#030f1e" height={200} />
+          </>
+      ) : (
+          publications.map((publication, index) => (
+              <div
+                  key={publication.id}
+                  id={`publication-${publication.id}`}
+                  className="publication"
+                  style={{ borderTop: '2px solid gray' }}
+                  {...longPressEvent2}
+                  onMouseDown={() => handleLongPress2(publication.id)}
+              >
+                {publication.photo_file && <img src={publication.photo_file} alt="Publication" />}
+                <div className="publication-header">
+                  <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur" className="user-profile" />
+                  <div className="user-info">
+                    <p style={{display: "flex"}} className="user-name">{publication.utilisateur_nom} {publication.utilisateur_prenom} <RiVerifiedBadgeFill style={{color: "blue", fontSize: 20, marginLeft: 10}} /></p>
+                    <p className="publication-time">
                     <span style={{ fontSize: 10 }}>
                       {moment(publication.date_publication).diff(moment(), 'days') < -7
                           ? moment(publication.date_publication).format('DD/MM/YYYY')
@@ -269,104 +271,105 @@ function Acceuil() {
                               .replace('heures', 'h')}{" "}
                       <i className="bi bi-globe-americas"></i>
                     </span>
-                        </p>
-                      </div>
+                    </p>
+                  </div>
 
-                    </div>
+                </div>
 
-                    {!publication.contenu && (
-                        <>
-                          <p style={{
-                            fontFamily: "verdana",
-                            textShadow: `1px 1px 1px #919191,
+                {!publication.contenu && (
+                    <>
+                      <p style={{
+                        fontFamily: "verdana",
+                        textShadow: `1px 1px 1px #919191,
                                 1px 18px 6px rgba(16,16,16,0.4),
                                 1px 30px 60px rgba(16,16,16,0.4)`,
-                            fontSize: 15
-                          }}>{publication.titre}</p>
-                        </>
-                    )}
-                    <div className="publication-content" style={{
-                      minHeight: 400,
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      whiteSpace: 'pre-wrap',
-                      color: "white",
-                      fontSize: 20,
-                      background: publication.photo_file ? '' : publication.couleur_fond,
-                      textShadow: `1px 1px 1px #919191,
+                        fontSize: 15
+                      }}>{publication.titre}</p>
+                    </>
+                )}
+                <div className="publication-content" style={{
+                  minHeight: 400,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  whiteSpace: 'pre-wrap',
+                  color: "white",
+                  fontSize: 20,
+                  background: publication.photo_file ? '' : publication.couleur_fond,
+                  textShadow: `1px 1px 1px #919191,
                                 1px 18px 6px rgba(16,16,16,0.4),
                                 1px 30px 60px rgba(16,16,16,0.4)`
-                    }}>
-                      {publication.contenu ? (
-                          <>
-                            <div style={{ whiteSpace: "pre-wrap"}}> {publication.contenu}</div>
-                          </>
-                      ) : (
-                          <>
-                            <img src={`${publication.photo_file_url}`} className="publication-image"
-                                 alt="Publication" />
-                          </>
-                      )}
-                    </div>
-                    <div className="row publication-actions">
-                      <div className="col-4 comment-count-container" style={{ fontSize: 11 }}>
-                        <button className="action-button" id="comment-button"
-                                onClick={() => likePublication(publication.id)}>
-                          <i className={`bi ${isPublicationLiked(publication.id) ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
-                          <span className="likes-count" style={{ fontSize: 15 }}>
+                }}>
+                  {publication.contenu ? (
+                      <>
+                        <div style={{ whiteSpace: "pre-wrap"}}> {publication.contenu}</div>
+                      </>
+                  ) : (
+                      <>
+                        <img src={`${publication.photo_file_url}`} className="publication-image"
+                             alt="Publication" />
+                      </>
+                  )}
+                </div>
+                <div className="row publication-actions">
+                  <div className="col-4 comment-count-container" style={{ fontSize: 11 }}>
+                    <button className="action-button" id="comment-button"
+                            onClick={() => likePublication(publication.id)}>
+                      <i className={`bi ${isPublicationLiked(publication.id) ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
+                      <span className="likes-count" style={{ fontSize: 15 }}>
                       {publication.count_likes}
                     </span>
-                        </button>
-                      </div>
-                      <div className="col-4 comment-count-container" style={{ fontSize: 11 }}>
-                        <button className="action-button" id="comment-button"
-                                onClick={() => toggleCommentForm(index)}><i
-                            className="bi bi-chat"></i>
-                          <span className="comment-count" id="comment-count- photo.id" style={{ fontSize: 15 }}>1</span>
-                        </button>
-
-                      </div>
-                      <div className="col-4 comment-count-container"
-                           style={{ fontSize: 10 }}>
-                        <span className="comment-count">15,42k</span> <IoEyeSharp />
-                      </div>
-                    </div>
-                    <div className="comments-section" id="comments-section- photo.id "
-                         data-url="" style={{
-                      overflowY: "auto",
-                      overflowX: "hidden",
-                      maxHeight: 300,
-                      display: isCommentFormOpenList[index] ? 'block' : 'none'
-                    }}>
-                      <div className="comments-container" id="comments-container- photo.id ">
-                        {comments[publication.id] && comments[publication.id].map((comment, commentIndex) => (
-                            <div key={commentIndex} className="comment">
-                              <p className="comment-user">{comment.utilisateur_nom} {comment.utilisateur_prenom}</p>
-                              <p className="comment-text">{comment.texte}</p>
-                              <p className="comment-time">{comment.date_comment}</p>
-                            </div>
-                        ))}
-                      </div>
-                      <form className="commentaire-form" onSubmit={(e) => {
-                        e.preventDefault();
-                        submitComment(publication.id, commentTexts[publication.id]);
-                      }}>
-                        <input type="text" className="commentaire-input" name="texte"
-                               placeholder="Écrivez un commentaire..."
-                               value={commentTexts[publication.id] || ''}
-                               onChange={(e) => handleCommentChange(e.target.value, publication.id)} />
-
-                        <button type="submit">▶️</button>
-                      </form>
-                    </div>
+                    </button>
                   </div>
-              ))
-          )}
-        </div>
-        {showPopup && <Popup onSave={handleSave} onClose={handleClosePopup} />}
-        {!isStorySelected && <BottomTab />}
-      </div>
+                  <div className="col-4 comment-count-container" style={{ fontSize: 11 }}>
+                    <button className="action-button" id="comment-button"
+                            onClick={() => toggleCommentForm(index)}><i
+                        className="bi bi-chat"></i>
+                      <span className="comment-count" id="comment-count- photo.id" style={{ fontSize: 15 }}>1</span>
+                    </button>
+
+                  </div>
+                  <div className="col-4 comment-count-container"
+                       style={{ fontSize: 10 }}>
+                    <span className="comment-count">15,42k</span> <IoEyeSharp />
+                  </div>
+                </div>
+                <div className="comments-section" id="comments-section- photo.id "
+                     data-url="" style={{
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                  maxHeight: 300,
+                  display: isCommentFormOpenList[index] ? 'block' : 'none'
+                }}>
+                  <div className="comments-container" id="comments-container- photo.id ">
+                    {comments[publication.id] && comments[publication.id].map((comment, commentIndex) => (
+                        <div key={commentIndex} className="comment">
+                          <p className="comment-user">{comment.utilisateur_nom} {comment.utilisateur_prenom}</p>
+                          <p className="comment-text">{comment.texte}</p>
+                          <p className="comment-time">{comment.date_comment}</p>
+                        </div>
+                    ))}
+                  </div>
+                  <form className="commentaire-form" onSubmit={(e) => {
+                    e.preventDefault();
+                    submitComment(publication.id, commentTexts[publication.id]);
+                  }}>
+                    <input type="text" className="commentaire-input" name="texte"
+                           placeholder="Écrivez un commentaire..."
+                           value={commentTexts[publication.id] || ''}
+                           onChange={(e) => handleCommentChange(e.target.value, publication.id)} />
+
+                    <button type="submit">▶️</button>
+                  </form>
+                </div>
+              </div>
+          ))
+      )}
+    </div>
+    {showPopup && <Popup onSave={handleSave} onClose={handleClosePopup} />}
+    {!isStorySelected && <BottomTab />}
+  </div>
+</div>
   );
 }
 
