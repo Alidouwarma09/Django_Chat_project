@@ -270,20 +270,6 @@ function Acceuil() {
                     </span>
                         </p>
                       </div>
-                      <div style={{ right: 0, padding: 30, fontSize: 20, marginLeft: "50%"}}>
-                        <CiMenuKebab onClick={() => handleOpenPopup(publication.id)} style={{ marginRight: 20}} />
-                      </div>
-                      {selectedPublicationId === publication.id && (
-                          <div key={publication.id} className="popup-wrapper" style={{ position: 'absolute', right: 0, marginTop: 150, width: 300 }}>
-                            <div className="popup-content" id="popup-content">
-                              {publication.contenu ? (
-                                  <p onClick={() => copyTextToClipboard(publication.contenu)}> {copiedText ? "Texte copié" : "Copier le texte"}</p>
-                              ) : (
-                                  <p onClick={() => downloadImage(publication.photo_file_url)}>Télécharger l'image</p>
-                              )}
-                            </div>
-                          </div>
-                      )}
 
                     </div>
 
