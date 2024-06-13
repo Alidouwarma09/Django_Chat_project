@@ -2,8 +2,6 @@ import React, {useEffect, useState} from 'react';
 import './css/BottomTab.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MdOutlineSlowMotionVideo } from "react-icons/md";
-import { BiMessageRoundedDots } from "react-icons/bi";
-import {RiHome5Line} from "react-icons/ri";
 import {IoMdHome} from "react-icons/io";
 import {TbMessageCircle2Filled} from "react-icons/tb";
 import {IoSearch} from "react-icons/io5";

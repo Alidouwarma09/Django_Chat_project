@@ -363,9 +363,8 @@ function Acceuil() {
                   </div>
               ))
           )}
-
-          {showPopup && <Popup onSave={handleSave} onClose={handleClosePopup} />}
         </div>
+        {showPopup && <Popup onSave={handleSave} onClose={handleClosePopup} />}
         {!isStorySelected && <BottomTab />}
       </div>
   );
