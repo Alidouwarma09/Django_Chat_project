@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -11,9 +11,10 @@ import "moment/locale/fr";
 import { IoEyeSharp } from "react-icons/io5";
 import Stories from "../compoment/Stories";
 import { useLongPress } from '@uidotdev/usehooks';
-import {CiMenuKebab} from "react-icons/ci";
 import {RiVerifiedBadgeFill} from "react-icons/ri";
 import {useNavigate} from "react-router-dom";
+import Popup from '../compoment/Popup';
+import html2canvas from 'html2canvas';
 
 function Acceuil() {
   const [publications, setPublications] = useState([]);
@@ -25,6 +26,10 @@ function Acceuil() {
   const [selectedPublicationId, setSelectedPublicationId] = useState(null);
   const [copiedText, setCopiedText] = useState(false);
   const navigate = useNavigate();
+  const [showPopup, setShowPopup] = useState(false);
+  const publicationRef = useRef(null);
+
+
 
   const cacheDuration = 1000 * 60 * 5; // 5 minutes
   useEffect(() => {
@@ -198,40 +203,32 @@ function Acceuil() {
     console.log("Long press detected");
   };
 
-  const handleOpenPopup = (publicationId) => {
+  const handleLongPress2 = (publicationId) => {
     setSelectedPublicationId(publicationId);
+    setShowPopup(true);
   };
+  const longPressEvent2 = useLongPress(handleLongPress2, { delay: 800 });
 
-  const copyTextToClipboard = (text) => {
-    navigator.clipboard.writeText(text)
-        .then(() => {
-          setCopiedText(true);
-          setTimeout(() => {
-            setCopiedText(false);
-            handleClosePopup();
-          }, 2000); // 2 secondes
-        });
-  };
-
-  const downloadImage = async (url) => {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
+  const handleSave = async () => {
+    const publicationElement = document.getElementById(`publication-${selectedPublicationId}`);
+    if (publicationElement) {
+      const canvas = await html2canvas(publicationElement);
+      const imgData = canvas.toDataURL('image/png');
       const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = `image_${Date.now()}.jpg`;
-      document.body.appendChild(link);
+      link.href = imgData;
+      link.download = `publication_${selectedPublicationId}.png`;
       link.click();
-      document.body.removeChild(link);
-      handleClosePopup();
-    } catch (error) {
-      console.error('Erreur lors du téléchargement de l\'image:', error);
+      setShowPopup(false);
     }
   };
 
+
+
   const handleClosePopup = () => {
-    setSelectedPublicationId(null);
+    setShowPopup(false);
   };
+
+
 
   const longPressEvent = useLongPress(handleLongPress, { delay: 800 });
 
@@ -249,7 +246,14 @@ function Acceuil() {
               </>
           ) : (
               publications.map((publication, index) => (
-                  <div key={publication.id} className="publication" style={{ borderTop: '2px solid gray' }}>
+                  <div
+                      key={publication.id}
+                      id={`publication-${publication.id}`}
+                      className="publication"
+                      style={{ borderTop: '2px solid gray' }}
+                      {...longPressEvent2}
+                      onMouseDown={() => handleLongPress2(publication.id)}
+                  >
                     {publication.photo_file && <img src={publication.photo_file} alt="Publication" />}
                     <div className="publication-header">
                       <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur" className="user-profile" />
@@ -363,7 +367,7 @@ function Acceuil() {
               ))
           )}
 
-
+          {showPopup && <Popup onSave={handleSave} onClose={handleClosePopup} />}
         </div>
         {!isStorySelected && <BottomTab />}
       </div>
