@@ -207,7 +207,7 @@ function Acceuil() {
     setSelectedPublicationId(publicationId);
     setShowPopup(true);
   };
-  const longPressEvent2 = useLongPress(handleLongPress2, { delay: 800 });
+  const longPressEvent2 = useLongPress(() => handleLongPress2(selectedPublicationId), { delay: 8000 });
 
   const handleSave = async () => {
     const publicationElement = document.getElementById(`publication-${selectedPublicationId}`);
@@ -222,15 +222,12 @@ function Acceuil() {
     }
   };
 
-
-
   const handleClosePopup = () => {
     setShowPopup(false);
   };
 
 
-
-  const longPressEvent = useLongPress(handleLongPress, { delay: 800 });
+  const longPressEvent = useLongPress(handleLongPress, { delay: 700 });
 
   return (
       <div className={isStorySelected ? 'no-background' : ''} onMouseDown={handleLongPress}
