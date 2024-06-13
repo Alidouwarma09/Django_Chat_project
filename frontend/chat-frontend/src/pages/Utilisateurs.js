@@ -8,7 +8,7 @@ import BottomTab from "./BottomTab";
 function Utilisateurs() {
     const [utilisateurs, setUtilisateurs] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [isLoaded, setIsLoaded] = useState(false); // État pour vérifier si les utilisateurs sont chargés
+    const [loaded, setLoaded] = useState(false); // Nouvelle variable d'état pour suivre si les utilisateurs sont déjà chargés
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,27 +18,26 @@ function Utilisateurs() {
         }
     }, [navigate]);
 
-
-    useEffect(() =>  {
-        const fetchUtilisateurs = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/utilisateurs/`, {
-                    headers: {
-                        'Authorization': `Token ${token}`
-                    }
-                });
-                setUtilisateurs(response.data.utilisateurs);
-                setIsLoaded(true); // Marquer les utilisateurs comme chargés
-            } catch (error) {
-                console.error('Erreur lors de la récupération des utilisateurs:', error);
-            }
-        };
-
-        if (!isLoaded) {
+    useEffect(() => {
+        if (!loaded) { // Charger les utilisateurs uniquement si ils ne sont pas déjà chargés
             fetchUtilisateurs();
         }
-    }, [isLoaded]);
+    }, [loaded]); // Déclencher le chargement des utilisateurs lorsque 'loaded' change
+
+    const fetchUtilisateurs = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/utilisateurs/`, {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            });
+            setUtilisateurs(response.data.utilisateurs);
+            setLoaded(true); // Marquer les utilisateurs comme chargés
+        } catch (error) {
+            console.error('Erreur lors de la récupération des utilisateurs:', error);
+        }
+    };
 
     const handleUserClick = (utilisateurId) => {
         navigate(`/message/${utilisateurId}`);
@@ -66,6 +65,7 @@ function Utilisateurs() {
     const filteredUtilisateurs = utilisateurs.filter(utilisateur =>
         `${utilisateur.nom} ${utilisateur.prenom}`.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
     const handleGoBack = () => {
         window.history.back();
     };
