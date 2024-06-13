@@ -34,7 +34,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && npm run update-sw",
+    "build": "react-scripts build && npm install && npm run build && npm add --dev @babel/plugin-proposal-private-property-in-object && npm install @chakra-ui/styled-system @testing-library/dom",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
