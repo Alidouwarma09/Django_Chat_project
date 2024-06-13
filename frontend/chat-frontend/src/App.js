@@ -9,6 +9,7 @@ import { VideoProvider } from './compoment/VideoContext';
 import Utilisateurs from "./pages/Utilisateurs";
 import Recherche from "./pages/Recherche";
 import Profile from "./pages/Profile";
+import Exemple from "./pages/Exemple";
 
 function App() {
     return (
@@ -23,6 +24,7 @@ function App() {
                     <Route path="/recherche" element={<Recherche />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/acceuil" element={<Acceuil />} />
+                    <Route path="/exemplepage" element={<Exemple />} />
                     <Route path="/" element={<Navigate to="/acceuil" />} />
                 </Routes>
             </Router>

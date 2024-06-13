@@ -8,23 +8,15 @@ import './css/acceuil.css';
 import likeSon from './son/likesSon.mp3';
 import moment from "moment";
 import "moment/locale/fr";
-import { IoEyeSharp } from "react-icons/io5";
+import {IoEyeSharp, IoSendSharp} from "react-icons/io5";
 import Stories from "../compoment/Stories";
 import { useLongPress } from '@uidotdev/usehooks';
 import {RiVerifiedBadgeFill} from "react-icons/ri";
 import {useNavigate} from "react-router-dom";
 import Popup from '../compoment/Popup';
 import html2canvas from 'html2canvas';
-import {Button, Modal} from "antd";
-import {
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure
-} from "@chakra-ui/react";
+import {BsEmojiSmile} from "react-icons/bs";
+import {IoMdClose} from "react-icons/io";
 
 function Lorem(props: { count: number }) {
   return null;
@@ -41,7 +33,7 @@ function Acceuil() {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const popupRef = useRef(null);
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [showReplies, setShowReplies] = useState(false);
 
 
 
@@ -247,7 +239,6 @@ function Acceuil() {
     window.clearTimeout(pressTimer);
   };
 
-
   const handleSave = async () => {
     const publicationElement = document.getElementById(`publication-${selectedPublicationId}`);
     if (publicationElement) {
@@ -265,9 +256,6 @@ function Acceuil() {
 
   const handleClosePopup = () => {
     setShowPopup(false);
-  };
-  const hundleCommentaire=()=>{
-    onOpen();
   };
 
   const longPressEvent = useLongPress(handleLongPress, { delay: 8000 });
@@ -289,19 +277,6 @@ function Acceuil() {
       ) : (
           publications.map((publication, index) => (
               <>
-                <Modal onClose={onClose} size="full" isOpen={isOpen}>
-                  <ModalOverlay />
-                  <ModalContent>
-                    <ModalHeader>Modal Title</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                      <Lorem count={2} />
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button onClick={onClose}>Close</Button>
-                    </ModalFooter>
-                  </ModalContent>
-                </Modal>
               <div
                   key={publication.id}
                   className="publication"
@@ -311,7 +286,7 @@ function Acceuil() {
                   onTouchMove={cancelPress}
               >
                 {publication.photo_file && <img src={publication.photo_file} alt="Publication" />}
-                <div className="publication-header" onClick={hundleCommentaire}>
+                <div className="publication-header" >
                   <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur" className="user-profile" />
                   <div className="user-info">
                     <p style={{display: "flex"}} className="user-name">{publication.utilisateur_nom} {publication.utilisateur_prenom} <RiVerifiedBadgeFill style={{color: "blue", fontSize: 20, marginLeft: 10}} /></p>
@@ -393,33 +368,55 @@ function Acceuil() {
                     <span className="comment-count">15,42k</span> <IoEyeSharp />
                   </div>
                 </div>
-                <div className="comments-section" id="comments-section- photo.id "
-                     data-url="" style={{
-                  overflowY: "auto",
-                  overflowX: "hidden",
-                  maxHeight: 300,
-                  display: isCommentFormOpenList[index] ? 'block' : 'none'
-                }}>
-                  <div className="comments-container" id="comments-container- photo.id ">
+                <div className="comment-section" style={{ display: isCommentFormOpenList[index] ? 'block' : 'none' }}>
+                  <div className="comments-header">
+                    <span>14 267 commentaires</span>
+                    <button className="close-button"><IoMdClose /></button>
+                  </div>
+                  <div className="commentaire-container" >
                     {comments[publication.id] && comments[publication.id].map((comment, commentIndex) => (
-                        <div key={commentIndex} className="comment">
-                          <p className="comment-user">{comment.utilisateur_nom} {comment.utilisateur_prenom}</p>
-                          <p className="comment-text">{comment.texte}</p>
-                          <p className="comment-time">{comment.date_comment}</p>
+                        <div className="comment">
+                          <div className="comment-header">
+                            <span className="username">{comment.utilisateur_nom} {comment.utilisateur_prenom}</span>
+                            <span className="date">{comment.date_comment}</span>
+                          </div>
+                          <p className="comment-text">: {comment.texte}</p>
+                          <div className="comment-footer">
+                            <span className="likes">❤️ 10</span>
+                            <span className="replies" onClick={() => setShowReplies(!showReplies)}>
+                          {showReplies ? 'Masquer les réponses' : `Afficher replies.length réponses`}
+                        </span>
+                          </div>
+                          {showReplies &&
+                              <div className="reply">
+                                <div className="reply-header">
+                                  <span className="username"></span>
+                                  <span className="date"></span>
+                                </div>
+                                <p className="reply-text"></p>
+                              </div>
+                          }
                         </div>
                     ))}
                   </div>
-                  <form className="commentaire-form" onSubmit={(e) => {
-                    e.preventDefault();
-                    submitComment(publication.id, commentTexts[publication.id]);
-                  }}>
-                    <input type="text" className="commentaire-input" name="texte"
-                           placeholder="Écrivez un commentaire..."
-                           value={commentTexts[publication.id] || ''}
-                           onChange={(e) => handleCommentChange(e.target.value, publication.id)} />
-
-                    <button type="submit">▶️</button>
+                  <form className="commentaire-section-footer"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        submitComment(publication.id, commentTexts[publication.id]);
+                      }}
+                  >
+                    <button className="emoji"><BsEmojiSmile /></button>
+                    <input
+                        name="texte"
+                        type="text"
+                        className="comment-input"
+                        placeholder="Ajouter un commentaire..."
+                        value={commentTexts[publication.id] || ''}
+                        onChange={(e) => handleCommentChange(e.target.value, publication.id)}
+                    />
+                    <button className="submit-button" ><IoSendSharp /></button>
                   </form>
+
                 </div>
               </div>
               </>
