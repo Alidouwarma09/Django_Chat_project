@@ -207,7 +207,7 @@ function Acceuil() {
     setSelectedPublicationId(publicationId);
     setShowPopup(true);
   };
-  const longPressEvent2 = useLongPress(() => handleLongPress2(selectedPublicationId), { delay: 8000 });
+  const longPressEvent2 = useLongPress(() => handleLongPress2(selectedPublicationId), { delay: 7000 });
 
   const handleSave = async () => {
     const publicationElement = document.getElementById(`publication-${selectedPublicationId}`);
@@ -226,7 +226,6 @@ function Acceuil() {
     setShowPopup(false);
   };
 
-  const overlayClassName = showPopup ? 'overlay-blur' : '';
   const longPressEvent = useLongPress(handleLongPress, { delay: 700 });
 
   return (
@@ -251,7 +250,7 @@ function Acceuil() {
                   className="publication"
                   style={{ borderTop: '2px solid gray' }}
                   {...longPressEvent2}
-                  onMouseDown={() => handleLongPress2(publication.id)}
+                  uselongpress={() => handleLongPress2(publication.id)}
               >
                 {publication.photo_file && <img src={publication.photo_file} alt="Publication" />}
                 <div className="publication-header">
