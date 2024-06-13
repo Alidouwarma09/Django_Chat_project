@@ -15,6 +15,15 @@ function Utilisateurs() {
         const token = localStorage.getItem('token');
         if (!token) {
             navigate('/connexion');
+        } else {
+            // Vérifier s'il y a des utilisateurs dans le cache du navigateur
+            const cachedUtilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
+            if (cachedUtilisateurs) {
+                setUtilisateurs(cachedUtilisateurs);
+                setLoaded(true);
+            } else {
+                fetchUtilisateurs();
+            }
         }
     }, [navigate]);
 
@@ -32,6 +41,9 @@ function Utilisateurs() {
                     'Authorization': `Token ${token}`
                 }
             });
+            setUtilisateurs(response.data.utilisateurs);
+            setLoaded(true);
+            localStorage.setItem('utilisateurs', JSON.stringify(response.data.utilisateurs));
             setUtilisateurs(response.data.utilisateurs);
             setLoaded(true); // Marquer les utilisateurs comme chargés
         } catch (error) {
