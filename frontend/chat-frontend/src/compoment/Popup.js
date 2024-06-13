@@ -1,7 +1,7 @@
 import React from 'react';
 import './css/Popup.css'
 import {MdSaveAlt} from "react-icons/md";
-function Popup({ onSave, onClose }) {
+function Popup({ onSave }) {
     return (
         <div className="popup-container">
             <div className="popup-content">

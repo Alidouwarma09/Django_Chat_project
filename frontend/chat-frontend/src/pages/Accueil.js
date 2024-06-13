@@ -28,6 +28,7 @@ function Acceuil() {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const publicationRef = useRef(null);
+  const popupRef = useRef(null);
 
 
 
@@ -38,6 +39,7 @@ function Acceuil() {
       navigate('/connexion');
     }
   }, [navigate]);
+
   const getPublicationsFromLocalStorage = () => {
     const cachedData = localStorage.getItem('publications');
     const cacheTimestamp = localStorage.getItem('publicationsTimestamp');
@@ -202,20 +204,41 @@ function Acceuil() {
   const handleLongPress = () => {
     console.log("Long press detected");
   };
+  const handleClickOutsidePopup = (event) => {
+    if (popupRef.current && !popupRef.current.contains(event.target)) {
+      setShowPopup(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutsidePopup);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutsidePopup);
+    };
+  }, []);
+
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutsidePopup);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutsidePopup);
+    };
+  }, []);
+
+  let pressTimer;
 
   const handleLongPress2 = (publicationId) => {
     setSelectedPublicationId(publicationId);
     setShowPopup(true);
   };
 
-  let timer = null;
-
-  const handleTouchStart = (publicationId) => {
-    timer = setTimeout(() => handleLongPress2(publicationId), 500);
+  const startPress = (publicationId) => {
+    pressTimer = window.setTimeout(() => handleLongPress2(publicationId), 400); // Réduire la durée à 100ms
   };
 
-  const handleTouchEnd = () => {
-    if (timer) clearTimeout(timer);
+
+  const cancelPress = () => {
+    window.clearTimeout(pressTimer);
   };
 
   const handleSave = async () => {
@@ -235,7 +258,7 @@ function Acceuil() {
     setShowPopup(false);
   };
 
-  const longPressEvent = useLongPress(handleLongPress, { delay: 700 });
+  const longPressEvent = useLongPress(handleLongPress, { delay: 8000 });
 
   return (
 <div>
@@ -258,8 +281,9 @@ function Acceuil() {
                   id={`publication-${publication.id}`}
                   className="publication"
                   style={{ borderTop: '2px solid gray' }}
-                  onTouchStart={() => handleTouchStart(publication.id)}
-                  onTouchEnd={handleTouchEnd}
+                  onTouchStart={() => startPress(publication.id)}
+                  onTouchEnd={cancelPress}
+                  onTouchMove={cancelPress}
               >
                 {publication.photo_file && <img src={publication.photo_file} alt="Publication" />}
                 <div className="publication-header">
@@ -374,7 +398,8 @@ function Acceuil() {
           ))
       )}
     </div>
-    {showPopup && <Popup onSave={handleSave} onClose={handleClosePopup} />}
+    {showPopup && <Popup ref={popupRef} onSave={handleSave} onClose={handleClosePopup} />}
+
     {!isStorySelected && <BottomTab />}
   </div>
 </div>
