@@ -217,14 +217,6 @@ function Acceuil() {
     };
   }, []);
 
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutsidePopup);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutsidePopup);
-    };
-  }, []);
-
   let pressTimer;
 
   const handleLongPress2 = (publicationId) => {
@@ -399,7 +391,6 @@ function Acceuil() {
       )}
     </div>
     {showPopup && <Popup ref={popupRef} onSave={handleSave} onClose={handleClosePopup} />}
-
     {!isStorySelected && <BottomTab />}
   </div>
 </div>
