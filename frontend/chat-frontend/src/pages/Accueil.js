@@ -207,7 +207,16 @@ function Acceuil() {
     setSelectedPublicationId(publicationId);
     setShowPopup(true);
   };
-  const longPressEvent2 = useLongPress(() => handleLongPress2(selectedPublicationId), { delay: 7000 });
+
+  let timer = null;
+
+  const handleTouchStart = (publicationId) => {
+    timer = setTimeout(() => handleLongPress2(publicationId), 700);
+  };
+
+  const handleTouchEnd = () => {
+    if (timer) clearTimeout(timer);
+  };
 
   const handleSave = async () => {
     const publicationElement = document.getElementById(`publication-${selectedPublicationId}`);
@@ -249,8 +258,11 @@ function Acceuil() {
                   id={`publication-${publication.id}`}
                   className="publication"
                   style={{ borderTop: '2px solid gray' }}
-                  {...longPressEvent2}
-                  uselongpress={() => handleLongPress2(publication.id)}
+                  onTouchStart={() => handleTouchStart(publication.id)}
+                  onTouchEnd={handleTouchEnd}
+                  onMouseDown={() => handleTouchStart(publication.id)}
+                  onMouseUp={handleTouchEnd}
+                  onMouseLeave={handleTouchEnd}
               >
                 {publication.photo_file && <img src={publication.photo_file} alt="Publication" />}
                 <div className="publication-header">
