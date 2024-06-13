@@ -32,9 +32,12 @@
     "web-vitals": "^2.1.4",
     "webpack": "^5.91.0"
   },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.14.5"
+  },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm audit fix --force && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -28,7 +28,6 @@ function Navbar() {
     const [progressPercent, setProgressPercent] = useState(0);
     const [navbarBublicationVisible, setNavbarBublicationVisible] = useState(false);
     const navbarBublicationRef = useRef(null);
-    const [isReloading, setIsReloading] = useState(false);
     const [sidebarVisible, setSidebarVisible] = useState(false);
     const [userInfo, setUserInfo] = useState({});
     const sidebarRef = useRef(null);
@@ -314,7 +313,7 @@ function Navbar() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsRotating(false);
-        }, 1000); // Durée de la rotation en millisecondes
+        }, 1000);
         return () => clearTimeout(timer);
     }, []);
     const hundleProfile = () =>{

@@ -24,10 +24,8 @@ function Acceuil() {
   const [isStorySelected, setIsStorySelected] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedPublicationId, setSelectedPublicationId] = useState(null);
-  const [copiedText, setCopiedText] = useState(false);
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
-  const publicationRef = useRef(null);
   const popupRef = useRef(null);
 
 

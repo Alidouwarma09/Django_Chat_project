@@ -1,7 +1,8 @@
 .messages-container {
     width: 100%;
-    margin: 0 auto;
     font-family: Arial, sans-serif;
+    height: 100%;
+    overflow: hidden;
 }
 
 .header {
@@ -30,7 +31,8 @@
     padding: 10px;
     background-color: #fff;
     overflow-y: auto;
-    max-height: 100vh;
+    max-height: 500px;
+    height: 100%;
 }
 
 .message-item {

@@ -3,9 +3,7 @@ import axios from 'axios';
 import './css/videos.css'
 import likeSon from './son/likesSon.mp3'
 import ReactPlayer from "react-player";
-import { GoArrowLeft } from "react-icons/go";
 import { IoSendOutline } from "react-icons/io5";
-import { RiShareForwardFill } from "react-icons/ri";
 import moment from "moment/moment";
 import Skeleton from "react-loading-skeleton";
 import { VideoContext } from '../compoment/VideoContext';
@@ -14,7 +12,7 @@ import Navbar from "./NavBar";
 import BottomTab from "./BottomTab";
 
 function Videos(id) {
-    const { videos, loading, setVideos, downloadedVideos, setDownloadedVideos } = useContext(VideoContext); // Utiliser le contexte
+    const { videos, loading, setVideos  } = useContext(VideoContext); // Utiliser le contexte
     const [comments, setComments] = useState({});
     const [isCommentFormOpenList, setIsCommentFormOpenList] = useState([]);
     const [commentTexts, setCommentTexts] = useState({});
