@@ -32,6 +32,7 @@ function Navbar() {
     const [sidebarVisible, setSidebarVisible] = useState(false);
     const [userInfo, setUserInfo] = useState({});
     const sidebarRef = useRef(null);
+    const [isRotating, setIsRotating] = useState(false);
 
     const handleMenuClick = () => {
         setSidebarVisible(!sidebarVisible); // Inverse la visibilité de la barre de navigation
@@ -307,9 +308,15 @@ function Navbar() {
         setNavbarBublicationVisible(!navbarBublicationVisible);
     };
     const handleReload = () => {
-    setIsReloading(true);
+        setIsRotating(true);
     window.location.reload();
   };
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsRotating(false);
+        }, 1000); // Durée de la rotation en millisecondes
+        return () => clearTimeout(timer);
+    }, []);
     const hundleProfile = () =>{
         navigate('/profile')
     }
@@ -436,7 +443,7 @@ function Navbar() {
                     <CircularProgressLabel>{progressPercent}%</CircularProgressLabel>
                 </CircularProgress>)}
             <nav className="navbar">
-                <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="rotating" onClick={handleReload}>
+                <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}  className={`navbar__refresh ${isRotating ? 'rotating' : ''}`} onClick={handleReload}>
                     <LuRefreshCcw />
                 </div>
                 <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu">
