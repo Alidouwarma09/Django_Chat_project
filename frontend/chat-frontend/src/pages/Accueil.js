@@ -15,6 +15,20 @@ import {RiVerifiedBadgeFill} from "react-icons/ri";
 import {useNavigate} from "react-router-dom";
 import Popup from '../compoment/Popup';
 import html2canvas from 'html2canvas';
+import {Button, Modal} from "antd";
+import {
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure
+} from "@chakra-ui/react";
+
+function Lorem(props: { count: number }) {
+  return null;
+}
 
 function Acceuil() {
   const [publications, setPublications] = useState([]);
@@ -27,6 +41,8 @@ function Acceuil() {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const popupRef = useRef(null);
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
 
 
 
@@ -79,7 +95,7 @@ function Acceuil() {
   useEffect(() => {
     const cachedData = localStorage.getItem('publications');
     if (cachedData) {
-      const cachedPublications = JSON.parse(cachedData); // Convertir en tableau
+      const cachedPublications = JSON.parse(cachedData);
       setPublications(cachedPublications);
       cachedPublications.forEach(publication => {
         fetchComments(publication.id);
@@ -231,6 +247,7 @@ function Acceuil() {
     window.clearTimeout(pressTimer);
   };
 
+
   const handleSave = async () => {
     const publicationElement = document.getElementById(`publication-${selectedPublicationId}`);
     if (publicationElement) {
@@ -239,13 +256,18 @@ function Acceuil() {
       const link = document.createElement('a');
       link.href = imgData;
       link.download = `publication_${selectedPublicationId}.png`;
+      document.body.appendChild(link);
       link.click();
+      link.remove();
       setShowPopup(false);
     }
   };
 
   const handleClosePopup = () => {
     setShowPopup(false);
+  };
+  const hundleCommentaire=()=>{
+    onOpen();
   };
 
   const longPressEvent = useLongPress(handleLongPress, { delay: 8000 });
@@ -266,6 +288,20 @@ function Acceuil() {
           </>
       ) : (
           publications.map((publication, index) => (
+              <>
+                <Modal onClose={onClose} size="full" isOpen={isOpen}>
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader>Modal Title</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <Lorem count={2} />
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button onClick={onClose}>Close</Button>
+                    </ModalFooter>
+                  </ModalContent>
+                </Modal>
               <div
                   key={publication.id}
                   className="publication"
@@ -275,7 +311,7 @@ function Acceuil() {
                   onTouchMove={cancelPress}
               >
                 {publication.photo_file && <img src={publication.photo_file} alt="Publication" />}
-                <div className="publication-header">
+                <div className="publication-header" onClick={hundleCommentaire}>
                   <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur" className="user-profile" />
                   <div className="user-info">
                     <p style={{display: "flex"}} className="user-name">{publication.utilisateur_nom} {publication.utilisateur_prenom} <RiVerifiedBadgeFill style={{color: "blue", fontSize: 20, marginLeft: 10}} /></p>
@@ -386,6 +422,7 @@ function Acceuil() {
                   </form>
                 </div>
               </div>
+              </>
           ))
       )}
     </div>
