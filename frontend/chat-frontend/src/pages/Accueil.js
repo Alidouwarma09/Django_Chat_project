@@ -257,6 +257,13 @@ function Acceuil() {
   const handleClosePopup = () => {
     setShowPopup(false);
   };
+  const closeCommentForm = (index) => {
+    setIsCommentFormOpenList(prevState => {
+      const newState = [...prevState];
+      newState[index] = false;
+      return newState;
+    });
+  };
 
   const longPressEvent = useLongPress(handleLongPress, { delay: 8000 });
 
@@ -371,7 +378,7 @@ function Acceuil() {
                 <div className="comment-section" style={{ display: isCommentFormOpenList[index] ? 'block' : 'none' }}>
                   <div className="comments-header">
                     <span>14 267 commentaires</span>
-                    <button className="close-button"><IoMdClose /></button>
+                    <button className="close-button" onClick={() => closeCommentForm(index)}><IoMdClose /></button>
                   </div>
                   <div className="commentaire-container" >
                     {comments[publication.id] && comments[publication.id].map((comment, commentIndex) => (
