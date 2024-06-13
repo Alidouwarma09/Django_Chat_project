@@ -268,7 +268,6 @@ function Acceuil() {
           publications.map((publication, index) => (
               <div
                   key={publication.id}
-                  id={`publication-${publication.id}`}
                   className="publication"
                   style={{ borderTop: '2px solid gray' }}
                   onTouchStart={() => startPress(publication.id)}
@@ -309,7 +308,9 @@ function Acceuil() {
                       }}>{publication.titre}</p>
                     </>
                 )}
-                <div className="publication-content" style={{
+                <div className="publication-content"
+                     id={`publication-${publication.id}`}
+                     style={{
                   minHeight: 400,
                   display: "flex",
                   justifyContent: "center",
