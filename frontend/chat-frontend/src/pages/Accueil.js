@@ -332,19 +332,17 @@ function Acceuil() {
       const publicationElement = document.getElementById(`publication-${selectedPublicationId}`);
       if (publicationElement) {
         const canvas = await html2canvas(publicationElement);
-        const imgData = canvas.toDataURL('image/png');
+        const imageData = canvas.toDataURL('image/png');
         const link = document.createElement('a');
-        link.href = imgData;
+        link.href = imageData;
         link.download = `publication_${selectedPublicationId}.png`;
-        document.body.appendChild(link);
         link.click();
-        link.remove();
-        setShowPopup(false);
       }
     } catch (error) {
       console.error('Erreur lors du téléchargement de la capture d\'écran:', error);
     }
-    }
+  };
+
 
   const handleClosePopup = () => {
     setShowPopup(false);

@@ -140,13 +140,13 @@ function Videos(id) {
     const handleDownload = async (url, fileName) => {
         try {
             const response = await axios.get(url, {
-                responseType: 'blob', // Définit le type de réponse comme binaire
+                responseType: 'blob',
             });
             const blob = new Blob([response.data], { type: response.headers['content-type'] });
             const downloadUrl = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = downloadUrl;
-            link.download = fileName; // Nom du fichier à télécharger
+            link.download = fileName;
             document.body.appendChild(link);
             link.click();
             link.remove();
