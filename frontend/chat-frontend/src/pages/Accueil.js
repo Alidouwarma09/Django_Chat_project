@@ -370,7 +370,7 @@ function Acceuil() {
                     <button className="action-button" id="comment-button"
                             onClick={() => toggleCommentForm(index)}><i
                         className="bi bi-chat"></i>
-                      <span className="comment-count" id="comment-count- photo.id" style={{ fontSize: 15 }}>1</span>
+                      <span className="comment-count" id="comment-count- photo.id" style={{ fontSize: 15 }}>{comments[publication.id] ? comments[publication.id].length : 0}</span>
                     </button>
 
                   </div>
@@ -381,11 +381,11 @@ function Acceuil() {
                 </div>
                 <div className="comment-section" style={{ display: isCommentFormOpenList[index] ? 'block' : 'none' }}>
                   <div className="comments-header">
-                    <span>14 267 commentaires</span>
+                    <span>{comments[publication.id] ? comments[publication.id].length : 0} commentaires</span>
                     <button className="close-button" onClick={() => closeCommentForm(index)}><IoMdClose /></button>
                   </div>
-                  <div className="commentaire-container" >
-                    {comments[publication.id] && comments[publication.id].map((comment, commentIndex) => (
+                  <div className="commentaire-container">
+                    {comments[publication.id] && comments[publication.id].length > 0 && comments[publication.id].map((comment, commentIndex) => (
                         <div className="comment">
                           <div className="comment-header">
                             <span className="username">{comment.utilisateur_nom} {comment.utilisateur_prenom}</span>
@@ -395,8 +395,10 @@ function Acceuil() {
                           <div className="comment-footer">
                             <span className="likes">❤️ 10</span>
                             <span className="replies" onClick={() => setShowReplies(!showReplies)}>
-                          {showReplies ? 'Masquer les réponses' : `Afficher replies.length réponses`}
-                        </span>
+          {comment.texte.split(/\s+/).length > 20
+              ? (showReplies ? 'Masquer les réponses' : 'Afficher les réponses')
+              : (showReplies ? 'Masquer les réponses' : 'Afficher les réponses')}
+        </span>
                           </div>
                           {showReplies &&
                               <div className="reply">
@@ -409,7 +411,11 @@ function Acceuil() {
                           }
                         </div>
                     ))}
+                    {comments[publication.id] && comments[publication.id].length === 0 && (
+                        <p style={{textAlign: "center", fontSize: 12, fontFamily: "cursive"}}> Commenter en premier😊</p>
+                    )}
                   </div>
+
                   <form className="commentaire-section-footer"
                       onSubmit={(e) => {
                         e.preventDefault();
