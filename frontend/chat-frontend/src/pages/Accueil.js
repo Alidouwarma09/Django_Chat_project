@@ -338,18 +338,26 @@ function Acceuil() {
       if (publicationElement) {
         const canvas = await html2canvas(publicationElement);
         const imgData = canvas.toDataURL('image/png');
+
+        // Créer une instance d'image à partir des données de l'image capturée
+        const img = new Image();
+        img.src = imgData;
+
+        // Créer un lien pour le téléchargement
         const link = document.createElement('a');
         link.href = imgData;
         link.download = `publication_${selectedPublicationId}.png`;
+
+        // Simuler un clic sur le lien pour démarrer le téléchargement
         document.body.appendChild(link);
         link.click();
-        link.remove();
-        setShowPopup(false);
+        document.body.removeChild(link);
       }
     } catch (error) {
       console.error('Erreur lors du téléchargement de la capture d\'écran:', error);
     }
-  }
+  };
+
 
   const handleClosePopup = () => {
     setShowPopup(false);
