@@ -333,6 +333,7 @@ function Acceuil() {
   };
 
   const handleSave = async () => {
+    setShowPopup(false);
     try {
       const publicationElement = document.getElementById(`publication-${selectedPublicationId}`);
       if (publicationElement) {
@@ -357,7 +358,6 @@ function Acceuil() {
       console.error('Erreur lors du téléchargement de la capture d\'écran:', error);
     }
   };
-
 
   const handleClosePopup = () => {
     setShowPopup(false);
