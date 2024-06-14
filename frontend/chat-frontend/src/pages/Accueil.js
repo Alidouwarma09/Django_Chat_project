@@ -98,6 +98,19 @@ function Acceuil() {
       });
     }
   }, []);
+  const handleClickOutsideComment = (event) => {
+    if (!event.target.closest('.comment-section')) {
+      setShowCommentOverlay(false);
+      setIsCommentFormOpenList(Array(isCommentFormOpenList.length).fill(false));
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutsideComment);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutsideComment);
+    };
+  }, [isCommentFormOpenList]);
 
   useEffect(() => {
 
@@ -200,6 +213,8 @@ function Acceuil() {
             }
           }
       );
+
+
       updateLikedPublications(publicationId, response.data.liked);
       setPublications(prevPublications =>
           prevPublications.map(publication =>
