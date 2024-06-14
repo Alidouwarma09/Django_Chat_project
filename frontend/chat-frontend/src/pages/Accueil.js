@@ -367,7 +367,7 @@ function Acceuil() {
                     </button>
                   </div>
                   <div className="col-4 comment-count-container" style={{ fontSize: 11 }}>
-                    <button className="action-button" id="comment-button"
+                    <button className="action-button"
                             onClick={() => toggleCommentForm(index)}><i
                         className="bi bi-chat"></i>
                       <span className="comment-count" id="comment-count- photo.id" style={{ fontSize: 15 }}>{comments[publication.id] ? comments[publication.id].length : 0}</span>
