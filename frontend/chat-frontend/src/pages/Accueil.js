@@ -17,6 +17,7 @@ import Popup from '../compoment/Popup';
 import html2canvas from 'html2canvas';
 import {BsEmojiSmile} from "react-icons/bs";
 import {IoMdClose} from "react-icons/io";
+import Reponse from "../compoment/Réponse";
 
 function Lorem(props: { count: number }) {
   return null;
@@ -34,6 +35,9 @@ function Acceuil() {
   const [showPopup, setShowPopup] = useState(false);
   const popupRef = useRef(null);
   const [showReplies, setShowReplies] = useState(false);
+  const [replyingToCommentId, setReplyingToCommentId] = useState(null);
+  const [isReplying, setIsReplying] = useState(false);
+  const [showCommentOverlay, setShowCommentOverlay] = useState(false);
 
 
 
@@ -142,7 +146,23 @@ function Acceuil() {
       console.error('Erreur lors de l\'envoi du commentaire:', error);
     }
   };
+  const handleReplyToComment = (commentId) => {
+    setReplyingToCommentId(commentId);
+    setIsReplying(true);
+    document.body.classList.add('disable-scroll');
+    setShowCommentOverlay(true);
+  };
 
+  const submitReplyToComment = async (publicationId, texte) => {
+    try {
+      setReplyingToCommentId(null);
+      setIsReplying(false);
+      setShowCommentOverlay(false); // Masquer l'overlay
+      document.body.classList.remove('disable-scroll');
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi de la réponse au commentaire :', error);
+    }
+  };
   const getLikedPublicationsFromLocalStorage = () => {
     const likedPublications = localStorage.getItem('likedPublications');
     return likedPublications ? JSON.parse(likedPublications) : {};
@@ -196,6 +216,7 @@ function Acceuil() {
   }
 
   function toggleCommentForm(index) {
+    setShowCommentOverlay(true);
     setIsCommentFormOpenList(prevState => {
       const newState = [...prevState];
       newState[index] = !newState[index];
@@ -262,6 +283,7 @@ function Acceuil() {
     setShowPopup(false);
   };
   const closeCommentForm = (index) => {
+    setShowCommentOverlay(false);
     setIsCommentFormOpenList(prevState => {
       const newState = [...prevState];
       newState[index] = false;
@@ -274,6 +296,7 @@ function Acceuil() {
   return (
 <div>
   {showPopup && <div className="dark-overlay2"></div>}
+  {showCommentOverlay && <div className="dark-overlay" onClick={() => setShowCommentOverlay(false)}></div>}
   <div className={`${isStorySelected ? 'no-background' : ''}`} onMouseDown={handleLongPress}
        {...longPressEvent}
        style={{ userSelect: 'none', overflow: "hidden" }}
@@ -400,6 +423,11 @@ function Acceuil() {
                           <p className="comment-text">{comment.texte}</p>
                           <div className="comment-footer">
                             <span className="likes">❤️ 10</span>
+                            <button className="reply-button" onClick={() => handleReplyToComment(comment.id)}>Répondre</button>
+                            {replyingToCommentId === comment.id && (
+                                <Reponse onSubmit={(texte) => submitReplyToComment(publication.id, texte)} />
+                            )}
+
                             <span className="replies" onClick={() => setShowReplies(!showReplies)}>
                             {comment.texte.split(/\s+/).length > 20
                                 ? (showReplies ? 'Masquer les réponses' : 'Afficher les réponses')
