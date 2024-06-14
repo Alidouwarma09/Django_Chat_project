@@ -24,7 +24,7 @@ from rest_framework.authentication import TokenAuthentication
 from twilio.rest import Client
 from django.utils import timezone
 from Chat import settings
-from Model.models import Utilisateur, Message, Like, Comment, Publication, Story
+from Model.models import Utilisateur, Message, Like, Comment, Publication, Story, ReponseCommentaire
 from Utilisateur.forms import InscriptionForm, MessageForm, MessageimagesForm, \
     MessageAudioForm, PhotoForm
 from django.shortcuts import render
@@ -403,6 +403,27 @@ def post_comment(request, publication_id):
 
             comment = Comment(utilisateur=user, publication_id=publication_id, texte=texte)
             comment.save()
+
+            return JsonResponse({'message': 'Commentaire ajouté avec succès'}, status=201)
+        else:
+            return JsonResponse({'error': 'Authentification invalide'}, status=401)
+
+
+@csrf_exempt
+def repondre_comment(request, publication_id):
+    if request.method == 'POST':
+        auth_result = TokenAuthentication().authenticate(request)
+
+        if auth_result is not None:
+            user, _ = auth_result
+            data = json.loads(request.body)
+            texte = data.get("texte")
+
+            if not texte:
+                return JsonResponse({'error': 'Le texte du commentaire ne peut pas être vide'}, status=400)
+
+            reponseCommentaire = ReponseCommentaire(utilisateur=user, publication_id=publication_id, texte=texte)
+            reponseCommentaire.save()
 
             return JsonResponse({'message': 'Commentaire ajouté avec succès'}, status=201)
         else:

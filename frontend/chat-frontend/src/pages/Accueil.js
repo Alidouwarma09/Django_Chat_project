@@ -171,15 +171,12 @@ function Acceuil() {
     setIsReplying(true);
   };
   const handleCloseReponse = () => {
-    // Fermez le formulaire de réponse ici
     setIsReplying(false);
-    setShowCommentOverlay(false);
   };
   const submitReplyToComment = async (publicationId, texte) => {
     try {
       setReplyingToCommentId(null);
       setIsReplying(false);
-      setShowCommentOverlay(false);
     } catch (error) {
       console.error('Erreur lors de l\'envoi de la réponse au commentaire :', error);
     }
@@ -320,7 +317,7 @@ function Acceuil() {
   return (
 <div>
   {showPopup && <div className="dark-overlay2"></div>}
-  {showCommentOverlay && <div className="dark-overlay" onClick={() => setShowCommentOverlay(false)}></div>}
+  {showCommentOverlay && <div className="overlay-reponse" onClick={() => setShowCommentOverlay(false)}></div>}
   <div className={`${isStorySelected ? 'no-background' : ''}`} onMouseDown={handleLongPress}
        {...longPressEvent}
        style={{ userSelect: 'none', overflow: "hidden" }}

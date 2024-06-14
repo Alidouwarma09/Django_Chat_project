@@ -115,6 +115,16 @@ class Comment(models.Model):
         return timesince(self.date_comment) if self.date_comment else ""
 
 
+class ReponseCommentaire(models.Model):
+    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
+    commentaire = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='reponses')
+    texte = models.TextField()
+    date_reponse = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Réponse de {self.utilisateur} à {self.commentaire} le {self.date_reponse}"
+
+
 class Story(models.Model):
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
     media = models.FileField(upload_to='stories/')
