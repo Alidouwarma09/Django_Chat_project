@@ -324,7 +324,7 @@ function Acceuil() {
   };
 
   const startPress = (publicationId) => {
-    pressTimer = window.setTimeout(() => handleLongPress2(publicationId), 400); // Réduire la durée à 100ms
+    pressTimer = window.setTimeout(() => handleLongPress2(publicationId), 1000);
   };
 
 
