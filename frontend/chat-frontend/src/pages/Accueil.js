@@ -39,6 +39,8 @@ function Acceuil() {
   const [isReplying, setIsReplying] = useState(false);
   const [showCommentOverlay, setShowCommentOverlay] = useState(false);
   const [replies, setReplies] = useState({}); // Ajout de l'état pour les réponses
+  const [replyingToComments, setReplyingToComments] = useState({});
+
 
 
 
@@ -221,12 +223,15 @@ function Acceuil() {
     }
   };
   const handleReplyToComment = (commentId) => {
-    setReplyingToCommentId(commentId);
-    setIsReplying(true);
+    setReplyingToComments((prevComments) => ({
+      ...prevComments,
+      [commentId]: !prevComments[commentId], // Inverse l'état d'ouverture du commentaire
+    }));
   };
-  const handleCloseReponse = () => {
-    setIsReplying(false);
+  const handleCloseReponse = (commentId) => {
+    setReplyingToComments((prevComments) => ({ ...prevComments, [commentId]: false }));
   };
+
 
   const getLikedPublicationsFromLocalStorage = () => {
     const likedPublications = localStorage.getItem('likedPublications');
@@ -476,7 +481,7 @@ function Acceuil() {
                             <button className="close-button" onClick={() => closeCommentForm(index)}><IoMdClose /></button>
                           </div>
                           <div className="commentaire-container">
-                            {comments[publication.id] && comments[publication.id].length > 0 && comments[publication.id].map((comment, commentIndex) => (
+                            {comments[publication.id] && comments[publication.id].length > 0 && comments[publication.id].map((comment) => (
                                 <div className="comment">
                                   <div className="comment-header">
                             <span style={{ display:"flex"}} >
@@ -509,10 +514,11 @@ function Acceuil() {
 
                                     <span className="likes">❤️ 10</span>
                                     <button className="reply-button" onClick={() => handleReplyToComment(comment.id)}>Répondre</button>
-                                    {replyingToCommentId === comment.id && isReplying && (
+                                    {replyingToComments[comment.id] && (
                                         <Reponse
+                                            key={`reply-${comment.id}`}
                                             onSubmit={(texte) => submitReplyToComment(comment.id, texte)}
-                                            onClose={handleCloseReponse}
+                                            onClose={() => handleReplyToComment(comment.id)} // Ferme le composant Reponse
                                         />
                                     )}
 

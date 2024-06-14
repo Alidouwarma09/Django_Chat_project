@@ -383,6 +383,7 @@ body {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
+    overflow: hidden;
 }
 
 .no-scroll {
@@ -399,5 +400,5 @@ body {
 }
 
 .reply-header .user-info {
-    margin-left: 10px; /* Ajoutez une marge à gauche pour séparer l'image du nom */
+    margin-left: 10px;
 }
