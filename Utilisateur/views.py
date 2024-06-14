@@ -451,8 +451,8 @@ def get_reponse_commentaire(request, commentaire_id):
         'texte': reponse_commentaire.texte,
         'utilisateur_nom': reponse_commentaire.utilisateur.nom,
         'utilisateur_prenom': reponse_commentaire.utilisateur.prenom,
-        'date_reponse': reponse_commentaire.date_reponse,
-        'utilisateur_image_reponse': request.build_absolute_uri(
+        'date_reponse': reponse_commentaire.date_commentaire(),
+        'utilisateur_image_com': request.build_absolute_uri(
             reponse_commentaire.utilisateur.image.url) if reponse_commentaire.utilisateur.image else None,
     } for reponse_commentaire in reponse_commentaires]
     return JsonResponse(reponse_comments_data, safe=False)
