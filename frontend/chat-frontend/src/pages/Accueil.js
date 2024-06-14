@@ -90,6 +90,22 @@ function Acceuil() {
 
     fetchData();
   }, []);
+  useEffect(() => {
+    const fetchAllReplies = async () => {
+      try {
+        for (let publication of publications) {
+          for (let comment of comments[publication.id] || []) {
+            await fetchReponseCommentaire(comment.id);
+          }
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des réponses aux commentaires:', error);
+      }
+    };
+
+    fetchAllReplies();
+  }, [publications, comments]);
+
   const fetchCommentsAndReplies = async (publicationId) => {
     await fetchComments(publicationId);
     await fetchReponseCommentaire(publicationId);
@@ -501,10 +517,12 @@ function Acceuil() {
                             )}
 
                             <span className="replies" onClick={() => setShowReplies(!showReplies)}>
-                                {replies[comment.id]
-                                    ? (showReplies ? 'Masquer les réponses' : 'Afficher les réponses')
-                                    : (showReplies ? 'Masquer les réponses' : 'Afficher les réponses')}
-                            </span>
+                              {showReplies
+                                  ? 'Masquer les réponses'
+                                  : replies[comment.id] && replies[comment.id].length > 0
+                                      ? 'Afficher les réponses'
+                                      : ''}
+                          </span>
                           </div>
 
                         </div>
