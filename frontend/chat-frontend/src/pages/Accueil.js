@@ -388,11 +388,16 @@ function Acceuil() {
                     {comments[publication.id] && comments[publication.id].length > 0 && comments[publication.id].map((comment, commentIndex) => (
                         <div className="comment">
                           <div className="comment-header">
-                            <span ><img className="utilisateur_image_com" src={comment.utilisateur_image_com} alt="image"/></span>
-                            <span className="username">{comment.utilisateur_nom} {comment.utilisateur_prenom}</span>
+                            <span style={{ display:"flex"}} >
+                              <img  className="utilisateur_image_com" src={comment.utilisateur_image_com} alt="image"/>
+                              <span style={{marginTop: "10%", marginLeft: 10, fontFamily: "fantasy"}}>
+                                {comment.utilisateur_nom} {comment.utilisateur_prenom}
+                              </span>
+                            </span>
+                            <span className="username"></span>
                             <span className="date">{comment.date_comment}</span>
                           </div>
-                          <p className="comment-text">: {comment.texte}</p>
+                          <p className="comment-text">{comment.texte}</p>
                           <div className="comment-footer">
                             <span className="likes">❤️ 10</span>
                             <span className="replies" onClick={() => setShowReplies(!showReplies)}>
