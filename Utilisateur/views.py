@@ -410,19 +410,22 @@ def post_comment(request, publication_id):
 
 
 @csrf_exempt
-def repondre_comment(request, publication_id):
+def repondre_comment(request, commentaire_id):
     if request.method == 'POST':
+        print(commentaire_id)
         auth_result = TokenAuthentication().authenticate(request)
+        print(auth_result)
 
         if auth_result is not None:
             user, _ = auth_result
+            print(user)
             data = json.loads(request.body)
             texte = data.get("texte")
 
             if not texte:
-                return JsonResponse({'error': 'Le texte du commentaire ne peut pas être vide'}, status=400)
+                return JsonResponse({'error': 'Le texte de la reponse ne peut pas être vide'}, status=400)
 
-            reponseCommentaire = ReponseCommentaire(utilisateur=user, publication_id=publication_id, texte=texte)
+            reponseCommentaire = ReponseCommentaire(utilisateur=user, commentaire_id=commentaire_id, texte=texte)
             reponseCommentaire.save()
 
             return JsonResponse({'message': 'Commentaire ajouté avec succès'}, status=201)

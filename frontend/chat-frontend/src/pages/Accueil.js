@@ -149,7 +149,6 @@ function Acceuil() {
   const submitComment = async (publicationId, texte) => {
     try {
       const token = localStorage.getItem('token');
-      console.log(token);
       const response = await axios.post(
           `${process.env.REACT_APP_API_URL}/Utilisateur/api/post_comment/${publicationId}`,
           JSON.stringify({ texte }),
@@ -160,10 +159,29 @@ function Acceuil() {
             }
           }
       );
-      console.log(response.data.message);
       await fetchComments(publicationId);
     } catch (error) {
       console.error('Erreur lors de l\'envoi du commentaire:', error);
+    }
+  };
+
+  const submitReplyToComment = async ( commentId, texte) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/Utilisateur/api/post_reponse_commentaire/${commentId}`,
+          JSON.stringify({ texte }),
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Token ${token}`
+            }
+          }
+      );
+      setReplyingToCommentId(null);
+      setIsReplying(false);
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi de la réponse au commentaire :', error);
     }
   };
   const handleReplyToComment = (commentId) => {
@@ -173,14 +191,7 @@ function Acceuil() {
   const handleCloseReponse = () => {
     setIsReplying(false);
   };
-  const submitReplyToComment = async (publicationId, texte) => {
-    try {
-      setReplyingToCommentId(null);
-      setIsReplying(false);
-    } catch (error) {
-      console.error('Erreur lors de l\'envoi de la réponse au commentaire :', error);
-    }
-  };
+
   const getLikedPublicationsFromLocalStorage = () => {
     const likedPublications = localStorage.getItem('likedPublications');
     return likedPublications ? JSON.parse(likedPublications) : {};
@@ -447,7 +458,7 @@ function Acceuil() {
                             <button className="reply-button" onClick={() => handleReplyToComment(comment.id)}>Répondre</button>
                             {replyingToCommentId === comment.id && isReplying && (
                                 <Reponse
-                                    onSubmit={(texte) => submitReplyToComment(publication.id, texte)}
+                                    onSubmit={(texte) => submitReplyToComment(comment.id, texte)}
                                     onClose={handleCloseReponse}
                                 />
                             )}
