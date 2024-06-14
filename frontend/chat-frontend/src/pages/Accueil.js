@@ -147,6 +147,7 @@ function Acceuil() {
   }
 
   const submitComment = async (publicationId, texte) => {
+    setCommentTexts(prev => ({ ...prev, [publicationId]: '' }));
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
@@ -159,11 +160,26 @@ function Acceuil() {
             }
           }
       );
+
       await fetchComments(publicationId);
     } catch (error) {
       console.error('Erreur lors de l\'envoi du commentaire:', error);
     }
   };
+  async function fetchReponseCommentaire(commentId) {
+    try {
+      const token = localStorage.getItem('token');
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_reponse_commentaire/${commentId}`);
+      setComments(prevReponse => ({
+        ...prevReponse,
+        [commentId]: response.data
+
+      }));
+    } catch (error) {
+      console.error('Erreur lors de la récupération des commentaires:', error);
+    }
+  }
 
   const submitReplyToComment = async ( commentId, texte) => {
     try {
@@ -178,6 +194,7 @@ function Acceuil() {
             }
           }
       );
+      await fetchReponseCommentaire(commentId);
       setReplyingToCommentId(null);
       setIsReplying(false);
     } catch (error) {
@@ -453,7 +470,9 @@ function Acceuil() {
                             <span className="date">{comment.date_comment}</span>
                           </div>
                           <p className="comment-text">{comment.texte}</p>
+
                           <div className="comment-footer">
+
                             <span className="likes">❤️ 10</span>
                             <button className="reply-button" onClick={() => handleReplyToComment(comment.id)}>Répondre</button>
                             {replyingToCommentId === comment.id && isReplying && (
@@ -469,15 +488,7 @@ function Acceuil() {
                                 : (showReplies ? 'Masquer les réponses' : 'Afficher les réponses')}
                           </span>
                           </div>
-                          {showReplies &&
-                              <div className="reply">
-                                <div className="reply-header">
-                                  <span className="username"></span>
-                                  <span className="date"></span>
-                                </div>
-                                <p className="reply-text"></p>
-                              </div>
-                          }
+
                         </div>
                     ))}
                     {comments[publication.id] && comments[publication.id].length === 0 && (

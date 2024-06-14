@@ -410,6 +410,21 @@ def post_comment(request, publication_id):
 
 
 @csrf_exempt
+def get_comments(request, publication_id):
+    comments = Comment.objects.filter(publication_id=publication_id).order_by('-date_comment')
+    comments_data = [{
+        'id': comment.id,
+        'texte': comment.texte,
+        'utilisateur_nom': comment.utilisateur.nom,
+        'utilisateur_prenom': comment.utilisateur.prenom,
+        'date_comment': comment.date_commentaire(),
+        'utilisateur_image_com': request.build_absolute_uri(
+            comment.utilisateur.image.url) if comment.utilisateur.image else None,
+    } for comment in comments]
+    return JsonResponse(comments_data, safe=False)
+
+
+@csrf_exempt
 def repondre_comment(request, commentaire_id):
     if request.method == 'POST':
         print(commentaire_id)
@@ -433,22 +448,22 @@ def repondre_comment(request, commentaire_id):
             return JsonResponse({'error': 'Authentification invalide'}, status=401)
 
 
-lock = Lock()
-
-
 @csrf_exempt
-def get_comments(request, publication_id):
-    comments = Comment.objects.filter(publication_id=publication_id).order_by('-date_comment')
-    comments_data = [{
-        'id': comment.id,
-        'texte': comment.texte,
-        'utilisateur_nom': comment.utilisateur.nom,
-        'utilisateur_prenom': comment.utilisateur.prenom,
-        'date_comment': comment.date_commentaire(),
+def get_reponse_commentaire(request, commentaire_id):
+    reponse_commentaires = ReponseCommentaire.objects.filter(commentaire_id=commentaire_id).order_by('-date_reponse')
+    reponse_comments_data = [{
+        'id': reponse_commentaire.id,
+        'texte': reponse_commentaire.texte,
+        'utilisateur_nom': reponse_commentaire.utilisateur.nom,
+        'utilisateur_prenom': reponse_commentaire.utilisateur.prenom,
+        'date_reponse': reponse_commentaire.date_commentaire(),
         'utilisateur_image_com': request.build_absolute_uri(
-            comment.utilisateur.image.url) if comment.utilisateur.image else None,
-    } for comment in comments]
-    return JsonResponse(comments_data, safe=False)
+            reponse_commentaire.utilisateur.image.url) if reponse_commentaire.utilisateur.image else None,
+    } for reponse_commentaire in reponse_commentaires]
+    return JsonResponse(reponse_comments_data, safe=False)
+
+
+lock = Lock()
 
 
 class MessageSSEView(View):
