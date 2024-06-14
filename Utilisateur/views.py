@@ -61,7 +61,6 @@ def update_user(request):
             user_id = data.get('user_id')
             field = data.get('field')
             new_value = data.get('new_value')
-            print(f"Data received: {data}")
 
             if not user_id or not field or not new_value:
                 return JsonResponse({'success': False, 'error': 'Données invalides'}, status=400)
@@ -76,7 +75,6 @@ def update_user(request):
                 elif mapped_field == 'numero_utilisateur':
                     user.username = new_value
                 user.save()
-                print(user)
 
                 updated_user_info = {
                     'id': user.id,
@@ -377,7 +375,6 @@ def liker_publication(request):
                 liked = True
 
             count_likes = Like.objects.filter(publication=publication).count()
-            print(count_likes)
             return JsonResponse({'liked': liked, 'count_likes': count_likes})
 
         except Publication.DoesNotExist:
@@ -427,13 +424,10 @@ def get_comments(request, publication_id):
 @csrf_exempt
 def repondre_comment(request, commentaire_id):
     if request.method == 'POST':
-        print(commentaire_id)
         auth_result = TokenAuthentication().authenticate(request)
-        print(auth_result)
 
         if auth_result is not None:
             user, _ = auth_result
-            print(user)
             data = json.loads(request.body)
             texte = data.get("texte")
 
@@ -450,14 +444,15 @@ def repondre_comment(request, commentaire_id):
 
 @csrf_exempt
 def get_reponse_commentaire(request, commentaire_id):
+    print(commentaire_id)
     reponse_commentaires = ReponseCommentaire.objects.filter(commentaire_id=commentaire_id).order_by('-date_reponse')
     reponse_comments_data = [{
         'id': reponse_commentaire.id,
         'texte': reponse_commentaire.texte,
         'utilisateur_nom': reponse_commentaire.utilisateur.nom,
         'utilisateur_prenom': reponse_commentaire.utilisateur.prenom,
-        'date_reponse': reponse_commentaire.date_commentaire(),
-        'utilisateur_image_com': request.build_absolute_uri(
+        'date_reponse': reponse_commentaire.date_reponse,
+        'utilisateur_image_reponse': request.build_absolute_uri(
             reponse_commentaire.utilisateur.image.url) if reponse_commentaire.utilisateur.image else None,
     } for reponse_commentaire in reponse_commentaires]
     return JsonResponse(reponse_comments_data, safe=False)
@@ -477,7 +472,6 @@ class MessageSSEView(View):
         try:
             token_obj = Token.objects.get(key=token)
             current_user = token_obj.user_id
-            print("connecter:", current_user)
         except Token.DoesNotExist:
             return HttpResponseForbidden("Token invalide")
 
@@ -492,7 +486,6 @@ class MessageSSEView(View):
                 if latest_message and latest_message.id > last_message_id_sent:
                     filtered_messages = []
                     for message in messages.filter(id__gt=last_message_id_sent):
-                        print(message.envoi.id)
                         user_data = {
                             'id': message.envoi_id,
                             'username': message.envoi.username,
@@ -695,10 +688,8 @@ def stream_messages(request, utilisateur_detail_id):
                     if message.envoi_id == request.user.id and message.recoi_id == utilisateur_detail_id:
                         print("Le message a été envoyé par vous à l'utilisateur détaillé.")
                     elif message.envoi_id == utilisateur_detail_id and message.recoi_id == request.user.id:
-                        # Code à exécuter si l'utilisateur détaillé est l'expéditeur
-                        print("Le message a été envoyé par l'utilisateur détaillé à vous.")
 
-                    # Autres traitements du message
+                        print("Le message a été envoyé par l'utilisateur détaillé à vous.")
 
                 messages_json = json.dumps(
                     list(new_messages.values(

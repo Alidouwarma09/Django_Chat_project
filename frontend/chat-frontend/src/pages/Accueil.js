@@ -38,7 +38,7 @@ function Acceuil() {
   const [replyingToCommentId, setReplyingToCommentId] = useState(null);
   const [isReplying, setIsReplying] = useState(false);
   const [showCommentOverlay, setShowCommentOverlay] = useState(false);
-  const replyRef = useRef(null);
+  const [replies, setReplies] = useState({}); // Ajout de l'état pour les réponses
 
 
 
@@ -77,7 +77,7 @@ function Acceuil() {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_publications/`);
         const newPublications = response.data;
         for (let publication of newPublications) {
-          await fetchComments(publication.id);
+          await fetchCommentsAndReplies(publication.id);
         }
         setLoading(false);
         setPublications(newPublications);
@@ -90,6 +90,10 @@ function Acceuil() {
 
     fetchData();
   }, []);
+  const fetchCommentsAndReplies = async (publicationId) => {
+    await fetchComments(publicationId);
+    await fetchReponseCommentaire(publicationId);
+  };
   useEffect(() => {
     const cachedData = localStorage.getItem('publications');
     if (cachedData) {
@@ -166,20 +170,19 @@ function Acceuil() {
       console.error('Erreur lors de l\'envoi du commentaire:', error);
     }
   };
-  async function fetchReponseCommentaire(commentId) {
+  const fetchReponseCommentaire = async (commentId) => {
     try {
       const token = localStorage.getItem('token');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/get_reponse_commentaire/${commentId}`);
-      setComments(prevReponse => ({
-        ...prevReponse,
+      setReplies(prevReplies => ({
+        ...prevReplies,
         [commentId]: response.data
-
       }));
     } catch (error) {
-      console.error('Erreur lors de la récupération des commentaires:', error);
+      console.error('Erreur lors de la récupération des réponses:', error);
     }
-  }
+  };
 
   const submitReplyToComment = async ( commentId, texte) => {
     try {
@@ -470,7 +473,22 @@ function Acceuil() {
                             <span className="date">{comment.date_comment}</span>
                           </div>
                           <p className="comment-text">{comment.texte}</p>
-
+                          {replies[comment.id] && showReplies && (
+                              <div className="reply-list">
+                                {replies[comment.id].map(reply => (
+                                    <div key={reply.id} className="reply-item">
+                                      <div className="reply-header">
+                                        <img src={reply.utilisateur_image_reponse} alt="Profil de l'utilisateur" className="user-profile" />
+                                        <div className="user-info">
+                                          <p className="user-name">{reply.utilisateur_nom} {reply.utilisateur_prenom}</p>
+                                          <p className="reply-time">{moment(reply.date_reponse).fromNow()}</p>
+                                        </div>
+                                      </div>
+                                      <p className="reply-text">{reply.texte}</p>
+                                    </div>
+                                ))}
+                              </div>
+                          )}
                           <div className="comment-footer">
 
                             <span className="likes">❤️ 10</span>
@@ -483,10 +501,10 @@ function Acceuil() {
                             )}
 
                             <span className="replies" onClick={() => setShowReplies(!showReplies)}>
-                            {comment.texte.split(/\s+/).length > 20
-                                ? (showReplies ? 'Masquer les réponses' : 'Afficher les réponses')
-                                : (showReplies ? 'Masquer les réponses' : 'Afficher les réponses')}
-                          </span>
+                                {replies[comment.id]
+                                    ? (showReplies ? 'Masquer les réponses' : 'Afficher les réponses')
+                                    : (showReplies ? 'Masquer les réponses' : 'Afficher les réponses')}
+                            </span>
                           </div>
 
                         </div>
