@@ -388,6 +388,7 @@ function Acceuil() {
                     {comments[publication.id] && comments[publication.id].length > 0 && comments[publication.id].map((comment, commentIndex) => (
                         <div className="comment">
                           <div className="comment-header">
+                            <span ><img className="utilisateur_image_com" src={comment.utilisateur_image_com} alt="image"/></span>
                             <span className="username">{comment.utilisateur_nom} {comment.utilisateur_prenom}</span>
                             <span className="date">{comment.date_comment}</span>
                           </div>
@@ -395,10 +396,10 @@ function Acceuil() {
                           <div className="comment-footer">
                             <span className="likes">❤️ 10</span>
                             <span className="replies" onClick={() => setShowReplies(!showReplies)}>
-          {comment.texte.split(/\s+/).length > 20
-              ? (showReplies ? 'Masquer les réponses' : 'Afficher les réponses')
-              : (showReplies ? 'Masquer les réponses' : 'Afficher les réponses')}
-        </span>
+                            {comment.texte.split(/\s+/).length > 20
+                                ? (showReplies ? 'Masquer les réponses' : 'Afficher les réponses')
+                                : (showReplies ? 'Masquer les réponses' : 'Afficher les réponses')}
+                          </span>
                           </div>
                           {showReplies &&
                               <div className="reply">

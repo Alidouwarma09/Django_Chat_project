@@ -137,8 +137,12 @@ body {
 }
 .commentaire-container{
     overflow-y: auto;
+    max-height: 800px;
+    padding-bottom: 500px;
 }
-
+.commentaire-container::-webkit-scrollbar {
+    display: none;
+}
 .comments-header {
     display: flex;
     justify-content: space-between;
@@ -165,7 +169,11 @@ body {
     align-items: center;
     margin-bottom: 4px;
 }
-
+.utilisateur_image_com{
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
 .username {
     font-weight: bold;
 }
@@ -197,6 +205,7 @@ body {
     display: flex;
     align-items: center;
     border-top: 1px solid #ddd;
+    background-color: white;
 }
 
 .comment-footer {
