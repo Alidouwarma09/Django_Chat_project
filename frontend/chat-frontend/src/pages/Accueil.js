@@ -38,6 +38,8 @@ function Acceuil() {
   const [replyingToCommentId, setReplyingToCommentId] = useState(null);
   const [isReplying, setIsReplying] = useState(false);
   const [showCommentOverlay, setShowCommentOverlay] = useState(false);
+  const replyRef = useRef(null);
+
 
 
 
@@ -98,12 +100,17 @@ function Acceuil() {
       });
     }
   }, []);
+
+
   const handleClickOutsideComment = (event) => {
     if (!event.target.closest('.comment-section')) {
       setShowCommentOverlay(false);
       setIsCommentFormOpenList(Array(isCommentFormOpenList.length).fill(false));
     }
   };
+
+
+
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutsideComment);
@@ -162,16 +169,17 @@ function Acceuil() {
   const handleReplyToComment = (commentId) => {
     setReplyingToCommentId(commentId);
     setIsReplying(true);
-    document.body.classList.add('disable-scroll');
-    setShowCommentOverlay(true);
   };
-
+  const handleCloseReponse = () => {
+    // Fermez le formulaire de réponse ici
+    setIsReplying(false);
+    setShowCommentOverlay(false);
+  };
   const submitReplyToComment = async (publicationId, texte) => {
     try {
       setReplyingToCommentId(null);
       setIsReplying(false);
-      setShowCommentOverlay(false); // Masquer l'overlay
-      document.body.classList.remove('disable-scroll');
+      setShowCommentOverlay(false);
     } catch (error) {
       console.error('Erreur lors de l\'envoi de la réponse au commentaire :', error);
     }
@@ -308,6 +316,7 @@ function Acceuil() {
 
   const longPressEvent = useLongPress(handleLongPress, { delay: 8000 });
 
+
   return (
 <div>
   {showPopup && <div className="dark-overlay2"></div>}
@@ -439,8 +448,11 @@ function Acceuil() {
                           <div className="comment-footer">
                             <span className="likes">❤️ 10</span>
                             <button className="reply-button" onClick={() => handleReplyToComment(comment.id)}>Répondre</button>
-                            {replyingToCommentId === comment.id && (
-                                <Reponse onSubmit={(texte) => submitReplyToComment(publication.id, texte)} />
+                            {replyingToCommentId === comment.id && isReplying && (
+                                <Reponse
+                                    onSubmit={(texte) => submitReplyToComment(publication.id, texte)}
+                                    onClose={handleCloseReponse}
+                                />
                             )}
 
                             <span className="replies" onClick={() => setShowReplies(!showReplies)}>
