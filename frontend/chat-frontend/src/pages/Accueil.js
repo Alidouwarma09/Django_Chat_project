@@ -20,9 +20,7 @@ import {IoMdClose} from "react-icons/io";
 import Reponse from "../compoment/Réponse";
 import {MdSaveAlt} from "react-icons/md";
 
-function Lorem(props: { count: number }) {
-  return null;
-}
+
 
 function Acceuil() {
   const [publications, setPublications] = useState([]);
@@ -400,7 +398,7 @@ function Acceuil() {
                         <div className="publication-header" >
                           <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur" className="user-profile" />
                           <div className="user-info">
-                            <p style={{display: "flex"}} className="user-name">{publication.utilisateur_nom} {publication.utilisateur_prenom} <RiVerifiedBadgeFill style={{color: "blue", fontSize: 20, marginLeft: 10}} /></p>
+                            <p style={{display: "flex", fontFamily: "revert-layer"}} className="user-name">{publication.utilisateur_nom} {publication.utilisateur_prenom} <RiVerifiedBadgeFill style={{color: "blue", fontSize: 20, marginLeft: 10}} /></p>
                             <p className="publication-time">
                     <span style={{ fontSize: 10 }}>
                       {moment(publication.date_publication).diff(moment(), 'days') < -7
@@ -423,9 +421,6 @@ function Acceuil() {
                             <>
                               <p style={{
                                 fontFamily: "verdana",
-                                textShadow: `1px 1px 1px #919191,
-                                1px 18px 6px rgba(16,16,16,0.4),
-                                1px 30px 60px rgba(16,16,16,0.4)`,
                                 fontSize: 15
                               }}>{publication.titre}</p>
                             </>
@@ -440,10 +435,7 @@ function Acceuil() {
                                whiteSpace: 'pre-wrap',
                                color: "white",
                                fontSize: 20,
-                               background: publication.photo_file ? '' : publication.couleur_fond,
-                               textShadow: `1px 1px 1px #919191,
-                                1px 18px 6px rgba(16,16,16,0.4),
-                                1px 30px 60px rgba(16,16,16,0.4)`
+                               background: publication.photo_file ? '' : publication.couleur_fond
                              }}>
                           {publication.contenu ? (
                               <>
@@ -456,6 +448,7 @@ function Acceuil() {
                               </>
                           )}
                         </div>
+                        <div style={{fontFamily: "cursive"}}>1 like et 3,12k commentaires</div>
                         <div className="row publication-actions">
                           <div className="col-4 comment-count-container" style={{ fontSize: 11 }}>
                             <button className="action-button" id="comment-button"
