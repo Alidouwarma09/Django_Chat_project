@@ -18,6 +18,7 @@ import html2canvas from 'html2canvas';
 import {BsEmojiSmile} from "react-icons/bs";
 import {IoMdClose} from "react-icons/io";
 import Reponse from "../compoment/Réponse";
+import {MdSaveAlt} from "react-icons/md";
 
 function Lorem(props: { count: number }) {
   return null;
@@ -38,7 +39,7 @@ function Acceuil() {
   const [replyingToCommentId, setReplyingToCommentId] = useState(null);
   const [isReplying, setIsReplying] = useState(false);
   const [showCommentOverlay, setShowCommentOverlay] = useState(false);
-  const [replies, setReplies] = useState({}); // Ajout de l'état pour les réponses
+  const [replies, setReplies] = useState({});
   const [replyingToComments, setReplyingToComments] = useState({});
 
 
@@ -225,7 +226,7 @@ function Acceuil() {
   const handleReplyToComment = (commentId) => {
     setReplyingToComments((prevComments) => ({
       ...prevComments,
-      [commentId]: !prevComments[commentId], // Inverse l'état d'ouverture du commentaire
+      [commentId]: !prevComments[commentId],
     }));
   };
   const handleCloseReponse = (commentId) => {
@@ -303,8 +304,11 @@ function Acceuil() {
   const handleLongPress = () => {
     console.log("Long press detected");
   };
+
+
+
   const handleClickOutsidePopup = (event) => {
-    if (popupRef.current && !popupRef.current.contains(event.target)) {
+    if (!event.target.closest('.popup-container')) {
       setShowPopup(false);
     }
   };
@@ -316,21 +320,13 @@ function Acceuil() {
     };
   }, []);
 
-  let pressTimer;
 
   const handleLongPress2 = (publicationId) => {
     setSelectedPublicationId(publicationId);
     setShowPopup(true);
   };
 
-  const startPress = (publicationId) => {
-    pressTimer = window.setTimeout(() => handleLongPress2(publicationId), 1000);
-  };
 
-
-  const cancelPress = () => {
-    window.clearTimeout(pressTimer);
-  };
 
   const handleSave = async () => {
     setShowPopup(false);
@@ -339,17 +335,11 @@ function Acceuil() {
       if (publicationElement) {
         const canvas = await html2canvas(publicationElement);
         const imgData = canvas.toDataURL('image/png');
-
-        // Créer une instance d'image à partir des données de l'image capturée
         const img = new Image();
         img.src = imgData;
-
-        // Créer un lien pour le téléchargement
         const link = document.createElement('a');
         link.href = imgData;
         link.download = `publication_${selectedPublicationId}.png`;
-
-        // Simuler un clic sur le lien pour démarrer le téléchargement
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -359,9 +349,18 @@ function Acceuil() {
     }
   };
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
-  };
+
+
+
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutsideComment);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutsideComment);
+    };
+  }, [isCommentFormOpenList]);
+
+
   const closeCommentForm = (index) => {
     setShowCommentOverlay(false);
     setIsCommentFormOpenList(prevState => {
@@ -396,9 +395,6 @@ function Acceuil() {
                           key={publication.id}
                           className="publication"
                           style={{ borderTop: '2px solid gray' }}
-                          onTouchStart={() => startPress(publication.id)}
-                          onTouchEnd={cancelPress}
-                          onTouchMove={cancelPress}
                       >
                         {publication.photo_file && <img src={publication.photo_file} alt="Publication" />}
                         <div className="publication-header" >
@@ -479,8 +475,11 @@ function Acceuil() {
 
                           </div>
                           <div className="col-4 comment-count-container"
-                               style={{ fontSize: 10 }}>
-                            <span className="comment-count">15,42k</span> <IoEyeSharp />
+                               style={{ fontSize: 10 }}
+                               onClick={()=> handleLongPress2(publication.id)}
+                          >
+                            <span style={{ borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}><MdSaveAlt  /></span>
+
                           </div>
                         </div>
                         <div className="comment-section" style={{ display: isCommentFormOpenList[index] ? 'block' : 'none' }}>
@@ -526,7 +525,7 @@ function Acceuil() {
                                         <Reponse
                                             key={`reply-${comment.id}`}
                                             onSubmit={(texte) => submitReplyToComment(comment.id, texte)}
-                                            onClose={() => handleReplyToComment(comment.id)} // Ferme le composant Reponse
+                                            onClose={() => handleReplyToComment(comment.id)}
                                         />
                                     )}
 
@@ -570,7 +569,7 @@ function Acceuil() {
                 ))
             )}
           </div>
-          {showPopup && <Popup ref={popupRef} onSave={handleSave} onClose={handleClosePopup} />}
+          {showPopup && <Popup ref={popupRef} onSave={handleSave}  />}
           {!isStorySelected && <BottomTab />}
         </div>
       </div>
