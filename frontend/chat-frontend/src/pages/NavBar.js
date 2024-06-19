@@ -34,7 +34,7 @@ function Navbar() {
     const [isRotating, setIsRotating] = useState(false);
 
     const handleMenuClick = () => {
-        setSidebarVisible(!sidebarVisible); // Inverse la visibilité de la barre de navigation
+        setSidebarVisible(!sidebarVisible);
     };
     const handleOutsideClick = useCallback((event) => {
         if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
@@ -319,6 +319,9 @@ function Navbar() {
     const hundleProfile = () =>{
         navigate('/profile')
     }
+    const hundleSolde = () =>{
+        navigate('/solde')
+    }
     return (
         <div >
             {navbarBublicationVisible && <div className="dark-overlay"></div>}
@@ -488,9 +491,9 @@ function Navbar() {
                                     <span className="text">Mes postes</span>
                             </li>
 
-                            <li className="nav-link">
+                            <li className="nav-link" onClick={hundleSolde}>
                                     <i className='bx bx-bell icon'></i>
-                                    <span className="text">Notifications</span>
+                                    <span className="text">Solde</span>
                             </li>
 
                             <li className="nav-link">

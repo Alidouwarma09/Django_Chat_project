@@ -8,7 +8,7 @@ import BottomTab from "./BottomTab";
 function Utilisateurs() {
     const [utilisateurs, setUtilisateurs] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [loaded, setLoaded] = useState(false); // Nouvelle variable d'état pour suivre si les utilisateurs sont déjà chargés
+    const [loaded, setLoaded] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,10 +28,10 @@ function Utilisateurs() {
     }, [navigate]);
 
     useEffect(() => {
-        if (!loaded) { // Charger les utilisateurs uniquement si ils ne sont pas déjà chargés
+        if (!loaded) {
             fetchUtilisateurs();
         }
-    }, [loaded]); // Déclencher le chargement des utilisateurs lorsque 'loaded' change
+    }, [loaded]);
 
     const fetchUtilisateurs = async () => {
         try {

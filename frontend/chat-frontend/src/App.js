@@ -10,6 +10,8 @@ import Utilisateurs from "./pages/Utilisateurs";
 import Recherche from "./pages/Recherche";
 import Profile from "./pages/Profile";
 import Exemple from "./pages/Exemple";
+import Solde from "./pages/Solde";
+import Userdetail from "./pages/Userdetail"
 
 function App() {
     return (
@@ -24,6 +26,8 @@ function App() {
                     <Route path="/recherche" element={<Recherche />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/acceuil" element={<Acceuil />} />
+                    <Route path="/solde" element={<Solde />} />
+                    <Route path="/userdetails/:utilisateurId" element={<Userdetail />} />
                     <Route path="/exemplepage" element={<Exemple />} />
                     <Route path="/" element={<Navigate to="/acceuil" />} />
                 </Routes>

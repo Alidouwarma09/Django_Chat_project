@@ -370,7 +370,10 @@ function Acceuil() {
 
   const longPressEvent = useLongPress(handleLongPress, { delay: 8000 });
 
-
+  const handleUserDetailClick = (utilisateurId) => {
+    navigate(`/userdetails/${utilisateurId}`);
+    console.log(utilisateurId);
+  };
   return (
       <div>
         {showPopup && <div className="dark-overlay2"></div>}
@@ -397,7 +400,7 @@ function Acceuil() {
                         {publication.photo_file && <img src={publication.photo_file} alt="Publication" />}
                         <div className="publication-header" >
                           <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur" className="user-profile" />
-                          <div className="user-info">
+                          <div className="user-info" onClick={() => handleUserDetailClick(publication.utillisateur_id)}>
                             <p style={{display: "flex", fontFamily: "revert-layer"}} className="user-name">{publication.utilisateur_nom} {publication.utilisateur_prenom} <RiVerifiedBadgeFill style={{color: "blue", fontSize: 20, marginLeft: 10}} /></p>
                             <p className="publication-time">
                     <span style={{ fontSize: 10 }}>

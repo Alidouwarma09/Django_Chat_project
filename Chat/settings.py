@@ -105,7 +105,7 @@ CLOUDINARY_STORAGE = {
     'API_KEY': '848777645924315',
     'API_SECRET': '5GiGXjplGFtQu5xIbaLwytbTyV0'
 }
-DEFAULT_FILE_STORAGE = 'Chat.custom_storage.CustomCloudinaryStorage'
+# DEFAULT_FILE_STORAGE = 'Chat.custom_storage.CustomCloudinaryStorage'
 
 WSGI_APPLICATION = 'Chat.wsgi.application'
 
@@ -130,27 +130,27 @@ CORS_ALLOW_HEADERS = [
 
 # Internal Database
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'chat',
-#         'USER': 'postgres',
-#         'PASSWORD': '09102079Darius',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME'),
-        'USER': config('DATABASE_USER'),
-        'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': config('DATABASE_HOST'),
-        'PORT': config('DATABASE_PORT'),
+        'NAME': 'chat',
+        'USER': 'postgres',
+        'PASSWORD': '09102079Darius',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': config('DATABASE_NAME'),
+#         'USER': config('DATABASE_USER'),
+#         'PASSWORD': config('DATABASE_PASSWORD'),
+#         'HOST': config('DATABASE_HOST'),
+#         'PORT': config('DATABASE_PORT'),
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

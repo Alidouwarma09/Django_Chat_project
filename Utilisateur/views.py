@@ -178,6 +178,7 @@ def get_publications(request):
         publications = Publication.objects.filter(video_file='').order_by('-date_publication')
         data = [{'id': pub.id,
                  'titre': pub.titre,
+                 'utillisateur_id': pub.utilisateur.id,
                  'utilisateur_nom': pub.utilisateur.nom,
 
                  'utilisateur_prenom': pub.utilisateur.prenom,
