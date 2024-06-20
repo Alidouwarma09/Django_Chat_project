@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import './css/solde.css'
-import Laplace from './icons/laplace.svg'
 function Solde( ) {
     const [userInfo, setUserInfo] = useState({});
     useEffect(() => {
@@ -17,7 +16,7 @@ function Solde( ) {
             <div className="card">
                 <div className="card__inner">
                     <div className="card__front">
-                        <img src={userInfo.image_utilisateu || Laplace} alt="Laplace" className="logo" />
+                        <img src={userInfo.image_utilisateu} alt="imageutilisateur" className="logo" />
                             <div className="chip">
                                 <div className="chip-line"></div>
                                 <div className="chip-line"></div>
