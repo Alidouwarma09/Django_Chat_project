@@ -537,7 +537,7 @@ function Acceuil() {
                                 </div>
                             ))}
                             {comments[publication.id] && comments[publication.id].length === 0 && (
-                                <p style={{textAlign: "center", fontSize: 12, fontFamily: "cursive"}}> Commenter en premier😊</p>
+                                <p style={{textAlign: "center", fontSize: 12, fontFamily: "cursive"}}> Commenter en premier 😊</p>
                             )}
                           </div>
 
