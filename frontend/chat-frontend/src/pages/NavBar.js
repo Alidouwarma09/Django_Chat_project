@@ -347,6 +347,234 @@ function Navbar() {
                             }}
                             onClick={() => handleBackgroundClick("black")}></div>
                         <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#f44336",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#f44336")}></div>
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#e91e63",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#e91e63")}></div>
+
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#9c27b0",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#9c27b0")}></div>
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#673ab7",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#673ab7")}></div>
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#3f51b5",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#3f51b5")}></div>
+
+
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#2196f3",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#2196f3")}></div>
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#00bcd4",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#00bcd4")}></div>
+
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#009688",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#009688")}></div>
+
+
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#4caf50",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#4caf50")}></div>
+
+
+
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#8bc34a",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#8bc34a")}></div>
+
+
+
+
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#cddc39",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#cddc39")}></div>
+
+
+
+
+
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#ffc107",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#ffc107")}></div>
+
+
+
+
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#ff9800",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#ff9800")}></div>
+
+
+
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#ff5722",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#ff5722")}></div>
+
+
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#795548",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#795548")}></div>
+
+
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#9e9e9e",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#9e9e9e")}></div>
+
+
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#607d8b",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#607d8b")}></div>
+
+                        <div className="backgroundOption"
+                             data-value="black" style={{
+                            backgroundColor: "#190935",
+                            borderRadius: "50%",
+                            width: "50px",
+                            height: "50px",
+                            display: "inline-block",
+                            marginRight: "10px"
+                        }}
+                             onClick={() => handleBackgroundClick("#190935")}></div>
+
+                        <div className="backgroundOption"
                             data-value="linear-gradient(to bottom, rgba(128,0,128,0.5), rgba(0,0,128,0.5))" style={{
                                 backgroundImage: "linear-gradient(to bottom, rgba(128,0,128,0.5), rgba(0,0,128,0.5))",
                                 borderRadius: "50%",
