@@ -677,7 +677,7 @@ function Navbar() {
                     <LuRefreshCcw />
                 </div>
                 <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu">
-                    <IoIosNotifications />
+                    <IoIosNotifications /><span style={{fontSize: 60, color: "red", marginBottom: 60}}>.</span>
                 </div>
                 <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}} className="menu">
                     <GrDownload />
