@@ -19,6 +19,7 @@ import {BsEmojiSmile} from "react-icons/bs";
 import {IoMdClose} from "react-icons/io";
 import Reponse from "../compoment/Réponse";
 import {MdSaveAlt} from "react-icons/md";
+import domtoimage from 'dom-to-image';
 
 
 
@@ -331,12 +332,9 @@ function Acceuil() {
     try {
       const publicationElement = document.getElementById(`publication-${selectedPublicationId}`);
       if (publicationElement) {
-        const canvas = await html2canvas(publicationElement);
-        const imgData = canvas.toDataURL('image/png');
-        const img = new Image();
-        img.src = imgData;
+        const dataUrl = await domtoimage.toPng(publicationElement);
         const link = document.createElement('a');
-        link.href = imgData;
+        link.href = dataUrl;
         link.download = `publication_${selectedPublicationId}.png`;
         document.body.appendChild(link);
         link.click();
