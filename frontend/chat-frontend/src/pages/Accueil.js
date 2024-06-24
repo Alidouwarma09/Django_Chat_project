@@ -367,20 +367,12 @@ function Acceuil() {
   const saveImage = async () => {
     if (currentImageSrc) {
       try {
-        const dataUrl = currentImageSrc;
-        if (currentImageSrc) {
-          await downloadResumable(dataUrl);
-        } else {
-          const link = document.createElement('a');
-          link.href = dataUrl;
-          link.download = `image.png`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
+        await downloadResumable(currentImageSrc); // Utilise directement currentImageSrc ici
       } catch (error) {
         console.error('Erreur lors du téléchargement de l\'image:', error);
       }
+    } else {
+      console.warn('currentImageSrc is empty or undefined');
     }
   };
 
