@@ -144,25 +144,6 @@ function Acceuil() {
     setCurrentImageSrc(null);
   };
 
-  const saveImage = async () => {
-    if (currentImageSrc) {
-      try {
-        const dataUrl = currentImageSrc;
-        if (window.ReactNativeWebView) {
-          await downloadResumable(dataUrl);
-        } else {
-          const link = document.createElement('a');
-          link.href = dataUrl;
-          link.download = `image.png`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
-      } catch (error) {
-        console.error('Erreur lors du téléchargement de l\'image:', error);
-      }
-    }
-  };
 
 
   useEffect(() => {
@@ -381,6 +362,25 @@ function Acceuil() {
       }
     } catch (error) {
       console.error('Erreur lors du téléchargement de la capture d\'écran:', error);
+    }
+  };
+  const saveImage = async () => {
+    if (currentImageSrc) {
+      try {
+        const dataUrl = currentImageSrc;
+        if (currentImageSrc) {
+          await downloadResumable(dataUrl);
+        } else {
+          const link = document.createElement('a');
+          link.href = dataUrl;
+          link.download = `image.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      } catch (error) {
+        console.error('Erreur lors du téléchargement de l\'image:', error);
+      }
     }
   };
 
