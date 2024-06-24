@@ -8,18 +8,18 @@ import './css/acceuil.css';
 import likeSon from './son/likesSon.mp3';
 import moment from "moment";
 import "moment/locale/fr";
-import {IoEyeSharp, IoSendSharp} from "react-icons/io5";
+import { IoSendSharp} from "react-icons/io5";
 import Stories from "../compoment/Stories";
 import { useLongPress } from '@uidotdev/usehooks';
 import {RiVerifiedBadgeFill} from "react-icons/ri";
 import {useNavigate} from "react-router-dom";
 import Popup from '../compoment/Popup';
-import html2canvas from 'html2canvas';
 import {BsEmojiSmile} from "react-icons/bs";
 import {IoMdClose} from "react-icons/io";
 import Reponse from "../compoment/Réponse";
 import {MdSaveAlt} from "react-icons/md";
 import domtoimage from 'dom-to-image';
+import ImageViewer from '../compoment/ImageViewer';
 
 
 
@@ -40,6 +40,8 @@ function Acceuil() {
   const [showCommentOverlay, setShowCommentOverlay] = useState(false);
   const [replies, setReplies] = useState({});
   const [replyingToComments, setReplyingToComments] = useState({});
+  const [showImageViewer, setShowImageViewer] = useState(false);
+  const [currentImageSrc, setCurrentImageSrc] = useState(null);
 
 
 
@@ -132,7 +134,26 @@ function Acceuil() {
   };
 
 
+  const handleImageClick = (imageSrc) => {
+    setCurrentImageSrc(imageSrc);
+    setShowImageViewer(true);
+  };
 
+  const closeImageViewer = () => {
+    setShowImageViewer(false);
+    setCurrentImageSrc(null);
+  };
+
+  const saveImage = () => {
+    if (currentImageSrc) {
+      const link = document.createElement('a');
+      link.href = currentImageSrc;
+      link.download = `image.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutsideComment);
@@ -446,6 +467,7 @@ function Acceuil() {
                                color: "white",
                                fontSize: 20,
                                background: publication.photo_file ? '' : publication.couleur_fond
+
                              }}>
                           {publication.contenu ? (
                               <>
@@ -453,7 +475,7 @@ function Acceuil() {
                               </>
                           ) : (
                               <>
-                                <img src={`${publication.photo_file_url}`} className="publication-image"
+                                <img onClick={() => publication.photo_file_url && handleImageClick(publication.photo_file_url)} src={`${publication.photo_file_url}`} className="publication-image"
                                      alt="Publication" />
                               </>
                           )}
@@ -572,6 +594,13 @@ function Acceuil() {
                 ))
             )}
           </div>
+          {showImageViewer && (
+              <ImageViewer
+                  imageSrc={currentImageSrc}
+                  onClose={closeImageViewer}
+                  onSave={saveImage}
+              />
+          )}
           {showPopup && <Popup ref={popupRef} onSave={handleSave}  />}
           {!isStorySelected && <BottomTab />}
         </div>
