@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './css/message.css';
-import { IoReloadSharp } from "react-icons/io5";
+import {IoReloadSharp, IoSendSharp} from "react-icons/io5";
 import {Spinner} from "@chakra-ui/react";
 import {Box} from "@mui/material";
 import Icon from "antd/es/icon";
+import {IoMdArrowRoundBack} from "react-icons/io";
 
 function Message() {
   const { utilisateurId } = useParams();
@@ -141,7 +142,7 @@ function Message() {
   return (
         <div className="chat-container">
           <div className="conversation-top">
-            <button type="button" className="conversation-back" onClick={handleBack}><i className="ri-arrow-left-line"></i></button>
+            <button type="button" className="conversation-back" onClick={handleBack}><IoMdArrowRoundBack /></button>
             <div className="conversation-user">
               <img className="conversation-user-image"
                    src={utilisateur.image_utilisateur}
@@ -194,8 +195,7 @@ function Message() {
               </button>
             </div>
 
-            <button type="submit" className="conversation-form-button conversation-form-submit"><i
-                className="ri-send-plane-2-line"></i></button>
+            <button type="submit" className="conversation-form-button conversation-form-submit"><IoSendSharp /></button>
           </form>
         </div>
   );

@@ -148,6 +148,13 @@ function Acceuil() {
     if (currentImageSrc) {
       try {
         const dataUrl = currentImageSrc;
+
+        const permission = await MediaLibrary.requestPermissionsAsync();
+        if (!permission.granted) {
+          Alert.alert('Permission non accordée', 'Pour enregistrer l\'image, veuillez accorder la permission.');
+          return;
+        }
+
         if (window.ReactNativeWebView) {
           window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'DOWNLOAD', data: dataUrl }));
         } else {
@@ -161,8 +168,11 @@ function Acceuil() {
       } catch (error) {
         console.error('Erreur lors du téléchargement de l\'image:', error);
       }
+    } else {
+      console.error('currentImageSrc est vide ou nul.');
     }
   };
+
 
 
   useEffect(() => {

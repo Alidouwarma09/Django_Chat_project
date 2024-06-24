@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import "./css/utilisateurs.css";
 import {IoIosArrowBack} from "react-icons/io";
 import BottomTab from "./BottomTab";
+import {FaUserCircle} from "react-icons/fa";
 
 function Utilisateurs() {
     const [utilisateurs, setUtilisateurs] = useState([]);
@@ -81,6 +82,12 @@ function Utilisateurs() {
     const handleGoBack = () => {
         window.history.back();
     };
+    function isImageExists(url) {
+        const img = new Image();
+        img.src = url;
+        return img.complete || (img.height !== 0);
+    }
+
 
     return (
         <div className="messages-container">
@@ -98,7 +105,9 @@ function Utilisateurs() {
                     {filteredUtilisateurs.map(utilisateur => (
                         <div key={utilisateur.id} className="message-item" onClick={() => handleUserClick(utilisateur.id)}>
                             <div className="message-avatar">
-                                <img src={utilisateur.image} alt={`${utilisateur.nom} ${utilisateur.prenom}`} className="avatar-image" />
+                                {utilisateur.image && isImageExists(utilisateur.image)
+                                    ? <img src={utilisateur.image} alt={`${utilisateur.nom} ${utilisateur.prenom}`} className="avatar-image" />
+                                    : <FaUserCircle style={{fontSize: 30}} className="avatar-image" />}
                             </div>
                             <div className="message-content">
                                 <div className="message-name">{utilisateur.nom} {utilisateur.prenom}</div>
