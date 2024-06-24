@@ -6,6 +6,8 @@ body{
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
     overflow: hidden; /* Empêche l'effet élastique */
+    touch-action: manipulation; /* Empêche le zoom sur les périphériques tactiles */
+    user-select: none;
 }
 #root{
     width: 100%;
