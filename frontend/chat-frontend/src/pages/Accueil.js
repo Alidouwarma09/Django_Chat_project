@@ -327,22 +327,26 @@ function Acceuil() {
 
 
 
+  const downloadResumable = async (dataUrl) => {
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'DOWNLOAD', data: dataUrl }));
+    } else {
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = `publication_${selectedPublicationId}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   const handleSave = async () => {
     setShowPopup(false);
     try {
       const publicationElement = document.getElementById(`publication-${selectedPublicationId}`);
       if (publicationElement) {
-        const canvas = await html2canvas(publicationElement);
-        canvas.toBlob(blob => {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = `publication_${selectedPublicationId}.png`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
-        });
+        const dataUrl = await domtoimage.toPng(publicationElement);
+        await downloadResumable(dataUrl);
       }
     } catch (error) {
       console.error('Erreur lors du téléchargement de la capture d\'écran:', error);
