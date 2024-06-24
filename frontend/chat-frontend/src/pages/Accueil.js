@@ -144,16 +144,26 @@ function Acceuil() {
     setCurrentImageSrc(null);
   };
 
-  const saveImage = () => {
+  const saveImage = async () => {
     if (currentImageSrc) {
-      const link = document.createElement('a');
-      link.href = currentImageSrc;
-      link.download = `image.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      try {
+        const dataUrl = currentImageSrc;
+        if (window.ReactNativeWebView) {
+          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'DOWNLOAD', data: dataUrl }));
+        } else {
+          const link = document.createElement('a');
+          link.href = dataUrl;
+          link.download = `image.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      } catch (error) {
+        console.error('Erreur lors du téléchargement de l\'image:', error);
+      }
     }
   };
+
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutsideComment);
