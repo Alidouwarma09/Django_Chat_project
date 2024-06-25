@@ -3,9 +3,11 @@ import './css/solde.css'
 import {IoIosAddCircle, IoIosArrowBack} from "react-icons/io";
 import {FaWindowMinimize} from "react-icons/fa";
 import {BsSubstack} from "react-icons/bs";
+import {LiaEyeSolid} from "react-icons/lia";
 
 const Solde = () => {
     const [userInfo, setUserInfo] = useState({});
+    const [isSoldeVisible, setIsSoldeVisible] = useState(false);
     useEffect(() => {
         const loadUserInfo = async () => {
             const storedUserInfo = localStorage.getItem('userInfo');
@@ -17,6 +19,9 @@ const Solde = () => {
     }, []);
     const handleGoBacks = () => {
         window.history.back();
+    };
+    const toggleSoldeVisibility = () => {
+        setIsSoldeVisible(!isSoldeVisible);
     };
     return (
         <div className="container">
@@ -46,7 +51,16 @@ const Solde = () => {
                                     d="M7.584 11.438c.227.031.438.144.594.312 2.953 2.863 4.781 6.875 4.781 11.313 0 4.433-1.828 8.449-4.781 11.312-.398.387-1.035.383-1.422-.016-.387-.398-.383-1.035.016-1.421 2.582-2.504 4.187-5.993 4.187-9.875 0-3.883-1.605-7.372-4.187-9.875-.321-.282-.426-.739-.266-1.133.164-.395.559-.641.984-.617h.094zM1.178 15.531c.121.02.238.063.344.125 2.633 1.414 4.437 4.215 4.437 7.407 0 3.195-1.797 5.996-4.437 7.406-.492.258-1.102.07-1.36-.422-.257-.492-.07-1.102.422-1.359 2.012-1.075 3.375-3.176 3.375-5.625 0-2.446-1.371-4.551-3.375-5.625-.441-.204-.676-.692-.551-1.165.122-.468.567-.785 1.051-.742h.094z">
                                 </path>
                             </svg>
-                            <div className="le-fond">2000 XOF</div>
+                            <div className="voir-solde" style={{ display: isSoldeVisible ? "none" : "flex" }} onClick={toggleSoldeVisibility}>
+                                <span><LiaEyeSolid /></span>
+                                <span><LiaEyeSolid /></span>
+                                <span><LiaEyeSolid /></span>
+                                <span><LiaEyeSolid /></span>
+                            </div>
+
+                            {isSoldeVisible && (
+                                <div className="le-fond" onClick={toggleSoldeVisibility}>2000 XOF</div>
+                            )}
                             <div className="card-number">
                                 <div className="section">1350</div>
                                 <div className="section">1234</div>

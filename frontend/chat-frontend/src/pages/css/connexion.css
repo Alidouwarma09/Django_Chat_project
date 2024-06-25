@@ -1,7 +1,5 @@
 
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
 .contenu_connexion {
     font-family: 'Poppins', sans-serif;
     min-height: 100vh;
@@ -234,4 +232,16 @@ meter {
         padding: 2rem;
     }
 
+}
+.error-message {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.error-message-general {
+    color: red;
+    font-size: 1rem;
+    text-align: center;
+    margin-top: 1rem;
 }

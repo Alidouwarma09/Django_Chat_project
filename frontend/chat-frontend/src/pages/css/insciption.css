@@ -1,7 +1,4 @@
 
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
 .contenu_inscription {
     font-family: 'Poppins', sans-serif;
     min-height: 100vh;
@@ -88,6 +85,9 @@ meter {
 }
 .login-card-logo {
     margin-bottom: 2rem;
+    text-align: center;
+    justify-items: center;
+    align-items: center;
 }
 
 .login-card-logo img {
@@ -126,7 +126,9 @@ meter {
     flex-direction: column;
     gap: 1.5rem;
 }
-
+.image-upload-container{
+    display: flex;
+}
 .login-card-form .form-item {
     position: relative;
 }

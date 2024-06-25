@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {Link, useNavigate} from 'react-router-dom';
 import Chater_logo from './icons/chater_logo.png'
+import { FiPhone, FiLock } from 'react-icons/fi';
 
 import './css/connexion.css'
 
@@ -11,6 +12,7 @@ function Connexion() {
     const [formErrors, setFormErrors] = useState({ username: '', password: '' });
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [submitError, setSubmitError] = useState('');
 
 
     useEffect(() => {
@@ -46,9 +48,8 @@ function Connexion() {
         .catch(error => {
             setLoading(false);
             console.error('Erreur lors de la connexion:', error.response || error);
-            if (error.response && error.response.data) {
-                setFormErrors(error.response.data);
-            }
+            setSubmitError('Numéro ou mot de passe incorrect');
+
         });
     }
 
@@ -64,17 +65,18 @@ function Connexion() {
                     </div>
                     <form onSubmit={handleSubmit} className="login-card-form">
                         <div className="form-item">
-                            <span className="form-item-icon material-symbols-rounded">phone</span>
+                            <span className="form-item-icon"><FiPhone /></span>
                             <input type="number" placeholder="Téléphone" id="phoneForm" autoFocus required
                                    name="username" className={formErrors.username ? 'error' : ''} value={username}
                                    onChange={handleChange}/>
                         </div>
                         <div className="form-item">
-                            <span className="form-item-icon material-symbols-rounded">lock</span>
+                            <span className="form-item-icon"><FiLock /></span>
                             <input type="password" placeholder="Mot de passe" id="passwordForm" required
                                    name="password" className={formErrors.password ? 'error' : ''} value={password}
                                    onChange={handleChange}/>
                         </div>
+                        {submitError && <div className="error-message">{submitError}</div>}
                         <button className="login-button" type="submit" id="submitButton" disabled={loading}>
                             {loading ? 'Chargement...' : 'Se connecter'}
                         </button>

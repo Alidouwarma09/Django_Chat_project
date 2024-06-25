@@ -4,6 +4,8 @@ import './css/insciption.css'
 import Chater_logo from "./icons/chater_logo.png";
 import {Link, useNavigate} from 'react-router-dom';
 import { TbCameraPlus } from "react-icons/tb";
+import {IoMdPerson} from "react-icons/io";
+import {FaLock, FaPhone} from "react-icons/fa";
 
 const Inscription = () => {
     const [nom, setNom] = useState('');
@@ -65,10 +67,10 @@ const [imagePreview, setImagePreview] = useState(null);
                             <h1>Inscription</h1>
                         </div>
                         <form onSubmit={handleSubmit} className="login-card-form" encType="multipart/form-data">
-                            <div className="form-item image-upload-container" style={{display: "grid"}} >
-                                {imagePreview &&
-                                    <img src={imagePreview} alt="Prévisualisation" style={{borderRadius: "50%", height: 60, width: 60}} className="image-preview"/>}
+                            <div className="form-item image-upload-container"  >
                                 <TbCameraPlus className="upload-icon" onClick={triggerFileInput} />
+                                {imagePreview &&
+                                    <img src={imagePreview} alt="Prévisualisation" style={{borderRadius: 10, height: 70, width: 70, marginLeft: 30}} className="image-preview"/>}
                                 <input
                                     ref={fileInputRef}
                                     type="file"
@@ -78,27 +80,27 @@ const [imagePreview, setImagePreview] = useState(null);
                                 />
                             </div>
                             <div className="form-item">
-                                <span className="form-item-icon material-symbols-rounded">person</span>
+                                <span className="form-item-icon"><IoMdPerson /></span>
                                 <input type="text" placeholder="Nom" required value={nom}
                                        onChange={(e) => setNom(e.target.value)}/>
                             </div>
                             <div className="form-item">
-                                <span className="form-item-icon material-symbols-rounded">person</span>
+                                <span className="form-item-icon "><IoMdPerson /></span>
                                 <input type="text" placeholder="Prénom" required value={prenom}
                                        onChange={(e) => setPrenom(e.target.value)}/>
                             </div>
                             <div className="form-item">
-                                <span className="form-item-icon material-symbols-rounded">phone</span>
+                                <span className="form-item-icon "><FaPhone /></span>
                                 <input type="number" placeholder="Téléphone" required value={telephone}
                                        onChange={(e) => setTelephone(e.target.value)}/>
                             </div>
                             <div className="form-item">
-                                <span className="form-item-icon material-symbols-rounded">lock</span>
+                                <span className="form-item-icon "><FaLock /></span>
                                 <input type="password" placeholder="Mot de passe" required value={password}
                                        onChange={(e) => setPassword(e.target.value)}/>
                             </div>
                             <div className="form-item">
-                                <span className="form-item-icon material-symbols-rounded">lock</span>
+                                <span className="form-item-icon "><FaLock /></span>
                                 <input type="password" placeholder="Confirmé" required value={confirmPassword}
                                        onChange={(e) => setConfirmPassword(e.target.value)}/>
                             </div>
