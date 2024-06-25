@@ -9,10 +9,11 @@ import axios from "axios";
 import ThemeButton from "../compoment/ThemeButton";
 import {IoIosNotifications, IoMdArrowRoundBack} from "react-icons/io";
 import {GrDownload} from "react-icons/gr";
-import {FaUserCog} from "react-icons/fa";
+import {FaBloggerB, FaUserCog} from "react-icons/fa";
 import {VscActivateBreakpoints} from "react-icons/vsc";
 import {MdOutlineSystemUpdate} from "react-icons/md";
 import {RiMoneyDollarCircleFill} from "react-icons/ri";
+import {BsFillBarChartLineFill} from "react-icons/bs";
 
 
 
@@ -691,29 +692,26 @@ function Navbar() {
                     <CiMenuBurger />
                 </div>
             </nav>
+
             <nav className="sidebar"  style={{ display: sidebarVisible ? 'block' : 'none' }} ref={sidebarRef}>
                 <header>
                     <div className="image-text">
                         <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}  onClick={handleMenuClose}>
                             <IoMdArrowRoundBack style={{fontSize: 30}} />
                         </div>
-                        <span className="image">
-                    <img src={`${userInfo.image_utilisateu}`} style={{borderRadius: "50%", width: 70, height: 70}}
-                         alt="Trash Icon"/>
-                             <div className="text logo-text">
-                            <span className="name">{userInfo.nom_utilisateur} {userInfo.prenom_utilisateur} </span>
-                        </div>
-                </span>
+                        <span className="image-user">
+                             <span style={{ marginLeft: 0, marginRight: 0,  height: 150, borderRadius: 20}}>
+                                 <img src={`${userInfo.image_utilisateu}`} style={{ marginLeft: 60,  height: 150, borderRadius: 20}}
+                                        alt="Trash Icon"/>
+                             </span>
+                            <span className="name" style={{ marginLeft: 0, marginRight: 0}}>{userInfo.nom_utilisateur} {userInfo.prenom_utilisateur} </span>
+                         </span>
 
                     </div>
                 </header>
 
                 <div className="menu-bar">
                     <div className="menu">
-                        <li className="search-box">
-                            <i className='bx bx-search icon'></i>
-                            <input type="text" placeholder="Recherche..."></input>
-                        </li>
 
                         <ul className="menu-links">
 
@@ -723,7 +721,7 @@ function Navbar() {
                             </li>
 
                             <li className="nav-link">
-                                    <i className='bx bx-bar-chart-alt-2 icon'></i>
+                                    <i className='icon'><FaBloggerB /></i>
                                     <span className="text">Mes postes</span>
                             </li>
 
@@ -733,7 +731,7 @@ function Navbar() {
                             </li>
 
                             <li className="nav-link">
-                                    <i className='bx bx-pie-chart-alt icon'></i>
+                                    <i className=' icon'><BsFillBarChartLineFill /></i>
                                     <span className="text">Analytics</span>
                             </li>
 
@@ -751,9 +749,8 @@ function Navbar() {
                     </div>
 
                     <div className="bottom-content" >
-                        <li className="" onClick={handleDeconnexion} style={{ backgroundColor: "pink", borderRadius: "15px", width:"100%"}}>
-                            <i ><CiLogout style={{fontSize: 30}} /></i>
-
+                        <li  onClick={handleDeconnexion} style={{ backgroundColor: "pink", borderRadius: "15px", width:"100%"}}>
+                            <i style={{ backgroundColor: "pink"}} className="icon" ><CiLogout style={{fontSize: 30}} /></i>
                                 <span className="text">Déconnexion</span>
                         </li>
 
