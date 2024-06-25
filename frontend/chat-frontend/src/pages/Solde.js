@@ -69,7 +69,7 @@ const Solde = () => {
                             </div>
 
                             <div className="card-info__bottom">
-                                <div className="card-holder">WALLY DARIUS <BsSubstack  style={{ marginLeft: 5, marginTop: 4}} /></div>
+                                <div className="card-holder">{userInfo.nom_utilisateur} {userInfo.prenom_utilisateur} <BsSubstack  style={{ marginLeft: 5, marginTop: 4}} /></div>
                                 <div className="card-info__right">
                                     <div className="exp-date">05/27</div>
                                     <div className="mastercard">
