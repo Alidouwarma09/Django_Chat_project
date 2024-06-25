@@ -286,7 +286,7 @@ body{
     text-align: center;
     justify-content: center;
 }
-.sidebar header ,
+.sidebar  ,
 .sidebar .icon{
     border-radius: 6px;
     align-items: center;
