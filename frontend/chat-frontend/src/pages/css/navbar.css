@@ -21,6 +21,13 @@
         justify-content: space-between;
 
     }
+.nav-link{
+    cursor: pointer;
+}
+.nav-link:hover{
+    background-color: #9351c9;
+    color: white;
+}
     .navbar > * {
         text-align: center;
     }
@@ -64,7 +71,9 @@
     border-bottom: 1px solid;
     width: 100%;
 }
-
+.menu-links{
+    overflow-y: auto;
+}
 .navbarBublication i {
     margin-right: 10px;
     font-size: 28px;
@@ -429,18 +438,8 @@ header .image-text .name {
 .mode .sun-moon i.sun{
     opacity: 0;
 }
-.bottom-content{
-    border-top: 1px solid gray;
-    margin-bottom: 25px;
-}
-.menu-bar .bottom-content .toggle-switch{
+.deconnexion-item{
     position: absolute;
-    right: 0;
-    height: 100%;
-    min-width: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     border-radius: 6px;
     cursor: pointer;
 }

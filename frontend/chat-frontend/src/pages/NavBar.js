@@ -746,26 +746,12 @@ function Navbar() {
                             </li>
 
                         </ul>
-                    </div>
-
-                    <div className="bottom-content" >
-                        <li  onClick={handleDeconnexion} style={{ backgroundColor: "pink", borderRadius: "15px", width:"100%"}}>
+                        <li className="deconnexion-item"  onClick={handleDeconnexion} style={{ backgroundColor: "pink", borderRadius: "15px", width:"80%"}}>
                             <i style={{ backgroundColor: "pink"}} className="icon" ><CiLogout style={{fontSize: 30}} /></i>
-                                <span className="text">Déconnexion</span>
+                            <span className="text">Déconnexion</span>
                         </li>
-
-                        <li className="mode">
-                            <div className="sun-moon">
-                                <i className='bx bx-moon icon moon'></i>
-                            </div>
-                            <span className="mode-text text">Mode sombre</span>
-
-                            <div className="toggle-switch">
-                                <ThemeButton />
-                            </div>
-                        </li>
-
                     </div>
+
                 </div>
 
             </nav>
