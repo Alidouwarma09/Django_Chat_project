@@ -17,26 +17,18 @@
     margin-right: -0.25rem;
 }
 
-.card {
-    margin-top: 16rem;
-    min-width: 26rem;
-    height: 16rem;
-    border-radius: 1rem;
-    perspective: 500px;
-    position: relative;
-    cursor: pointer;
-    font-family: monospace;
-}
+
 
 .card__inner {
+    padding-top: 20px;
     position: relative;
     width: 100%;
-    height: 100%;
+    height: 250px;
     border-radius: 1rem;
     transition: transform 600ms ease;
     transform-style: preserve-3d;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    margin: 0 auto;
+
 }
 
 
@@ -51,12 +43,21 @@
     overflow: hidden;
     backface-visibility: hidden;
     color: #fff;
-    background: #000000;
-    background:
-            url('../icons/bg-card.jpg');
-    background-size: cover;
+    background: linear-gradient(135deg, #181502, #231607, #071a07);
+    background-size: 600% 600%;
+    animation: gradientAnimation 5s ease infinite;
 }
-
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
 .card__front {
     display: flex;
     flex-direction: column;
@@ -70,6 +71,9 @@
     top: 2rem;
     right: 1rem;
     z-index: 2;
+    border-radius: 50%;
+    height: 70px;
+    width: 70px;
 }
 
 .chip {
@@ -140,6 +144,7 @@
 
 .card-holder {
     text-transform: uppercase;
+    display: flex;
 }
 
 .card-info__bottom {
@@ -163,16 +168,21 @@
 .mastercard .circle {
     width: 2rem;
     height: 2rem;
-    border-radius: 50%;
+
 }
 
 .mastercard .circle--red {
-    background: #eb001b;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 25px solid red;
 }
 
 .mastercard .circle--yellow {
     margin-left: -0.7rem;
-    background: rgba(255, 209, 0, 0.6);
+    border-radius: 50%;
+    background: rgba(106, 183, 33, 0.6);
 }
 
 .card-holder,
@@ -244,4 +254,129 @@
     gap: 0.5rem;
     color: black;
     padding: 0 2rem;
+}
+
+
+
+
+
+
+
+
+.container {
+    width: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    overflow-y: auto;
+}
+.container::-webkit-scrollbar{
+    display: none;
+}
+.header-top {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #940893;
+    color: white;
+}
+
+.backs-icon {
+    position: fixed;
+    font-size: 24px;
+    margin-right: auto;
+    color: white;
+}
+
+.balance {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.qr-section {
+    display: flex;
+    align-items: center;
+    padding: 40px;
+    border-radius: 8px;
+    max-height: 100px;
+    margin: 10px;
+    background-color: #6d339d;
+}
+
+
+.scanner-text {
+    font-size: 18px;
+    display: flex;
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: #4bc3d3;
+}
+
+.menu-carte {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    background-color: #f5f5f5;
+}
+
+.menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #6200ee;
+}
+
+.menu-icon {
+    font-size: 24px;
+}
+
+.menu-text {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #860ee9;
+}
+
+.transactions {
+    padding: 10px 20px;
+    overflow-y: auto;
+}
+
+.transaction {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.transaction-detail {
+    display: flex;
+    flex-direction: column;
+}
+
+.transaction-type {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.transaction-date {
+    font-size: 12px;
+    color: #999;
+}
+
+.transaction-amount {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.positive {
+    color: green;
+}
+
+.negative {
+    color: red;
 }

@@ -1,4 +1,4 @@
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import {HashRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import Acceuil from './pages/Accueil';
 import Connexion from "./pages/LoginScreen";
 import Inscription from "./pages/Inscription";
@@ -14,9 +14,11 @@ import Solde from "./pages/Solde";
 import Userdetail from "./pages/Userdetail"
 
 function App() {
+
     return (
         <VideoProvider>
             <Router>
+
                 <Routes>
                     <Route path="/connexion" element={<Connexion />} />
                     <Route path="/inscription" element={<Inscription />} />

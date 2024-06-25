@@ -7,11 +7,12 @@ import {LuRefreshCcw} from "react-icons/lu";
 import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react";
 import axios from "axios";
 import ThemeButton from "../compoment/ThemeButton";
-import {IoIosNotifications} from "react-icons/io";
+import {IoIosNotifications, IoMdArrowRoundBack} from "react-icons/io";
 import {GrDownload} from "react-icons/gr";
 import {FaUserCog} from "react-icons/fa";
 import {VscActivateBreakpoints} from "react-icons/vsc";
 import {MdOutlineSystemUpdate} from "react-icons/md";
+import {RiMoneyDollarCircleFill} from "react-icons/ri";
 
 
 
@@ -34,6 +35,9 @@ function Navbar() {
     const [isRotating, setIsRotating] = useState(false);
 
     const handleMenuClick = () => {
+        setSidebarVisible(!sidebarVisible);
+    };
+    const handleMenuClose = () => {
         setSidebarVisible(!sidebarVisible);
     };
     const handleOutsideClick = useCallback((event) => {
@@ -322,6 +326,7 @@ function Navbar() {
     const hundleSolde = () =>{
         navigate('/solde')
     }
+
     return (
         <div >
             {navbarBublicationVisible && <div className="dark-overlay"></div>}
@@ -686,17 +691,20 @@ function Navbar() {
                     <CiMenuBurger />
                 </div>
             </nav>
-            <nav className="sidebar "  style={{ display: sidebarVisible ? 'block' : 'none' }} ref={sidebarRef}>
+            <nav className="sidebar"  style={{ display: sidebarVisible ? 'block' : 'none' }} ref={sidebarRef}>
                 <header>
                     <div className="image-text">
-                <span className="image">
+                        <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}  onClick={handleMenuClose}>
+                            <IoMdArrowRoundBack style={{fontSize: 30}} />
+                        </div>
+                        <span className="image">
                     <img src={`${userInfo.image_utilisateu}`} style={{borderRadius: "50%", width: 70, height: 70}}
                          alt="Trash Icon"/>
-                </span>
-                        <div className="text logo-text">
-                            <span className="name">{userInfo.nom_utilisateur} </span>
-                            <span className="profession">{userInfo.prenom_utilisateur}</span>
+                             <div className="text logo-text">
+                            <span className="name">{userInfo.nom_utilisateur} {userInfo.prenom_utilisateur} </span>
                         </div>
+                </span>
+
                     </div>
                 </header>
 
@@ -720,7 +728,7 @@ function Navbar() {
                             </li>
 
                             <li className="nav-link" onClick={hundleSolde}>
-                                    <i className='bx bx-bell icon'></i>
+                                <i className='icon'> <RiMoneyDollarCircleFill style={{fontSize: 30}} /></i>
                                     <span className="text">Solde</span>
                             </li>
 
