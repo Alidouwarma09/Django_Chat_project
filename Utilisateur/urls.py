@@ -5,8 +5,7 @@ from Utilisateur import views
 from Utilisateur.views import Inscription, connexion_utilisateur, detail_utilisateur, \
     publier_photo, \
     get_publications, envoyer_message_images, envoyer_message_text, envoyer_message_audio, liker_publication, \
-    get_comment_count, start_video_call, get_comments, \
-    messages_non_lus_sse, get_publications_video, StoryView, StoryGetView, utilisateur_info, \
+    get_comment_count, start_video_call, get_comments, get_publications_video, StoryView, StoryGetView, utilisateur_info, \
     tout_les_utilisateurs, utilisateurs_select, MessageSSEView, get_reponse_commentaire
 
 app_name = 'Utilisateur'
@@ -39,7 +38,6 @@ urlpatterns = [
     path('api/get_comments/<int:publication_id>/', get_comments, name='get_comments'),
     path('api/get_reponse_commentaire/<int:commentaire_id>/', get_reponse_commentaire, name='get_reponse_commentaire'),
     path('api/message_sse/', MessageSSEView.as_view(), name='message_sse'),
-    path('apk/messages_non_lus_sse/', messages_non_lus_sse, name='messages_non_lus_sse'),
     path('api/stories/', StoryView.as_view(), name='story_view'),
     path('api/getstories/', StoryGetView.as_view(), name='story_view'),
     path('apk/stream_messages/<int:utilisateur_detail_id>/', views.stream_messages, name='stream_messages'),

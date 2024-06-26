@@ -646,33 +646,33 @@ def nombre_messages_non_lus(request):
         return JsonResponse({'nombre_non_lus': count})
 
 
-@require_GET
-def messages_non_lus_sse(request):
-    def event_stream():
-        last_checked_time = None
-        while True:
-            with lock:
-                try:
-                    if last_checked_time:
-                        new_messages = Message.objects.filter(recoi_id=request.user.id, vu=False).count()
-                    else:
-                        new_messages = Message.objects.filter(recoi_id=request.user.id, vu=False).count()
-
-                    last_checked_time = timezone.now()
-                    data = {
-                        'nombre_non_lus': new_messages
-                    }
-                    yield f"data: {json.dumps(data)}\n\n"
-                    sleep(5)
-
-                except Message.DoesNotExist:
-                    yield 'data: Test message\n\n'
-                    sleep(1)
-
-    response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
-    response['Cache-Control'] = 'no-cache'
-    response['X-Accel-Buffering'] = 'no'
-    return response
+# @require_GET
+# def messages_non_lus_sse(request):
+#     def event_stream():
+#         last_checked_time = None
+#         while True:
+#             with lock:
+#                 try:
+#                     if last_checked_time:
+#                         new_messages = Message.objects.filter(recoi_id=request.user.id, vu=False).count()
+#                     else:
+#                         new_messages = Message.objects.filter(recoi_id=request.user.id, vu=False).count()
+#
+#                     last_checked_time = timezone.now()
+#                     data = {
+#                         'nombre_non_lus': new_messages
+#                     }
+#                     yield f"data: {json.dumps(data)}\n\n"
+#                     sleep(5)
+#
+#                 except Message.DoesNotExist:
+#                     yield 'data: Test message\n\n'
+#                     sleep(1)
+#
+#     response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+#     response['Cache-Control'] = 'no-cache'
+#     response['X-Accel-Buffering'] = 'no'
+#     return response
 
 
 @require_GET
