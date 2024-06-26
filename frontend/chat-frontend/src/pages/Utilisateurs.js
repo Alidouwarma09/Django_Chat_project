@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "./css/utilisateurs.css";
-import {IoIosArrowBack} from "react-icons/io";
+import { IoIosArrowBack } from "react-icons/io";
 import BottomTab from "./BottomTab";
-import {FaUserCircle} from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
 
 function Utilisateurs() {
     const [utilisateurs, setUtilisateurs] = useState([]);
@@ -44,8 +44,6 @@ function Utilisateurs() {
             setUtilisateurs(response.data.utilisateurs);
             setLoaded(true);
             localStorage.setItem('utilisateurs', JSON.stringify(response.data.utilisateurs));
-            setUtilisateurs(response.data.utilisateurs);
-            setLoaded(true);
         } catch (error) {
             console.error('Erreur lors de la récupération des utilisateurs:', error);
         }
@@ -81,17 +79,17 @@ function Utilisateurs() {
     const handleGoBack = () => {
         window.history.back();
     };
+
     function isImageExists(url) {
         const img = new Image();
         img.src = url;
         return img.complete || (img.height !== 0);
     }
 
-
     return (
         <div className="messages-container">
             <div className="header">
-                <h1 style={{display: "flex", alignItems: "center", gap: "15px"}}> <IoIosArrowBack onClick={handleGoBack} />Messages</h1>
+                <h1 style={{ display: "flex", alignItems: "center", gap: "15px" }}> <IoIosArrowBack onClick={handleGoBack} />Messages</h1>
                 <input
                     type="text"
                     placeholder="Rechercher dans les messages"
@@ -106,17 +104,22 @@ function Utilisateurs() {
                             <div className="message-avatar">
                                 {utilisateur.image && isImageExists(utilisateur.image)
                                     ? <img src={utilisateur.image} alt={`${utilisateur.nom} ${utilisateur.prenom}`} className="avatar-image" />
-                                    : <FaUserCircle style={{fontSize: 30}} className="avatar-image" />}
+                                    : <FaUserCircle style={{ fontSize: 30 }} className="avatar-image" />}
                             </div>
                             <div className="message-content">
                                 <div className="message-name">{utilisateur.nom} {utilisateur.prenom}</div>
+                                <div className="message-count">
+                                    {utilisateur.messages_recus > 0 && (
+                                        <span>{utilisateur.messages_recus} {utilisateur.messages_recus > 1 ? 'nouveaux messages' : 'message reçu'}</span>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
             <button className="new-message-button">+</button>
-            <BottomTab/>
+            <BottomTab />
         </div>
     );
 }

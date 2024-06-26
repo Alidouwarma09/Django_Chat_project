@@ -157,19 +157,28 @@ def utilisateurs_select(request, utilisateur_id):
 
 
 def tout_les_utilisateurs(request):
+    auth_result = TokenAuthentication().authenticate(request)
+
+    if auth_result is not None:
+        current_user, _ = auth_result
     utilisateurs = Utilisateur.objects.all()
     utilisateurs_list = []
 
     for utilisateur in utilisateurs:
+        messages_recus = Message.objects.filter(envoi=utilisateur, recoi=current_user).count()
         utilisateur_data = {
             'id': utilisateur.id,
             'nom': utilisateur.nom,
             'prenom': utilisateur.prenom,
-            'image': request.build_absolute_uri(utilisateur.image.url)
+            'image': request.build_absolute_uri(utilisateur.image.url),
+            'messages_recus': messages_recus
         }
         utilisateurs_list.append(utilisateur_data)
 
     return JsonResponse({'utilisateurs': utilisateurs_list})
+
+
+
 
 
 def get_publications(request):
