@@ -7,6 +7,7 @@ import { Spinner } from '@chakra-ui/react';
 import { Box } from '@mui/material';
 import Icon from 'antd/es/icon';
 import { IoMdArrowRoundBack } from 'react-icons/io';
+import { RiHeartLine } from 'react-icons/ri';
 
 function Message() {
   const { utilisateurId } = useParams();
@@ -15,6 +16,7 @@ function Message() {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [heartClicked, setHeartClicked] = useState(false);
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
 
@@ -28,8 +30,6 @@ function Message() {
       navigate('/connexion');
     }
   }, [navigate]);
-
-
 
   useEffect(() => {
     const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
@@ -80,11 +80,13 @@ function Message() {
       eventSource.close();
     };
   }, [utilisateurId]);
+
   useEffect(() => {
     if (!initialLoading) {
       scrollToBottom();
     }
   }, [messages, initialLoading]);
+
   const handleMessageSend = async (e) => {
     e.preventDefault();
 
@@ -92,7 +94,13 @@ function Message() {
       const token = localStorage.getItem('token');
       const formData = new FormData();
       formData.append('utilisateur_id', utilisateurId);
-      formData.append('contenu_message', messageTexte);
+
+      if (heartClicked) {
+        formData.append('contenu_message', '❤️');
+        setHeartClicked(false);
+      } else {
+        formData.append('contenu_message', messageTexte);
+      }
 
       setLoading(true);
       setMessageTexte('');
@@ -161,21 +169,10 @@ function Message() {
   return (
       <div className="chat-container">
         <div className="conversation-top">
-          <button type="button" className="conversation-back" onClick={handleBack}><IoMdArrowRoundBack /></button>
+          <IoMdArrowRoundBack size={30} onClick={handleBack} />
           <div className="conversation-user">
-            <img className="conversation-user-image"
-                 src={utilisateur.image}
-                 alt={`${utilisateur.nom} ${utilisateur.prenom}`}
-            />
-            <div>
-              <div className="conversation-user-name">{utilisateur.nom_utilisateur} {utilisateur.prenom_utilisateur}</div>
-              <div className="conversation-user-status online">En ligne</div>
-            </div>
-          </div>
-          <div className="conversation-buttons">
-            <button type="button"><i className="ri-phone-fill"></i></button>
-            <button type="button"><i className="ri-vidicon-line"></i></button>
-            <button type="button"><i className="ri-information-line"></i></button>
+            <img className="conversation-user-image" src={utilisateur?.image} alt="User" />
+            <span className="conversation-user-name">{utilisateur?.nom}</span>
           </div>
         </div>
         <div className="conversation-main">
@@ -201,6 +198,7 @@ function Message() {
           <div ref={messagesEndRef} />
           {loading && <IoReloadSharp className="loading rotate" />}
         </div>
+
         <form className="conversation-form" onSubmit={handleMessageSend}>
           <button type="button" className="conversation-form-button"><i className="ri-emotion-line"></i>
           </button>
@@ -211,7 +209,13 @@ function Message() {
             </button>
           </div>
 
-          <button type="submit" className="conversation-form-button conversation-form-submit"><IoSendSharp /></button>
+          {messageTexte ? (
+              <button type="submit" className="conversation-form-button conversation-form-submit"><IoSendSharp /></button>
+          ) : (
+              <button type="submit" className="conversation-form-button conversation-form-submit" onClick={() => setHeartClicked(true)}>
+                <RiHeartLine />
+              </button>
+          )}
         </form>
       </div>
   );

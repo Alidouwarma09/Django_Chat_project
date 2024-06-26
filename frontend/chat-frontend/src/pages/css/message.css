@@ -1,5 +1,8 @@
 
-.chat-container{
+.chat-container {
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
     overflow: hidden;
     padding: 20px;
 }
@@ -8,7 +11,7 @@
     position: fixed;
     align-items: center;
     justify-content: space-between;
-    background-color: #f5f5f5;
+    background-color: white;
     top: 0;
     padding: 10px 15px;
     width: 100%;
@@ -30,13 +33,14 @@
 .conversation-user {
     display: flex;
     align-items: center;
+    flex-grow: 1;
 }
 
 .conversation-user-image {
-    width: 36px;
-    height: 36px;
     border-radius: 50%;
     margin-right: 10px;
+    width: 40px;
+    height: 40px;
 }
 
 .conversation-user-name {
@@ -62,6 +66,7 @@
     padding-bottom: 200px;
     margin-top: 1px;
     padding-top: 100px;
+
 }
 .conversation-main::-webkit-scrollbar {
     width: 0;
@@ -84,15 +89,16 @@
 }
 
 .conversation-item-content {
-    max-width: 60%;
+    max-width: 70%;
     background-color: #0950d9;
     border-radius: 20px;
     padding: 10px 15px;
     color: #fff;
+    font-size: 12px;
 }
 
 .mon-message .conversation-item-content {
-    background-color: #e4e6eb;
+    background-color: rgb(228, 230, 235);
     color: #0a0a0a;
 }
 
@@ -104,7 +110,7 @@
 .conversation-form {
     display: flex;
     align-items: center;
-    background-color: #f0f2f5;
+    background-color: white;
     border-top: 1px solid #c0bebe;
     padding: 10px 15px;
     position: fixed;
@@ -131,9 +137,10 @@
     border: none;
     outline: none;
     font-size: 16px;
-    padding: 5px 0;
     box-sizing: border-box;
     resize: none;
+    border-radius: 20px;
+    padding: 10px;
 }
 
 .conversation-form-button {
@@ -142,15 +149,29 @@
     border: none;
     cursor: pointer;
     font-size: 20px;
-    padding: 5px;
     box-sizing: border-box;
+    flex-grow: 1;
+    border-radius: 20px;
+    padding: 10px;
+    resize: none;
 }
 
 .conversation-form-submit {
-    color: #4267b2;
+    color: #033598;
     padding: 5px;
     box-sizing: border-box;
     cursor: pointer;
+}
+
+.conversation-form-record {
+    color: #65676b;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    padding: 10px;
 }
 
 @media (max-width: 600px) {
@@ -187,11 +208,7 @@
 }
 
 
-.chat-container {
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+
 
 
 .loading-container {
