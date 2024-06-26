@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './css/message.css';
@@ -14,19 +14,33 @@ function Message() {
   const [messageTexte, setMessageTexte] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const messagesEndRef = useRef(null);
   const navigate = useNavigate();
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/connexion');
     }
   }, [navigate]);
+
+
+
   useEffect(() => {
     const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
     if (utilisateurs) {
+
       const foundUser = utilisateurs.find(user => user.id === parseInt(utilisateurId));
       if (foundUser) {
         setUtilisateur(foundUser);
+        setTimeout(() => {
+          setInitialLoading(false);
+        }, 500);
       } else {
         console.error('Utilisateur non trouvé');
       }
@@ -40,7 +54,6 @@ function Message() {
     if (!token || !utilisateurId) {
       return;
     }
-
     const storedMessages = JSON.parse(localStorage.getItem(`messages_${utilisateurId}`));
     if (storedMessages) {
       setMessages(storedMessages);
@@ -67,7 +80,11 @@ function Message() {
       eventSource.close();
     };
   }, [utilisateurId]);
-
+  useEffect(() => {
+    if (!initialLoading) {
+      scrollToBottom();
+    }
+  }, [messages, initialLoading]);
   const handleMessageSend = async (e) => {
     e.preventDefault();
 
@@ -78,7 +95,8 @@ function Message() {
       formData.append('contenu_message', messageTexte);
 
       setLoading(true);
-
+      setMessageTexte('');
+      scrollToBottom();
       const response = await axios.post(
           `${process.env.REACT_APP_API_URL}/Utilisateur/api/envoyer_message_text/`,
           formData,
@@ -91,7 +109,7 @@ function Message() {
       );
 
       if (response.data.status === 'success') {
-        setMessageTexte('');
+        console.log("succes");
       }
     } catch (error) {
       console.error('Erreur lors de l\'envoi du message:', error);
@@ -100,7 +118,7 @@ function Message() {
     }
   };
 
-  if (!utilisateur) {
+  if (initialLoading) {
     return (
         <div className="loading-container">
           <Box textAlign="center" mt="10" className="conversation-wrapper">
@@ -161,36 +179,34 @@ function Message() {
           </div>
         </div>
         <div className="conversation-main">
-          <ul className="conversation-wrapper">
-            {messages.map((message, index) => (
-                <div key={index}>
-                  <div className="coversation-divider">
-                    <span>{formatDate(message.timestamp)}</span>
-                  </div>
-                  <li className={`conversation-item ${message.utilisateur_envoi !== currentUserId ? 'mon-message' : ''}`}>
-                    <div className="conversation-item-content">
-                      <div className="conversation-item-wrapper">
-                        <div className="conversation-item-box">
-                          <div className="conversation-item-text">
-                            <p>{message.contenu_message}</p>
-                            <div className="conversation-item-time">{new Date(message.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</div>
-                          </div>
+          {messages.map((message, index) => (
+              <div key={index}>
+                <div className="coversation-divider">
+                  <span>{formatDate(message.timestamp)}</span>
+                </div>
+                <li className={`conversation-item ${message.utilisateur_envoi !== currentUserId ? 'mon-message' : ''}`}>
+                  <div className="conversation-item-content">
+                    <div className="conversation-item-wrapper">
+                      <div className="conversation-item-box">
+                        <div className="conversation-item-text">
+                          <p>{message.contenu_message}</p>
+                          <div className="conversation-item-time">{new Date(message.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</div>
                         </div>
                       </div>
                     </div>
-                  </li>
-                </div>
-            ))}
-
-            {loading && <IoReloadSharp className="loading rotate" />}
-          </ul>
+                  </div>
+                </li>
+              </div>
+          ))}
+          <div ref={messagesEndRef} />
+          {loading && <IoReloadSharp className="loading rotate" />}
         </div>
         <form className="conversation-form" onSubmit={handleMessageSend}>
           <button type="button" className="conversation-form-button"><i className="ri-emotion-line"></i>
           </button>
           <div className="conversation-form-group">
-            <textarea className="conversation-form-input" rows="1" placeholder="Votre message ici..."
-                      value={messageTexte} onChange={(e) => setMessageTexte(e.target.value)}></textarea>
+          <textarea className="conversation-form-input" rows="1" placeholder="Votre message ici..."
+                    value={messageTexte} onChange={(e) => setMessageTexte(e.target.value)}></textarea>
             <button type="button" className="conversation-form-record"><i className="ri-mic-line"></i>
             </button>
           </div>

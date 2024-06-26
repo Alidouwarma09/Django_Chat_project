@@ -616,7 +616,6 @@ def get_auth_options(request):
         return JsonResponse({'error': 'Unauthorized'}, status=401)
 
     user = request.user
-    # Créez un challenge aléatoire pour la sécurité
     challenge = os.urandom(32).hex()
 
     options = {
