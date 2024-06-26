@@ -178,9 +178,6 @@ def tout_les_utilisateurs(request):
     return JsonResponse({'utilisateurs': utilisateurs_list})
 
 
-
-
-
 def get_publications(request):
     try:
         publications = Publication.objects.filter(video_file='').order_by('-date_publication')
@@ -466,6 +463,24 @@ def get_reponse_commentaire(request, commentaire_id):
     return JsonResponse(reponse_comments_data, safe=False)
 
 
+def marquer_messages_lus(request):
+    print("Requête reçue:", request.body)
+    body_unicode = request.body.decode('utf-8')
+    body_data = json.loads(body_unicode)
+    utilisateur_id = body_data.get('utilisateur_id')
+    print("utilisateur id:", utilisateur_id)
+    auth_result = TokenAuthentication().authenticate(request)
+
+    if auth_result is not None:
+        current_user, _ = auth_result
+    utilisateur_id = int(utilisateur_id)
+
+    messages = Message.objects.filter(envoi_id=utilisateur_id, recoi_id=current_user, vu=False)
+    messages.update(vu=True)
+
+    return JsonResponse({'status': 'success', 'message': 'Messages marqués comme lus'})
+
+
 class MessageSSEView(View):
     def get(self, request, *args, **kwargs):
         token = request.GET.get('token')
@@ -509,7 +524,7 @@ class MessageSSEView(View):
                         data = json.dumps({'message': filtered_messages})
                         yield f"data: {data}\n\n"
 
-                time.sleep(1)  # Ajouter un délai pour réduire la charge du serveur
+                time.sleep(1)
 
         response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
         response['Cache-Control'] = 'no-cache'

@@ -33,6 +33,7 @@ function Utilisateurs() {
         }
     }, [loaded]);
 
+
     const fetchUtilisateurs = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -49,10 +50,29 @@ function Utilisateurs() {
         }
     };
 
-    const handleUserClick = (utilisateurId) => {
+
+    const handleUserClick = async (utilisateurId) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.post(
+                `${process.env.REACT_APP_API_URL}/Utilisateur/api/marquer_messages_lus/`,
+                { utilisateur_id: utilisateurId },  // Assurez-vous que vous utilisez "utilisateur_id" ici
+                {
+                    headers: {
+                        'Authorization': `Token ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            fetchUtilisateurs();
+        } catch (error) {
+            console.error('Erreur lors de la mise à jour des messages lus:', error);
+        }
         navigate(`/message/${utilisateurId}`);
-        console.log(utilisateurId);
     };
+
+
+
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
