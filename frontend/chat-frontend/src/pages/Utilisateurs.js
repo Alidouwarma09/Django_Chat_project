@@ -56,7 +56,7 @@ function Utilisateurs() {
             const token = localStorage.getItem('token');
             await axios.post(
                 `${process.env.REACT_APP_API_URL}/Utilisateur/api/marquer_messages_lus/`,
-                { utilisateur_id: utilisateurId },  // Assurez-vous que vous utilisez "utilisateur_id" ici
+                { utilisateur_id: utilisateurId },
                 {
                     headers: {
                         'Authorization': `Token ${token}`,

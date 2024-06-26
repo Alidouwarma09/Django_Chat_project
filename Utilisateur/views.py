@@ -464,11 +464,9 @@ def get_reponse_commentaire(request, commentaire_id):
 
 
 def marquer_messages_lus(request):
-    print("Requête reçue:", request.body)
     body_unicode = request.body.decode('utf-8')
     body_data = json.loads(body_unicode)
     utilisateur_id = body_data.get('utilisateur_id')
-    print("utilisateur id:", utilisateur_id)
     auth_result = TokenAuthentication().authenticate(request)
 
     if auth_result is not None:
@@ -523,6 +521,46 @@ class MessageSSEView(View):
                     if filtered_messages:
                         data = json.dumps({'message': filtered_messages})
                         yield f"data: {data}\n\n"
+
+                time.sleep(1)
+
+        response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+        response['Cache-Control'] = 'no-cache'
+        return response
+
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        response['Access-Control-Allow-Origin'] = '*'
+        response['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+        response['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
+        return response
+
+
+class MessageTotalSSEView(View):
+    def get(self, request, *args, **kwargs):
+        token = request.GET.get('token')
+
+        if not token:
+            return HttpResponseForbidden("Token manquant dans l'URL")
+
+        try:
+            token_obj = Token.objects.get(key=token)
+            current_user = token_obj.user_id
+        except Token.DoesNotExist:
+            return HttpResponseForbidden("Token invalide")
+
+        last_message_id_sent = 0
+
+        def event_stream():
+            nonlocal last_message_id_sent
+            while True:
+                messages = Message.objects.filter(recoi_id=current_user, vu=False)
+                nombre_total_messages_non_lus = messages.count()
+                latest_message = messages.order_by('-timestamp').first()
+                if latest_message and latest_message.id > last_message_id_sent:
+                    last_message_id_sent = latest_message.id
+                    data = json.dumps({'totalMessages': nombre_total_messages_non_lus})
+                    yield f"data: {data}\n\n"
 
                 time.sleep(1)
 

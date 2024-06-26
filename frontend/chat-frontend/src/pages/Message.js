@@ -31,6 +31,7 @@ function Message() {
     }
   }, [navigate]);
 
+
   useEffect(() => {
     const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
     if (utilisateurs) {
@@ -48,6 +49,7 @@ function Message() {
       console.error('Utilisateurs non trouvés dans le localStorage');
     }
   }, [utilisateurId]);
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
