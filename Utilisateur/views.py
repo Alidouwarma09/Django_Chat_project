@@ -161,11 +161,11 @@ def tout_les_utilisateurs(request):
 
     if auth_result is not None:
         current_user, _ = auth_result
-    utilisateurs = Utilisateur.objects.all()
+    utilisateurs = Utilisateur.objects.exclude(id=current_user.id)
     utilisateurs_list = []
 
     for utilisateur in utilisateurs:
-        messages_recus = Message.objects.filter(envoi=utilisateur, recoi=current_user).count()
+        messages_recus = Message.objects.filter(envoi=utilisateur, recoi=current_user, vu=False).count()
         utilisateur_data = {
             'id': utilisateur.id,
             'nom': utilisateur.nom,
@@ -503,6 +503,7 @@ class MessageSSEView(View):
                             'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
                         })
                         last_message_id_sent = message.id
+                        messages.filter(id__gt=last_message_id_sent).update(vu=True)
 
                     if filtered_messages:
                         data = json.dumps({'message': filtered_messages})

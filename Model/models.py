@@ -73,6 +73,9 @@ class Message(models.Model):
     audio = models.FileField(upload_to='audio/', blank=True, null=True)
     images = models.FileField(upload_to='messages/images/', blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.envoi.username} to {self.recoi.username}: {self.contenu_message}"
+
 
 class Publication(models.Model):
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, related_name='publications')
