@@ -9,7 +9,6 @@ import './css/connexion.css'
 function Connexion() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [formErrors, setFormErrors] = useState({ username: '', password: '' });
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [submitError, setSubmitError] = useState('');
@@ -67,13 +66,13 @@ function Connexion() {
                         <div className="form-item">
                             <span className="form-item-icon"><FiPhone /></span>
                             <input type="number" placeholder="Téléphone" id="phoneForm" autoFocus required
-                                   name="username" className={formErrors.username ? 'error' : ''} value={username}
+                                   name="username" value={username}
                                    onChange={handleChange}/>
                         </div>
                         <div className="form-item">
                             <span className="form-item-icon"><FiLock /></span>
                             <input type="password" placeholder="Mot de passe" id="passwordForm" required
-                                   name="password" className={formErrors.password ? 'error' : ''} value={password}
+                                   name="password"  value={password}
                                    onChange={handleChange}/>
                         </div>
                         {submitError && <div className="error-message">{submitError}</div>}

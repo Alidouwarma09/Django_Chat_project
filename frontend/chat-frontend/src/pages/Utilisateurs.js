@@ -17,7 +17,6 @@ function Utilisateurs() {
         if (!token) {
             navigate('/connexion');
         } else {
-            // Vérifier s'il y a des utilisateurs dans le cache du navigateur
             const cachedUtilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
             if (cachedUtilisateurs) {
                 setUtilisateurs(cachedUtilisateurs);
@@ -46,7 +45,7 @@ function Utilisateurs() {
             setLoaded(true);
             localStorage.setItem('utilisateurs', JSON.stringify(response.data.utilisateurs));
             setUtilisateurs(response.data.utilisateurs);
-            setLoaded(true); // Marquer les utilisateurs comme chargés
+            setLoaded(true);
         } catch (error) {
             console.error('Erreur lors de la récupération des utilisateurs:', error);
         }

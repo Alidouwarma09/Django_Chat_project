@@ -85,7 +85,7 @@
 
 .conversation-item-content {
     max-width: 60%;
-    background-color: #4267b2;
+    background-color: #0950d9;
     border-radius: 20px;
     padding: 10px 15px;
     color: #fff;
@@ -93,6 +93,7 @@
 
 .mon-message .conversation-item-content {
     background-color: #e4e6eb;
+    color: #0a0a0a;
 }
 
 .conversation-item-time {
@@ -149,6 +150,7 @@
     color: #4267b2;
     padding: 5px;
     box-sizing: border-box;
+    cursor: pointer;
 }
 
 @media (max-width: 600px) {
@@ -186,8 +188,6 @@
 
 
 .chat-container {
-    display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;

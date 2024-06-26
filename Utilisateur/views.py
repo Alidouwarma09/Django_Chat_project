@@ -1,11 +1,11 @@
-import asyncio
+
 import imghdr
 import json
 import logging
 import os
 import time
 from asyncio import sleep
-from threading import Lock
+from threading import Thread
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
@@ -458,7 +458,7 @@ def get_reponse_commentaire(request, commentaire_id):
     return JsonResponse(reponse_comments_data, safe=False)
 
 
-lock = Lock()
+
 
 
 class MessageSSEView(View):
@@ -477,7 +477,7 @@ class MessageSSEView(View):
 
         last_message_id_sent = 0
 
-        def event_stream(current_user, utilisateur_id):
+        def event_stream():
             nonlocal last_message_id_sent
             while True:
                 messages = (Message.objects.filter(envoi_id=current_user, recoi_id=utilisateur_id) |
@@ -485,7 +485,7 @@ class MessageSSEView(View):
                 latest_message = messages.order_by('-timestamp').first()
                 if latest_message and latest_message.id > last_message_id_sent:
                     filtered_messages = []
-                    for message in messages.filter(id__gt=last_message_id_sent):
+                    for message in messages.filter(id__gt=last_message_id_sent).order_by('timestamp'):
                         user_data = {
                             'id': message.envoi_id,
                             'username': message.envoi.username,
@@ -503,9 +503,12 @@ class MessageSSEView(View):
                         data = json.dumps({'message': filtered_messages})
                         yield f"data: {data}\n\n"
 
-        response = StreamingHttpResponse(event_stream(current_user, utilisateur_id), content_type='text/event-stream')
+                time.sleep(1)  # Ajouter un délai pour réduire la charge du serveur
+
+        response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
         response['Cache-Control'] = 'no-cache'
         return response
+
 
 
 def get_comment_count(request):
