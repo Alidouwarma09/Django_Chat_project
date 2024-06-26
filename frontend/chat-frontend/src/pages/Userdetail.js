@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import './css/solde.css'
 import './css/userdetails.css'
 import axios from "axios";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {Box} from "@mui/material";
 import {Spinner} from "@chakra-ui/react";
 import Icon from "antd/es/icon";
@@ -11,6 +11,13 @@ import {RiVerifiedBadgeFill} from "react-icons/ri";
 function Userdetail( ) {
     const { utilisateurId } = useParams();
     const [utilisateurs, setUtilisateurs] = useState(null);
+    const navigate = useNavigate();
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/connexion');
+        }
+    }, [navigate]);
     useEffect(() => {
         const fetchUtilisateurs = async () => {
             if (!utilisateurId) {

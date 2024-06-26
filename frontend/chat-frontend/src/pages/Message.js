@@ -15,7 +15,12 @@ function Message() {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const navigate = useNavigate();
-
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/connexion');
+    }
+  }, [navigate]);
   useEffect(() => {
     const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
     if (utilisateurs) {

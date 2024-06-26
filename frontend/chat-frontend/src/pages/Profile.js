@@ -4,12 +4,19 @@ import { IoChevronBackSharp } from "react-icons/io5";
 import { FaPhone } from "react-icons/fa";
 import {CiEdit, CiUser} from "react-icons/ci";
 import EditPopup from '../compoment/EditPopup';
+import {useNavigate} from "react-router-dom";
 
 const Profile = () => {
     const [userInfo, setUserInfo] = useState({});
     const [isEditing, setIsEditing] = useState(false);
     const [currentField, setCurrentField] = useState({});
-
+    const navigate = useNavigate();
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/connexion');
+        }
+    }, [navigate]);
     useEffect(() => {
         const loadUserInfo = async () => {
             const storedUserInfo = localStorage.getItem('userInfo');

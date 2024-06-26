@@ -10,15 +10,23 @@ import { VideoContext } from '../compoment/VideoContext';
 import {FaDownload} from "react-icons/fa";
 import Navbar from "./NavBar";
 import BottomTab from "./BottomTab";
+import {useNavigate} from "react-router-dom";
 
 function Videos(id) {
-    const { videos, loading, setVideos  } = useContext(VideoContext); // Utiliser le contexte
+    const { videos, loading, setVideos  } = useContext(VideoContext);
     const [comments, setComments] = useState({});
     const [isCommentFormOpenList, setIsCommentFormOpenList] = useState([]);
     const [commentTexts, setCommentTexts] = useState({});
     const [activeVideo, setActiveVideo] = useState(null);
     const [playing, setPlaying] = useState(false);
+    const navigate = useNavigate();
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/connexion');
+        }
+    }, [navigate]);
     useEffect(() => {
         const fetchCommentsForVideos = async () => {
             for (let video of videos) {

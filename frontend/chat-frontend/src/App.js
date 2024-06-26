@@ -31,7 +31,7 @@ function App() {
                     <Route path="/solde" element={<Solde />} />
                     <Route path="/userdetails/:utilisateurId" element={<Userdetail />} />
                     <Route path="/exemplepage" element={<Exemple />} />
-                    <Route path="/" element={<Navigate to="/acceuil" />} />
+                    <Route path="/" element={<Navigate to="/connexion" />} />
                 </Routes>
             </Router>
         </VideoProvider>

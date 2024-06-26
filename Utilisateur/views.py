@@ -1,4 +1,3 @@
-
 import imghdr
 import json
 import logging
@@ -458,9 +457,6 @@ def get_reponse_commentaire(request, commentaire_id):
     return JsonResponse(reponse_comments_data, safe=False)
 
 
-
-
-
 class MessageSSEView(View):
     def get(self, request, *args, **kwargs):
         token = request.GET.get('token')
@@ -509,6 +505,12 @@ class MessageSSEView(View):
         response['Cache-Control'] = 'no-cache'
         return response
 
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        response['Access-Control-Allow-Origin'] = '*'
+        response['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+        response['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
+        return response
 
 
 def get_comment_count(request):
