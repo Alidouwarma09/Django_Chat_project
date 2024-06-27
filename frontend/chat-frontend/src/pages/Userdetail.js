@@ -9,6 +9,7 @@ import Icon from "antd/es/icon";
 import {IoReloadSharp} from "react-icons/io5";
 import {RiVerifiedBadgeFill} from "react-icons/ri";
 import ModalImage from "react-modal-image";
+import {MdSaveAlt} from "react-icons/md";
 function Userdetail( ) {
     const { utilisateurId } = useParams();
     const [utilisateurs, setUtilisateurs] = useState(null);
@@ -41,6 +42,33 @@ function Userdetail( ) {
 
         fetchUtilisateurs();
     }, [utilisateurId]);
+
+    const handleDownload = async (imageUrl) => {
+        console.log('Tentative de téléchargement avec l\'URL :', imageUrl);
+
+        try {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const dataUrl = reader.result;
+                console.log('Fichier téléchargé avec succès en tant que data URL :', dataUrl);
+                window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'DOWNLOAD', data: dataUrl }));
+            };
+            reader.readAsDataURL(blob);
+        } catch (error) {
+            console.error('Erreur lors du téléchargement de l\'image :', error);
+        }
+    };
+
+
+    const handleDownloadIconClick = () => {
+        console.log('Clic sur l\'icône de téléchargement');
+        if (utilisateurs && utilisateurs.image_utilisateur) {
+            handleDownload(utilisateurs.image_utilisateur);
+        }
+    };
+
     if (!utilisateurs) {
         return (
             <div className="loading-container">
@@ -76,12 +104,17 @@ function Userdetail( ) {
                         </div>
                         Students
                     </div>
-                    <div className="profile__avatar">
+                    <div className="profile__avatar" >
                         <ModalImage
                             small={utilisateurs.image_utilisateur}
                             large={utilisateurs.image_utilisateur}
-                            alt={`${utilisateurs.nom_utilisateur} ${utilisateurs.prenom_utilisateur}`}
+                            alt={`${utilisateurs.nom_utilisateur} ${utilisateurs.prenom_utilisateur} <MdSaveAlt/>`}
+                            showRotate={false}
+                            onDownload={() => handleDownloadIconClick()}
+
                         />
+
+
                     </div>
                     <div className="profile__highlight__wrapper">
                         <div className="profile__highlight">
