@@ -500,9 +500,8 @@ function Acceuil() {
                     </span>
                             </button>
                           </div>
-                          <div className="col-4 comment-count-container" style={{ fontSize: 11 }}>
-                            <button className="action-button"
-                                    onClick={() => toggleCommentForm(index)}><i
+                          <div className="col-4 comment-count-container" style={{ fontSize: 11 }}  onClick={() => toggleCommentForm(index)}>
+                            <button className="action-button"><i
                                 className="bi bi-chat"></i>
                               <span className="comment-count" id="comment-count- photo.id" style={{ fontSize: 15 }}>{comments[publication.id] ? comments[publication.id].length : 0}</span>
                             </button>
@@ -510,8 +509,7 @@ function Acceuil() {
                           </div>
                           <div className="col-4 comment-count-container"
                                style={{ fontSize: 10 }}
-                               onClick={()=> handleLongPress2(publication.id)}
-                          >
+                               onClick={()=> handleLongPress2(publication.id)}>
                             <span style={{ borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}><MdSaveAlt  /></span>
 
                           </div>
@@ -526,7 +524,7 @@ function Acceuil() {
                                 <div className="comment">
                                   <div className="comment-header">
                             <span style={{ display:"flex"}} >
-                              <img  className="utilisateur_image_com" src={comment.utilisateur_image_com} alt="image"/>
+                              <img  className="utilisateur_image_com" src={comment.utilisateur_image_com} alt="image" onClick={() => handleUserDetailClick(comment.user_id)} />
                               <span style={{marginTop: "10%", marginLeft: 10, fontFamily: "fantasy"}}>
                                 {comment.utilisateur_nom} {comment.utilisateur_prenom}
                               </span>
@@ -540,7 +538,7 @@ function Acceuil() {
                                         {replies[comment.id].map(reply => (
                                             <div key={reply.id} className="reply-item">
                                               <div className="reply-header">
-                                                <img src={reply.utilisateur_image_rep} alt="Profil de l'utilisateur" className="user-profile" />
+                                                <img src={reply.utilisateur_image_rep} alt="Profil de l'utilisateur" className="user-profile"  />
                                                 <div className="user-info">
                                                   <p className="user-name">{reply.utilisateur_nom} {reply.utilisateur_prenom}</p>
                                                   <p className="reply-time">{moment(reply.date_reponse).fromNow()}</p>

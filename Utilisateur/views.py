@@ -417,6 +417,7 @@ def get_comments(request, publication_id):
     comments = Comment.objects.filter(publication_id=publication_id).order_by('-date_comment')
     comments_data = [{
         'id': comment.id,
+        'user_id': comment.utilisateur.id,
         'texte': comment.texte,
         'utilisateur_nom': comment.utilisateur.nom,
         'utilisateur_prenom': comment.utilisateur.prenom,
