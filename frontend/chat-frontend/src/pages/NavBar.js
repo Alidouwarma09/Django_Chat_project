@@ -696,7 +696,7 @@ function Navbar() {
             <nav className="sidebar"  style={{ display: sidebarVisible ? 'block' : 'none' }} ref={sidebarRef}>
                 <header>
                     <div className="image-text">
-                        <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}  onClick={handleMenuClose}>
+                        <div style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center", position: "fixed"}}  onClick={handleMenuClose}>
                             <IoMdArrowRoundBack style={{fontSize: 30}} />
                         </div>
                         <span className="image-user">

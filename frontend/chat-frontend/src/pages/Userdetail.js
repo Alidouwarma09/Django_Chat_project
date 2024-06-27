@@ -9,12 +9,13 @@ import { RiVerifiedBadgeFill } from "react-icons/ri";
 import ModalImage from "react-modal-image";
 import { FaFacebookMessenger, FaLink } from "react-icons/fa";
 import {IoMdArrowRoundBack} from "react-icons/io";
+import Icon from "antd/es/icon";
 
 function Userdetail() {
     const { utilisateurId } = useParams();
-    const [utilisateurs, setUtilisateurs] = useState(null);
-    const [isHeaderVisible, setIsHeaderVisible] = useState(true);
     const navigate = useNavigate();
+    const [utilisateur, setUtilisateur] = useState(null);
+    const [initialLoading, setInitialLoading] = useState(true);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -24,47 +25,25 @@ function Userdetail() {
     }, [navigate]);
 
     useEffect(() => {
-        const fetchUtilisateurs = async () => {
-            if (!utilisateurId) {
-                console.error('ID d\'utilisateur manquant dans l\'URL');
-                return;
+        const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
+        console.log(utilisateurs)
+
+            const foundUser = utilisateurs.find(user => user.id === parseInt(utilisateurId));
+            if (foundUser) {
+                setUtilisateur(foundUser);
+                setTimeout(() => {
+                    setInitialLoading(false);
+                }, 500);
+            } else {
+                console.error('Utilisateur non trouvé');
             }
 
-            try {
-                const token = localStorage.getItem('token');
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/Utilisateur/api/utilisateurs_select/${utilisateurId}/`, {
-                    headers: {
-                        'Authorization': `Token ${token}`
-                    }
-                });
-                setUtilisateurs(response.data);
-            } catch (error) {
-                console.error('Erreur lors de la récupération de l\'utilisateur:', error);
-            }
-        };
-
-        fetchUtilisateurs();
     }, [utilisateurId]);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 10) {
-                setIsHeaderVisible(false);
-            } else {
-                setIsHeaderVisible(true);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
     const handleBackss = () => {
         navigate(-1);
     };
-    if (!utilisateurs) {
+    if (initialLoading) {
         return (
             <div className="loading-container">
                 <Box textAlign="center" mt="10" className="conversation-wrapper">
@@ -76,7 +55,7 @@ function Userdetail() {
                         size="xl"
                         className="loading-container"
                     />
-                    <IoReloadSharp className="loading-icon" />
+                    <Icon as={IoReloadSharp} className="loading-icon" />
                 </Box>
             </div>
         );
@@ -88,15 +67,15 @@ function Userdetail() {
                 <IoMdArrowRoundBack size={30} onClick={handleBackss}  />
            </span>
             <div style={{ width: "100%"}}>
-                <header className="profile__header" style={{ backgroundImage: `url(${utilisateurs.image_utilisateur})`, backgroundSize: "cover" }}>
+                <header className="profile__header" style={{ backgroundImage: `url(${utilisateur.image})`, backgroundSize: "cover" }}>
                     <div className="profile__highlight__wrapper">
                         Chater
                     </div>
                     <div className="profile__avatar">
                         <ModalImage
-                            small={utilisateurs.image_utilisateur}
-                            large={utilisateurs.image_utilisateur}
-                            alt={`${utilisateurs.nom_utilisateur} ${utilisateurs.prenom_utilisateur} `}
+                            small={utilisateur.image}
+                            large={utilisateur.image}
+                            alt={`${utilisateur.nom} ${utilisateur.prenom} `}
                             hideDownload={true}
                             showRotate={false}
                         />
@@ -106,7 +85,7 @@ function Userdetail() {
                     </div>
                 </header>
                 <div className="profile__name">
-                    <h2>{utilisateurs.nom_utilisateur} {utilisateurs.prenom_utilisateur}<RiVerifiedBadgeFill style={{ color: "blue", fontSize: 20, marginLeft: 10 }} /></h2>
+                    <h2>{utilisateur.nom} {utilisateur.prenom}<RiVerifiedBadgeFill style={{ color: "blue", fontSize: 20, marginLeft: 10 }} /></h2>
                     <p>Compte professionnel/Musique</p>
                 </div>
                 <ul className="social-links">

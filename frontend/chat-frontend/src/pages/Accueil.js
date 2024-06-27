@@ -365,15 +365,11 @@ function Acceuil() {
     }
   };
   const saveImage = async () => {
-    if (currentImageSrc) {
       try {
         await downloadResumable(currentImageSrc); // Utilise directement currentImageSrc ici
       } catch (error) {
         console.error('Erreur lors du téléchargement de l\'image:', error);
       }
-    } else {
-      console.warn('currentImageSrc is empty or undefined');
-    }
   };
 
 
@@ -408,6 +404,9 @@ function Acceuil() {
     if (!str) return '';
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   };
+  if (!localStorage.getItem('token')) {
+    return navigate('/connexion');
+  }
   return (
       <div>
         {showPopup && <div className="dark-overlay2"></div>}
@@ -436,7 +435,7 @@ function Acceuil() {
                           <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur" className="user-profile" onClick={() => handleUserDetailClick(publication.utillisateur_id)} />
                           <div className="user-info" onClick={() => handleUserDetailClick(publication.utillisateur_id)}>
                             <p style={{ display: "flex", fontFamily: "revert-layer" }} className="user-name">
-                              {capitalize(publication.utilisateur_nom)} {capitalize(publication.utilisateur_prenom)}
+                              {capitalize(publication.utilisateur_nom)} {capitalize(publication.utilisateur_prenom)} {publication.utillisateur_id}
                               <RiVerifiedBadgeFill style={{ color: "blue", fontSize: 20, marginLeft: 10 }} />
                             </p>
                             <p className="publication-time">

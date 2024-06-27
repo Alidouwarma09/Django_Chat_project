@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {Link, useNavigate} from 'react-router-dom';
-import Chater_logo from './icons/chater_logo.png'
+import { Link, useNavigate } from 'react-router-dom';
+import Chater_logo from './icons/chater_logo.png';
 import { FiPhone, FiLock } from 'react-icons/fi';
 
-import './css/connexion.css'
+import './css/connexion.css';
 
 function Connexion() {
     const [username, setUsername] = useState('');
@@ -12,7 +12,6 @@ function Connexion() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [submitError, setSubmitError] = useState('');
-
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -28,7 +27,7 @@ function Connexion() {
         } else if (name === 'password') {
             setPassword(value);
         }
-    }
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -37,27 +36,35 @@ function Connexion() {
             username: username,
             password: password
         })
-        .then(response => {
+            .then(response => {
                 if (response.status === 200) {
-                   localStorage.setItem('token', response.data.token);
-                  navigate('/acceuil')
+                    localStorage.setItem('token', response.data.token);
+                    navigate('/acceuil');
                 }
-            localStorage.setItem('token', response.data.token);
-        })
-        .catch(error => {
-            setLoading(false);
-            console.error('Erreur lors de la connexion:', error.response || error);
-            setSubmitError('Numéro ou mot de passe incorrect');
+            })
+            .catch(error => {
+                setLoading(false);
+                console.error('Erreur lors de la connexion:', error.response || error);
+                setSubmitError('Numéro ou mot de passe incorrect');
+            });
+    };
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/acceuil');
+        }
+    }, [navigate]);
 
-        });
+    // Affichage conditionnel de la page de connexion
+    if (localStorage.getItem('token')) {
+        return null; // Ou une redirection vers '/acceuil'
     }
-
     return (
-        <div className="contenu_connexion" >
-            <div className="login-card-container" >
+        <div className="contenu_connexion">
+            <div className="login-card-container">
                 <div className="login-card">
                     <div className="login-card-logo">
-                        <img src={Chater_logo} alt="chater_logo" style={{width: '150px'}}/>
+                        <img src={Chater_logo} alt="chater_logo" style={{ width: '150px' }} />
                     </div>
                     <div className="login-card-header">
                         <h1>Connexion</h1>
@@ -67,13 +74,13 @@ function Connexion() {
                             <span className="form-item-icon"><FiPhone /></span>
                             <input type="number" placeholder="Téléphone" id="phoneForm" autoFocus required
                                    name="username" value={username}
-                                   onChange={handleChange}/>
+                                   onChange={handleChange} />
                         </div>
                         <div className="form-item">
                             <span className="form-item-icon"><FiLock /></span>
                             <input type="password" placeholder="Mot de passe" id="passwordForm" required
-                                   name="password"  value={password}
-                                   onChange={handleChange}/>
+                                   name="password" value={password}
+                                   onChange={handleChange} />
                         </div>
                         {submitError && <div className="error-message">{submitError}</div>}
                         <button className="login-button" type="submit" id="submitButton" disabled={loading}>
@@ -86,7 +93,6 @@ function Connexion() {
                 </div>
             </div>
         </div>
-
     );
 }
 
