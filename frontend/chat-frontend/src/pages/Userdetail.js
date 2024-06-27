@@ -4,18 +4,23 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { Box } from "@mui/material";
 import { Spinner } from "@chakra-ui/react";
-import { IoReloadSharp } from "react-icons/io5";
-import { RiVerifiedBadgeFill } from "react-icons/ri";
+import {IoOptionsSharp, IoReloadSharp} from "react-icons/io5";
+import {RiSignalTowerFill, RiVerifiedBadgeFill} from "react-icons/ri";
 import ModalImage from "react-modal-image";
-import { FaFacebookMessenger, FaLink } from "react-icons/fa";
-import {IoMdArrowRoundBack} from "react-icons/io";
+import {FaEyeSlash, FaFacebookMessenger, FaLink, FaUserPlus} from "react-icons/fa";
+import {IoMdArchive, IoMdArrowRoundBack} from "react-icons/io";
 import Icon from "antd/es/icon";
+import Popup from "../compoment/Popup";
+import {MdOutlineFavorite, MdSaveAlt} from "react-icons/md";
+import {SiAdblock} from "react-icons/si";
 
 function Userdetail() {
     const { utilisateurId } = useParams();
     const navigate = useNavigate();
     const [utilisateur, setUtilisateur] = useState(null);
     const [initialLoading, setInitialLoading] = useState(true);
+    const [showPopup2, setShowPopup2] = useState(false);
+    const [selectedPublicationId, setSelectedPublicationId] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -40,9 +45,30 @@ function Userdetail() {
 
     }, [utilisateurId]);
 
+    const handleLongPress3 = (publicationId) => {
+        setSelectedPublicationId(publicationId);
+        setShowPopup2(true);
+    };
+    const handleClickOutsidePopup2 = (event) => {
+        if (!event.target.closest('.popup-container2')) {
+            setShowPopup2(false);
+        }
+    };
+    const handleLongPress4 = (utilisateurId) => {
+        navigate(`/message/${utilisateurId}`);
+    };
     const handleBackss = () => {
         navigate(-1);
     };
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutsidePopup2);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutsidePopup2);
+        };
+    }, []);
+
+
+
     if (initialLoading) {
         return (
             <div className="loading-container">
@@ -63,6 +89,7 @@ function Userdetail() {
 
     return (
         <div className="details-container">
+            {showPopup2 && <div className="dark-overlay3"></div>}
            <span className="bouton-de-retour">
                 <IoMdArrowRoundBack size={30} onClick={handleBackss}  />
            </span>
@@ -96,22 +123,17 @@ function Userdetail() {
                     </li>
                     <li>
                         <span>
-                            <FaLink className="elements" />
+                            <FaUserPlus className="elements" />
                         </span>
                     </li>
-                    <li>
+                    <li onClick={()=> handleLongPress3(utilisateur.id)}>
                         <span>
-                            <FaLink className="elements" />
-                        </span>
-                    </li>
-                    <li>
-                        <span>
-                            <FaLink className="elements" />
+                            <IoOptionsSharp className="elements" />
                         </span>
                     </li>
                 </ul>
                 <ul className="social-links2">
-                    <li>
+                    <li onClick={() => handleLongPress4(utilisateur.id)}>
                         Message
                         <FaFacebookMessenger className="elements" />
                     </li>
@@ -120,6 +142,22 @@ function Userdetail() {
             <div id="tab1-content" className="tab-content tab-content--active">
                 afficher les publication de lutilisateur ici
             </div>
+            {showPopup2 &&
+                <div className="popup-container2">
+                    <div className="popup-conten2" >
+                        <span style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}><MdOutlineFavorite /></span>Favorie
+                    </div>
+                    <div className="popup-conten2" >
+                        <span style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}><IoMdArchive /></span>Masquer
+                    </div>
+                    <div className="popup-conten2" >
+                             <span style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}><SiAdblock /></span>Bloquer
+                    </div>
+                    <div className="popup-conten2" >
+                        <span style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}><RiSignalTowerFill /></span>Signaler
+                    </div>
+                </div>
+            }
         </div>
     );
 }
