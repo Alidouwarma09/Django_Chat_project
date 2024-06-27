@@ -1,27 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import './css/solde.css'
 import './css/userdetails.css'
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
-import { Box } from "@mui/material";
-import { Spinner } from "@chakra-ui/react";
+import {useNavigate, useParams} from "react-router-dom";
+import {Box} from "@mui/material";
+import {Spinner} from "@chakra-ui/react";
 import Icon from "antd/es/icon";
-import { IoReloadSharp } from "react-icons/io5";
-import { RiVerifiedBadgeFill } from "react-icons/ri";
+import {IoReloadSharp} from "react-icons/io5";
+import {RiVerifiedBadgeFill} from "react-icons/ri";
 import ModalImage from "react-modal-image";
-
-function Userdetail() {
+function Userdetail( ) {
     const { utilisateurId } = useParams();
     const [utilisateurs, setUtilisateurs] = useState(null);
     const navigate = useNavigate();
-
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
             navigate('/connexion');
         }
     }, [navigate]);
-
     useEffect(() => {
         const fetchUtilisateurs = async () => {
             if (!utilisateurId) {
@@ -44,7 +41,6 @@ function Userdetail() {
 
         fetchUtilisateurs();
     }, [utilisateurId]);
-
     if (!utilisateurs) {
         return (
             <div className="loading-container">
@@ -62,14 +58,14 @@ function Userdetail() {
             </div>
         );
     }
-
     return (
-        <div className="details-container">
+        <div className="deatils-container" >
             <div className="profile">
                 <header className="profile__header">
                     <div className="profile__highlight__wrapper">
                         <div className="profile__highlight">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-school" width="24"
+                            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-school"
+                                 width="24"
                                  height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
                                  stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -95,7 +91,8 @@ function Userdetail() {
                                  stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                 <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>
-                                <path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1"/>
+                                <path
+                                    d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1"/>
                                 <path d="M12 7v10"/>
                             </svg>
                             149$ss
@@ -115,7 +112,8 @@ function Userdetail() {
                                  height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
                                  stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"/>
+                                <path
+                                    d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"/>
                             </svg>
                         </a>
                     </li>
@@ -138,89 +136,165 @@ function Userdetail() {
                     </li>
                     <li>
                         <a href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-brand-x"
+                                 width="24"
+                                 height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M4 4l11.733 16h4.267l-11.733 -16z"/>
+                                <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/>
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
                             <svg xmlns="http://www.w3.org/2000/svg"
-                                 className="icon icon-tabler icon-tabler-brand-twitter"
+                                 className="icon icon-tabler icon-tabler-brand-instagram"
+                                 width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                 fill="none"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z"/>
+                                <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/>
+                                <path d="M16.5 7.5l0 .01"/>
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 className="icon icon-tabler icon-tabler-brand-youtube"
                                  width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                  fill="none"
                                  stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                 <path
-                                    d="M22 4.01c-.75 .5 -1.5 .5 -2.25 .5c1.5 -1 1.5 -2.5 1.5 -2.5c-2 1.5 -4 2.5 -6 3c-2 -.5 -4 0 -5 2c-1 2 -.5 4 1 5c-3 0 -6 0 -9 -3c0 3 1.5 5 4.5 6c-1.5 0 -3 0 -4.5 -.5c0 3 2 5 5 6c-1.5 1.5 -5 1.5 -7.5 1.5c3 2 5 2 10 2c9 0 14 -7.5 14 -14v-1c1.5 -1 2.5 -2.5 3 -4.01z"/>
+                                    d="M2 8a4 4 0 0 1 4 -4h12a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-12a4 4 0 0 1 -4 -4v-8z"/>
+                                <path d="M10 9l5 3l-5 3z"/>
+                            </svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-link"
+                                 width="24"
+                                 height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M9 15l6 -6"/>
+                                <path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464"/>
+                                <path
+                                    d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463"/>
                             </svg>
                         </a>
                     </li>
                 </ul>
-            </div>
-            <div className="details">
-                <div className="details__header">
-                    <div className="details__header__line" />
-                    <div className="details__header__text">
-                        {utilisateurs.nom_utilisateur} {utilisateurs.prenom_utilisateur}
+                <main>
+                    <div className="tabs-wrapper">
+                        <ul className="tabs">
+                            <li className="active">
+                                <a id="tab1" href="#about">About me</a>
+                            </li>
+                            <li>
+                                <a id="tab2" href="#skills">Skills</a>
+                            </li>
+                            <li>
+                                <a id="tab3" href="#reviews">Reviews</a>
+                            </li>
+                            <li id="active-bg"></li>
+                        </ul>
                     </div>
-                </div>
-                <div className="details__content">
-                    <div className="details__highlight__wrapper">
-                        <div className="details__highlight">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-briefcase"
-                                 width="24"
-                                 height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
-                                 stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M4 7h16a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-16a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2z"/>
-                                <path d="M10 11v6"/>
-                                <path d="M14 11v6"/>
-                                <path d="M9 7v-2a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v2"/>
-                            </svg>
-                            Techstars Bootcamp
-                        </div>
-                        <div className="details__highlight">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-map-pin"
-                                 width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                 fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24h24H0z" fill="none"/>
-                                <path
-                                    d="M12 11a2 2 0 1 0 -2 -2a2 2 0 0 0 2 2z"/>
-                                <path
-                                    d="M6.75 12.5c-3.75 -3.75 -2.7 -7.5 0.75 -7.5c2.25 0 4.5 1.5 5.25 2.25c0.75 -0.75 3 -2.25 5.25 -2.25c3.45 0 4.5 3.75 0.75 7.5c-2.25 2.25 -5.25 5.25 -6 6c-0.75 -0.75 -3.75 -3.75 -6 -6z"/>
-                            </svg>
-                            New York, USA
-                        </div>
+                    <div id="tab1-content" className="tab-content tab-content--active">
+                        <p>
+                            I am a full-stack developer with 10 years of experience at Google. For the past 5 yeas, I
+                            have been posting educational content on my blog and YouTube channel. I have a passion for
+                            modern
+                            web technologies and love to share my knowledge with others.
+                        </p>
+                        <h3>I can help with &#128588;
+                        </h3>
+                        <ul className="content-links">
+                            <li>
+                                <a href="#career">Career roadmap and advice
+
+                                </a>
+                            </li>
+                            <li><a href="#interview">Interview preparation</a></li>
+                            <li><a href="#web-development">Web development</a></li>
+                        </ul>
                     </div>
-                    <div className="details__highlight__wrapper">
-                        <div className="details__highlight">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-book"
-                                 width="24"
-                                 height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
-                                 stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path
-                                    d="M19 4h-10a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10"/>
-                                <path d="M13 8h-7"/>
-                                <path d="M13 12h-7"/>
-                                <path d="M9 16h-3"/>
-                                <path d="M15 4v16"/>
-                            </svg>
-                            5 Projects
-                        </div>
+                    <div id="tab2-content" className="tab-content">
+                        <p>
+                            My content is focused on the latest web development technologies and tools. Here is the
+                            overview
+                            👨‍💻
+                        </p>
+                        <ul className="content-links">
+                            <li>
+                                <a href="#html-css">
+                                    HTML, CSS
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#javascript">
+                                    JavaScript
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#react-and-nextjs">
+                                    React and Next.js
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#nodejs">
+                                    Node.js (REST, GraphQL)
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                    <div className="details__highlight__wrapper">
-                        <div className="details__highlight">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-users"
-                                 width="24"
-                                 height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
-                                 stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24h24H0z" fill="none"/>
-                                <path
-                                    d="M9 7a4 4 0 1 0 -4 4h1.5a2.5 2.5 0 0 1 5 0h1.5a4 4 0 1 0 -4 -4z"/>
-                                <path
-                                    d="M18 12h-2a2.5 2.5 0 0 0 -5 0h-2a4 4 0 1 0 8 0z"/>
-                            </svg>
-                            12 Collaborators
-                        </div>
+                    <div id="tab3-content" className="tab-content">
+                        <p>
+                            Here are some of the reviews from my students 📚
+                        </p>
+                        <ul className="reviews">
+                            <li>
+                                <article className="review">
+                                    <div className="review__avatar">
+                                        <img src="assets/joe.jpg" alt="Avatar" />
+                                    </div>
+                                    <div className="review__content">
+                                        <h4>Joe Doe</h4>
+                                        <p>
+                                            Melissa is a great mentor. She helped me to prepare for the interview and
+                                            provided me with valuable feedback on my projects. I would highly recommend
+                                            her
+                                            to anyone who is looking for a mentor.
+                                        </p>
+                                    </div>
+                                </article>
+                            </li>
+                            <li>
+                                <article className="review">
+                                    <div className="review__avatar">
+                                        <img src="assets/jane.jpg" alt="Avatar" />
+                                    </div>
+                                    <div className="review__content">
+                                        <h4>Jane Doe</h4>
+                                        <p>
+                                            Melissa is awesome at explaining complex topics in a simple way. I have
+                                            learned a lot from her and would recommend her to anyone who is looking for
+                                            a
+                                            mentor.
+                                        </p>
+                                    </div>
+                                </article>
+                            </li>
+                        </ul>
                     </div>
-                </div>
+                </main>
             </div>
         </div>
+
     );
 }
 
