@@ -54,6 +54,7 @@ function Utilisateurs() {
     const handleUserClick = async (utilisateurId) => {
         try {
             const token = localStorage.getItem('token');
+            navigate(`/message/${utilisateurId}`);
             await axios.post(
                 `${process.env.REACT_APP_API_URL}/Utilisateur/api/marquer_messages_lus/`,
                 { utilisateur_id: utilisateurId },
@@ -68,7 +69,7 @@ function Utilisateurs() {
         } catch (error) {
             console.error('Erreur lors de la mise à jour des messages lus:', error);
         }
-        navigate(`/message/${utilisateurId}`);
+
     };
 
 

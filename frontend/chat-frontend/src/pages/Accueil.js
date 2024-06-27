@@ -433,7 +433,7 @@ function Acceuil() {
                       >
                         {publication.photo_file && <img src={publication.photo_file} alt="Publication" />}
                         <div className="publication-header" >
-                          <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur" className="user-profile" />
+                          <img src={`${publication.utilisateur_image}`} alt="Profil de l'utilisateur" className="user-profile" onClick={() => handleUserDetailClick(publication.utillisateur_id)} />
                           <div className="user-info" onClick={() => handleUserDetailClick(publication.utillisateur_id)}>
                             <p style={{ display: "flex", fontFamily: "revert-layer" }} className="user-name">
                               {capitalize(publication.utilisateur_nom)} {capitalize(publication.utilisateur_prenom)}

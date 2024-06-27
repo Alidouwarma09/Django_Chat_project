@@ -167,13 +167,16 @@ function Message() {
       return messageDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
     }
   }
-
+  const handleUserDetailClick1 = (utilisateurId) => {
+    navigate(`/userdetails/${utilisateurId}`);
+    console.log(utilisateurId);
+  };
   return (
       <div className="chat-container">
         <div className="conversation-top">
           <IoMdArrowRoundBack size={30} onClick={handleBack} />
           <div className="conversation-user">
-            <img className="conversation-user-image" src={utilisateur?.image} alt="User" />
+            <img className="conversation-user-image" src={utilisateur?.image} alt="User" onClick={() => handleUserDetailClick1(utilisateur.id)} />
             <span className="conversation-user-name">{utilisateur?.nom}</span>
           </div>
         </div>
