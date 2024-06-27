@@ -21,6 +21,9 @@ function Userdetail( ) {
             navigate('/connexion');
         }
     }, [navigate]);
+
+
+
     useEffect(() => {
         const fetchUtilisateurs = async () => {
             if (!utilisateurId) {
@@ -111,6 +114,7 @@ function Userdetail( ) {
                     </span>
                 </li>
             </ul>
+
             <ul className="social-links2">
                 <li>
                     Message

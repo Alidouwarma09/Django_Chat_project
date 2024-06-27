@@ -95,12 +95,12 @@
 }
 
 .profile__name {
-    margin-top: 150px;
+    margin-top: 132px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 0.25rem;
+    gap: 0.2rem;
 }
 
 .profile__name h2 {
@@ -113,7 +113,7 @@
 }
 
 .profile__name p {
-    font-size: 1.05rem;
+    font-size: 1rem;
     color: var(--text-bg);
 }
 
@@ -140,7 +140,6 @@
     justify-content: center;
     list-style-type: none;
     gap: 1rem;
-    flex-wrap: wrap;
 }
 
 .social-links span {
@@ -148,14 +147,13 @@
     padding: 0.5rem;
     border-radius: 0.5rem;
     display: flex;
-    width: 3rem;
-    height: 3rem;
+    width: 2rem;
+    height: 2rem;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
     border: 1px solid var(--border-color);
     color: #007bff;
-    transition: all 0.3s;
 }
 
 .social-links span .elements {
@@ -189,25 +187,13 @@
     border-radius:  0.7rem;
     display: flex;
     width: 100%;
-    height: 3rem;
+    height: 2rem;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
     border: 1px solid var(--border-color);
     color: #ffffff;
-    transition: all 0.3s;
-}
-
-.social-link2 span .elements {
-    width: 100%;
-}
-
-.social-links2 span:hover {
-    border: 1px solid var(--active);
-}
-
-.social-links2 span:hover .elements {
-    stroke: var(--active);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", ui-system, sans-serif;
 }
 
 
