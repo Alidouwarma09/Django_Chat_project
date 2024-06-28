@@ -20,6 +20,8 @@ import Reponse from "../compoment/Réponse";
 import {MdSaveAlt} from "react-icons/md";
 import domtoimage from 'dom-to-image';
 import ImageViewer from '../compoment/ImageViewer';
+import {FaRegComment} from "react-icons/fa";
+import {BiSolidLike} from "react-icons/bi";
 
 
 
@@ -490,20 +492,15 @@ function Acceuil() {
                         </div>
                         <div style={{fontFamily: "cursive"}}>1 like et 3,12k commentaires</div>
                         <div className="row publication-actions">
-                          <div className="col-4 comment-count-container" style={{ fontSize: 11 }}>
-                            <button className="action-button" id="comment-button"
-                                    onClick={() => likePublication(publication.id)}>
-                              <i className={`bi ${isPublicationLiked(publication.id) ? 'bi-heart-fill liked' : 'bi-heart'}`}></i>
+                          <div className="col-4 comment-count-container" style={{ fontSize: 11 }}  onClick={() => likePublication(publication.id)}>
+                            <BiSolidLike className={`${isPublicationLiked(publication.id) ? 'liked' : ''}`} />
+
                               <span className="likes-count" style={{ fontSize: 15 }}>
                       {publication.count_likes}
                     </span>
-                            </button>
                           </div>
-                          <div className="col-4 comment-count-container" style={{ fontSize: 11 }}  onClick={() => toggleCommentForm(index)}>
-                            <button className="action-button"><i
-                                className="bi bi-chat"></i>
+                          <div className="col-4 comment-count-container" style={{ fontSize: 11 }}  onClick={() => toggleCommentForm(index)}><FaRegComment  />
                               <span className="comment-count" id="comment-count- photo.id" style={{ fontSize: 15 }}>{comments[publication.id] ? comments[publication.id].length : 0}</span>
-                            </button>
 
                           </div>
                           <div className="col-4 comment-count-container"

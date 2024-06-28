@@ -140,7 +140,7 @@ function Userdetail() {
                 </ul>
             </div>
             <div id="tab1-content" className="tab-content tab-content--active">
-                afficher les publication de lutilisateur ici
+                Accune informations pour le moment
             </div>
             {showPopup2 &&
                 <div className="popup-container2">

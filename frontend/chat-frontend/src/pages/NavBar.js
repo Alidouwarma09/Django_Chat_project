@@ -9,11 +9,14 @@ import axios from "axios";
 import ThemeButton from "../compoment/ThemeButton";
 import {IoIosNotifications, IoMdArrowRoundBack} from "react-icons/io";
 import {GrDownload} from "react-icons/gr";
-import {FaBloggerB, FaUserCog} from "react-icons/fa";
+import {FaBloggerB, FaPhotoVideo, FaUserCog} from "react-icons/fa";
 import {VscActivateBreakpoints} from "react-icons/vsc";
 import {MdOutlineSystemUpdate} from "react-icons/md";
 import {RiMoneyDollarCircleFill} from "react-icons/ri";
-import {BsFillBarChartLineFill} from "react-icons/bs";
+import {BsFillBarChartLineFill, BsFillPatchPlusFill} from "react-icons/bs";
+import {ImVideoCamera} from "react-icons/im";
+import {BiFontSize} from "react-icons/bi";
+import {AiFillCloseCircle} from "react-icons/ai";
 
 
 
@@ -104,11 +107,17 @@ function Navbar() {
     };
 
     const handleVideoClick = () => {
+        if (videoPreview) {
+            setVideoPreview('');
+        }
         setVideoSectionVisible(true);
         setNavbarBublicationVisible(false);
         document.getElementById('videoFileInput').click();
     };
     const handlePhotoClick = () => {
+        if (photoPreview) {
+            setPhotoPreview('');
+        }
         setPhotoSectionVisible(true);
         setNavbarBublicationVisible(false);
         document.getElementById('photoFileInput').click();
@@ -124,8 +133,11 @@ function Navbar() {
 
     const handleVideoChange = (event) => {
         const selectedFile = event.target.files[0];
+
         if (selectedFile) {
+
             const videoURL = URL.createObjectURL(selectedFile);
+
             setVideoPreview(videoURL);
         }
     };
@@ -302,10 +314,12 @@ function Navbar() {
     };
 
     const handleVidishSectionClose = () => {
+        setVideoPreview('');
         setVideoSectionVisible(false);
     };
     const handlePhotoishSectionClose = () => {
         setPhotoSectionVisible(false);
+        setPhotoPreview('');
     };
 
     const handleNavbarBublicationClick = () => {
@@ -336,7 +350,7 @@ function Navbar() {
             {VideoSectionVisible && <div className="dark-overlay"></div>}
             {PhotoSectionVisible && <div className="dark-overlay"></div>}
             <div id="publicationSection" style={{ display: publicationSectionVisible ? 'block' : 'none' }}>
-                <i onClick={handlePublishSectionClose} style={{ fontSize: 30 }} className="bi bi-x-circle-fill"></i>
+                <span onClick={handlePublishSectionClose}  style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}><AiFillCloseCircle  style={{ fontSize: 30 }}    /></span>
                 <form className="publier_text_form" id="publicationForm" method="post">
                     <textarea id="texteInput" name="texte" placeholder="Écrivez votre publication ici"
                         onChange={handleTextChange}></textarea>
@@ -633,7 +647,9 @@ function Navbar() {
                 </form>
             </div>
             <div id="publicationSection" style={{ display: VideoSectionVisible ? 'block' : 'none' }}>
-                <i onClick={handleVidishSectionClose} style={{ fontSize: 30 }} className="bi bi-x-circle-fill"></i>
+                <span onClick={handleVidishSectionClose}  style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}><AiFillCloseCircle  style={{ fontSize: 30 }}    /></span>
+                <span onClick={handleVideoClick}  style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "50%", marginBottom: 10}}><FaPhotoVideo  style={{ fontSize: 30 }}  /></span>
+
                 <form className="publier_text_form" id="videoForm" method="post">
                     <textarea id="texteInput1" name="titre" placeholder="Éntrer un titre"></textarea>
                     <input id="videoFileInput" type="file" name="video_file" accept="video/*" style={{ display: 'none' }}
@@ -655,7 +671,8 @@ function Navbar() {
                 </form>
             </div>
             <div id="publicationSection" style={{ display: PhotoSectionVisible ? 'block' : 'none' }}>
-                <i onClick={handlePhotoishSectionClose} style={{ fontSize: 30 }} className="bi bi-x-circle-fill"></i>
+                <span onClick={handlePhotoishSectionClose}  style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}><AiFillCloseCircle  style={{ fontSize: 30 }}    /></span>
+                <span onClick={handlePhotoClick}  style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center", marginLeft: "50%", marginBottom: 10}}><FaPhotoVideo  style={{ fontSize: 30 }}  /></span>
                 <form className="publier_text_form" id="photoForm" method="post">
                     <textarea id="texteInput2" name="titre" placeholder="Éntrer un titre"></textarea>
                     <input id="photoFileInput" type="file" name="photo_file" accept="image/*" style={{ display: 'none' }}
@@ -758,9 +775,9 @@ function Navbar() {
 
             {navbarBublicationVisible && (
                 <nav className="navbarBublication" ref={navbarBublicationRef}>
-                    <p onClick={handlePublicationClick}><i id="publication-action-icon" className="bi bi-fonts"></i> Publication</p>
-                    <p onClick={handleVideoClick}><i id="video-icon" className="bi bi-camera-video"></i> Mettre en ligne une video </p>
-                    <p onClick={handlePhotoClick}><i id="photo-icon" className="bi bi-patch-plus"></i> Partager une image</p>
+                    <p onClick={handlePublicationClick}><span style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}><BiFontSize  /></span> Publication</p>
+                    <p onClick={handleVideoClick}><span style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}><ImVideoCamera /></span> Mettre en ligne une video </p>
+                    <p onClick={handlePhotoClick}><span style={{backgroundColor: "#e4e6eb", borderRadius: "50%", width: 40, height: 40, display: "flex", justifyContent: "center", alignItems: "center"}}><BsFillPatchPlusFill /></span> Partager une image</p>
                 </nav>
             )}
             <button className="new-publication-button" onClick={handleNavbarBublicationClick}>+</button>
