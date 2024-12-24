@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
+import os
+from pathlib import Path
+from dotenv import load_dotenv
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
@@ -19,7 +22,10 @@ from pathlib import Path
 
 import dj_database_url
 from corsheaders.defaults import default_headers
-from decouple import config
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(dotenv_path=BASE_DIR / '.env')
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,10 +34,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
+
 
 # Application definition
 
@@ -59,15 +65,8 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-
-# settings.py
-
-# Ajoutez tous les domaines nécessaires à ALLOWED_HOSTS
-# ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app',  'literate-partially-leopard.ngrok-free.app']
 ALLOWED_HOSTS = ['*']
 
-
-# settings.py
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -140,17 +139,17 @@ CORS_ALLOW_HEADERS = [
 #         'PORT': '5432',
 #     }
 # }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME'),
-        'USER': config('DATABASE_USER'),
-        'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': config('DATABASE_HOST'),
-        'PORT': config('DATABASE_PORT'),
+        'NAME': os.getenv('DATABASE_NAME', 'chat'),
+        'USER': os.getenv('DATABASE_USER', 'postgres'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', ''),
+        'HOST': os.getenv('DATABASE_HOST', 'localhost'),
+        'PORT': os.getenv('DATABASE_PORT', '5432'),
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
